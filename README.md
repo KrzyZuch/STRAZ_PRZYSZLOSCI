@@ -26,6 +26,10 @@ Nasze działanie opiera się na prostym założeniu — **intelekt wyprzedza kap
 
 Szukamy specjalistów z zakresu marketingu, PR i budowania społeczności, którzy na zasadach odpowiedzialności za wybrany obszar pomogą promować naszą inicjatywę. Sprawdź plik [MARKETING.md](MARKETING.md), aby poznać podstawowy zakres działań do obsadzenia.
 
+## Jak dołączyć i pomagać (Instrukcja dla twórców i współpracowników)
+
+Niezależnie od tego, jakie posiadasz kompetencje – techniczne, analityczne czy organizacyjne – wsparcie każdego z Was jest kluczowe. Przygotowaliśmy **[Zasady współpracy i instrukcję obsługi Git (CONTRIBUTING.md)](CONTRIBUTING.md)**, w której znajdziesz przystępny poradnik m.in. jak zgłaszać swoje pomysły oraz jak pobierać repozytorium i przesyłać modyfikacje kodu lub tekstów.
+
 **Dołącz, jeśli chcesz współtworzyć przyszłość Polskiej Gospodarki!**
 
 https://github.com/KrzyZuch/POLSKIEAi
