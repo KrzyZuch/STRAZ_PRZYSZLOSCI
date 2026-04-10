@@ -10,12 +10,13 @@ Poniżej znajduje się lista podstawowych działań inicjacyjnych, które mogą 
 * **Storytelling:** Opowiadanie historii projektu w sposób angażujący, trafiający zarówno do specjalistów IT/AI, jak i osób spoza branży.
 
 ## 2. Social Media i Community Management
-* **Prowadzenie profili w mediach społecznościowych:** LinkedIn, X (Twitter), Facebook, ewentualnie TikTok/Instagram (w formacie edukacyjnym).
+*   **Prowadzenie profili w mediach społecznościowych:** LinkedIn, X (Twitter), Facebook, ewentualnie TikTok/Instagram (w formacie edukacyjnym).
+    *   *Obecne kanały:* [TikTok](https://www.tiktok.com/@straz.przyszlosci), [Instagram](https://www.instagram.com/strazprzyszlosci/), [Facebook](https://www.facebook.com/straz.przyszlosci/), [YouTube](https://www.youtube.com/@StrazPrzyszlosci).
 * **Budowanie społeczności:** Aktywizowanie dyskusji, moderacja, organizowanie sesji Q&A.
 * **Networking i outreach:** Aktywne poszukiwanie i zapraszanie do współpracy liderów opinii, naukowców, inżynierów oraz ekspertów dziedzinowych w Polsce.
 
 ## 3. Content Marketing
-*(Strona internetowa inicjatywy już w trakcie przygotowywania przez założyciela - wkrótce udostępnimy więcej szczegółów!)*
+**Oficjalna strona inicjatywy:** [spa-nsi.pages.dev](https://spa-nsi.pages.dev/) (w budowie)
 
 * **Tworzenie treści eksperckich:** Redagowanie postów, artykułów na bloga/publikacji w zewnętrznych mediach.
 * **Materiały wideo i grafiki:** Projektowanie identyfikacji wizualnej, tworzenie materiałów promocyjnych (infografiki, krótkie formy wideo tłumaczące koncepcję NARODOWYCH SIŁ INTELEKTUALNYCH).

@@ -74,6 +74,15 @@ Niezależnie od tego, jakie posiadasz kompetencje – techniczne, analityczne cz
 
 **Dołącz, jeśli chcesz współtworzyć przyszłość Polskiej Gospodarki!**
 
-*(Strona internetowa inicjatywy już w trakcie przygotowywania - wkrótce udostępnimy więcej szczegółów!)*
+**Strona internetowa inicjatywy:** [spa-nsi.pages.dev](https://spa-nsi.pages.dev/)
+
+## Media Społecznościowe
+
+Nasza inicjatywa jest obecna w mediach społecznościowych, gdzie publikujemy materiały wideo i rolki wyjaśniające założenia NARODOWYCH SIŁ INTELEKTUALNYCH:
+
+*   **TikTok:** [@straz.przyszlosci](https://www.tiktok.com/@straz.przyszlosci)
+*   **Instagram:** [@strazprzyszlosci](https://www.instagram.com/strazprzyszlosci/)
+*   **Facebook:** [straz.przyszlosci](https://www.facebook.com/straz.przyszlosci/)
+*   **YouTube:** [@StrazPrzyszlosci](https://www.youtube.com/@StrazPrzyszlosci)
 
 https://github.com/KrzyZuch/STRAZ_PRZYSZLOSCI
