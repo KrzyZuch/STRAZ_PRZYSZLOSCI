@@ -1,5 +1,7 @@
 # NARODOWE SIŁY INTELEKTUALNE POLSKI
 
+## **Intelekt wyprzedza Kapitał!**
+
 ![Ilustracja NSIP](NSIP.png)
 
 Zapraszam wszystkich Polskich inteligentów do udziału w NARODOWYM WYSIŁKU INTELEKTUALNYM.
@@ -37,9 +39,9 @@ Jeśli chcemy konstruktywnie i mądrze wykorzystać tę potężną siłę, autom
 
 Warto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży w *koncepcji zastosowania*, a nie w samym narzędziu.
 
-## Tryb działania i proces twórczy
+# Strategia Marketingowa i Budowa Społeczności
 
-Nasze działanie opiera się na prostym założeniu — **intelekt wyprzedza kapitał**:
+## **Intelekt wyprzedza Kapitał!**
 
 1. **Zgromadzenie twórców** – najpierw skupiamy się na zebraniu wielu ludzi gotowych do zaangażowania intelektualnego.
 

@@ -30,5 +30,6 @@ Poniżej znajduje się lista podstawowych działań inicjacyjnych, które mogą 
 * **Budowanie relacji partnerskich:** Wytypowanie uczelni wyższych, organizacji pozarządowych i innych podmiotów mogących wesprzeć projekt zasięgowo.
 
 ---
+*Intelekt wyprzedza kapitał!*
 **Jak dołączyć?**
 Jeśli posiadasz kompetencje w jednym z powyższych obszarów i chcesz wziąć na siebie jego realizację, otwórz na GitHubie odpowiednie [Issues / Pull Request] lub dołącz do bieżącej dyskusji, wskazując, w jakiej dziedzinie widziałbyś/abyś siebie.
