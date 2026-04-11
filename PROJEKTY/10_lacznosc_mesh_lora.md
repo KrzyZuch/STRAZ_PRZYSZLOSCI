@@ -3,9 +3,9 @@
 ## **Intelekt wyprzedza Kapitał!**
 
 ## Opis Projektu
-Projekt zakłada budowę suwerennej, odpornej na awarie infrastruktury komunikacyjnej opartej na sieciach kratowych (Mesh) i technologii LoRa. Skupiamy się na zastosowaniach gospodarczych i przemysłowych, które pozwalają na monitorowanie zasobów i wymianę informacji tam, gdzie tradycyjne sieci (GSM/LTE) są zawodne lub zbyt kosztowne.
+Projekt zakłada budowę suwerennej, odpornej na awarie infrastruktury komunikacyjnej opartej na sieciach kratowych (Mesh). Fundamentem są **wbudowane systemy łączności smartfonów z odzysku** (GSM, LTE/4G, Wi-Fi, Bluetooth), które uzupełniamy technologią LoRa dla uzyskania ekstremalnych zasięgów. Wykorzystujemy "elektrośmieci" jako uniwersalne mosty komunikacyjne (Gateways), które mogą inteligentnie przełączać się między siecią komórkową a darmowymi sieciami Mesh w zależności od dostępności sygnału i kosztów.
 
-W "Straży Przyszłości" sieć Mesh służy jako **Nerw Gospodarczy**, przesyłając dane z sensorów rolnych, informując o stanie sieci energetycznej oraz zabezpieczając komunikację bez polegania na zewnętrznych dostawcach.
+W "Straży Przyszłości" sieć Mesh służy jako **Nerw Gospodarczy**, przesyłając dane z sensorów rolnych, informując o stanie sieci energetycznej oraz zabezpieczając komunikację bez polegania wyłącznie na zewnętrznych dostawcach.
 
 ## Filary Technologiczne i Gotowy Kod
 
@@ -22,9 +22,12 @@ Mimo że RNS jest ogólnego przeznaczenia, służy jako doskonały "tunel" dla d
 - **[Sideband](https://github.com/markqvist/Sideband):** Gotowy komunikator graficzny do bezpiecznej wymiany raportów technicznych i logistycznych między pracownikami dużych gospodarstw i zakładów.
 - **Implementacja Transportowa:** Możliwość tunelowania protokołów przemysłowych (np. Modbus over Reticulum) w celu nadzorowania pracy magazynów energii (Projekt 05) w miejscach bez zasięgu komórkowego.
 
-### 3. MeshCore – Lekka Telemetria Wiejska
-- **[MeshCore Firmware](https://github.com/meshcore-dev/MeshCore):** Zoptymalizowany pod kątem ekstremalnie niskiego zużycia energii.
-- **Zastosowanie:** Długodystansowe czujniki na pastwiskach, które mogą pracować latami na jednej baterii, raportując stan zdrowia stada (Projekt 03).
+### 3. Łączność Hybrydowa: Smartfon jako "Brama Intelektualna"
+Wykorzystujemy pełen stos komunikacyjny wbudowany w smartfony:
+- **GSM/LTE/4G (Wbudowane):** Smartfon służy jako brama (Gateway), która zbiera dane z lokalnej sieci Mesh (Wi-Fi/BT/LoRa) i przesyła je do centralnych systemów analitycznych NSI przez sieć komórkową, gdy ta jest dostępna.
+- **[Briar](https://github.com/briar/briar) & P2P Protocols:** Wykorzystanie Bluetooth i Wi-Fi do tworzenia lokalnych, darmowych sieci bez dostępu do Internetu. Pozwala to na darmową wymianę danych sensorowych i wiadomości w obrębie gospodarstwa.
+- **Wi-Fi Aware / Wi-Fi Direct:** Tworzenie dynamicznych sieci "telefon-do-telefonu" przez natywne funkcje Androida, co pozwala na przekazywanie informacji (np. z Projektu 09) przez kolejne urządzenia aż do punktu z zasięgiem LTE lub LoRa.
+- **[MeshCore Firmware](https://github.com/meshcore-dev/MeshCore):** Energooszczędne zarządzanie modułami radiowymi w celu wydłużenia pracy węzła.
 
 ## Implementacja Gospodarcza (Scenariusze PoC)
 
