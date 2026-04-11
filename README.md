@@ -62,8 +62,9 @@ W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiąza
 *   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.
 *   **[04. Solarne Okna z Recyklingu TV](PROJEKTY/04_lampa_z_recyklingu_tv.md)** – Upcykling elektrośmieci jako źródło darmowego światła i kapitału.
 *   **[05. Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md)** – Zaawansowany odzysk ogniw krzemowych przy użyciu technologii CNC.
-*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing).
+*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing). Zobacz również: [08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md).
 *   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.
+*   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.
 
 **Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**
 
