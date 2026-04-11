@@ -66,6 +66,7 @@ W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiąza
 *   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.
 *   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.
 *   **[09. Monitoring IoT i Akcelerometria](PROJEKTY/09_monitoring_iot_livestock.md)** – Inteligentna obroża AI (Smart Health Tracker) z wykorzystaniem czujników smartfona.
+*   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.
 
 **Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**
 

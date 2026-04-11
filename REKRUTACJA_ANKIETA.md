@@ -10,6 +10,7 @@ Witamy w **NARODOWYCH SIŁACH INTELEKTUALNYCH (NSI)**. To nie jest zwykła ankie
 - [ ] `#KOD` - Pisanie wydajnych algorytmów, IoT, AI, Android.
 - [ ] `#HARDWARE` - Konstruowanie od zera, projektowanie płytek PCB.
 - [ ] `#CAD` - Modelowanie 3D, mechanika maszyn, wizualizacje.
+- [ ] `#MESH` - Sieci LoRa, Meshtastic, Reticulum, łączność radiowa.
 - [ ] `#RECYKLING` - "Drugie życie" elektrośmieci, upcykling.
 - `#AGRO_AI` - Chęć zmiany polskiego rolnictwa na lepsze.
 - `#OZE` - Energetyka odnawialna, magazyny energii w garażu.
@@ -20,7 +21,7 @@ Witamy w **NARODOWYCH SIŁACH INTELEKTUALNYCH (NSI)**. To nie jest zwykła ankie
 *Nie szukamy wyposażenia laboratorium NASA – szukamy Twojego potencjału "szufladowego" i pasji manualnej.*
 
 - [ ] **Lutowanie:** Lubisz zapach kalafonii? Co ostatnio zlutowałeś? (Wpisz krótko): ________________
-- [ ] **Hardware "w szufladzie":** Ile masz starych smartfonów (Android 8+)? Masz jakieś ESP32, Arduino lub inne skarby? 
+- [ ] **Hardware "w szufladzie":** Ile masz starych smartfonów (Android 8+)? Masz jakieś ESP32, Arduino, moduły LoRa (np. Lilygo, Heltec) lub inne skarby? 
 - [ ] **Druk 3D:** Masz dostęp do drukarki? Jaki to model (lub czy to Twój autorski projekt)?
 - [ ] **Zasoby specyficzne:** Posiadasz drona, dostęp do ciągnika, własne ule, czy może garaż pełen części od starych TV?
 
