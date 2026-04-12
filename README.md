@@ -86,6 +86,17 @@ Niezależnie od tego, jakie posiadasz kompetencje – techniczne, analityczne cz
 
 Jeśli chcesz już teraz otrzymać zadanie dopasowane do Twoich pasji, wypełnij naszą **[Ankietę Kompetencyjną (REKRUTACJA_ANKIETA.md)](REKRUTACJA_ANKIETA.md)**. Przygotowaliśmy również **[Zasady współpracy i instrukcję obsługi Git (CONTRIBUTING.md)](CONTRIBUTING.md)**, w której znajdziesz przystępny poradnik m.in. jak zgłaszać swoje pomysły.
 
+## Dokumentacja integracyjna
+
+Rozwijamy publiczną warstwę integracyjną dla projektów Straży Przyszłości, w której partnerzy zewnętrzni i społeczność mogą dostarczać dane do wspólnego schematu API oraz odbierać wyniki analityczne służące budowie bazy wiedzy. Szczegóły znajdują się w dokumentach:
+
+* **[Strategia Integracji](docs/STRATEGIA_INTEGRACJI.md)**
+* **[Polityka Partnerska](docs/POLITYKA_PARTNERSKA.md)**
+* **[Model: Otwarte Standardy, Zamknięte Wdrożenia](docs/MODEL_OTWARTE_STANDARDY_ZAMKNIETE_WDROZENIA.md)**
+* **[Zasady Nazwy i Marki](docs/ZASADY_NAZWY_I_MARKI.md)**
+* **[Jak Zostać Dostawcą Danych](docs/JAK_ZOSTAC_DOSTAWCA_DANYCH.md)**
+* **[Architektura Węzłów Pomiarowych](docs/ARCHITEKTURA_WEZLOW_POMIAROWYCH.md)**
+
 **Dołącz, jeśli chcesz współtworzyć przyszłość Polskiej Gospodarki!**
 
 **Strona internetowa inicjatywy:** [spa-nsi.pages.dev](https://spa-nsi.pages.dev/)
