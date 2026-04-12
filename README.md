@@ -131,7 +131,7 @@ Publiczny bot inicjatywy nazywa się **Straż Przyszłości** i działa pod adre
 
 * **[`@straz_przyszlosci_bot`](https://t.me/straz_przyszlosci_bot)**
 
-![QR do bota Telegram Straż Przyszłości](docs/assets/telegram_bot_qr.jpg)
+<img src="docs/assets/telegram_bot_qr.jpg" alt="QR do bota Telegram Straż Przyszłości" width="160">
 
 To jest najprostszy mobilny kanał wejścia dla osób, które chcą szybko zapisać myśl do repozytorium bez otwierania formularzy GitHub.
 
@@ -149,6 +149,7 @@ Co robi bot:
 
 * zamienia wiadomość Telegram w `GitHub Issue` w publicznym repo Straży Przyszłości,
 * pozwala szybko zgłosić pomysł, zastrzeżenie albo ryzyko z telefonu,
+* odsyła krótką informację zwrotną, czy zgłoszenie zostało przyjęte albo zatrzymane przez filtr antyspamowy,
 * nie służy do przesyłania danych providerskich ani do sterowania urządzeniami.
 
 Jeżeli chcesz wejść do systemu jako provider danych lub węzeł pomiarowy, użyj szablonu zgłoszenia:

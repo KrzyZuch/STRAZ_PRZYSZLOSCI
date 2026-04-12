@@ -135,6 +135,76 @@ function buildIssueDraft(message, classification, env) {
   return { title, body, labels };
 }
 
+function buildTelegramReplyText(kind, payload = {}) {
+  if (kind === "created") {
+    const issueNumber = payload.issue_number ? ` #${payload.issue_number}` : "";
+    const issueUrl = payload.issue_url ? `\n${payload.issue_url}` : "";
+    return `Zgloszenie przyjete.${issueNumber ? ` Utworzono Issue${issueNumber}.` : ""}${issueUrl}`;
+  }
+
+  if (kind === "throttled") {
+    const retryAfter = payload.retry_after_seconds;
+    const retryLine =
+      typeof retryAfter === "number" && retryAfter > 0
+        ? ` Sprobuj ponownie za okolo ${retryAfter} s.`
+        : " Sprobuj ponownie za chwile.";
+    return `Zgloszenie odrzucone przez filtr antyspamowy.${retryLine}`;
+  }
+
+  if (kind === "unrecognized") {
+    return 'Nie rozpoznalem formatu. Wyslij wiadomosc zaczynajac sie od "Pomysl: ..." albo "Uwaga: ...".';
+  }
+
+  if (kind === "dry_run") {
+    return "Zgloszenie rozpoznane. Bot dziala jeszcze w trybie testowym, wiec ta wiadomosc nie utworzyla Issue.";
+  }
+
+  if (kind === "error") {
+    return "Nie udalo sie zapisac zgloszenia w repozytorium. Sprobuj ponownie za chwile.";
+  }
+
+  return null;
+}
+
+async function sendTelegramReply(env, message, text) {
+  const botToken = env.TELEGRAM_BOT_TOKEN;
+  if (!botToken || !message?.chat_id || !text) {
+    return false;
+  }
+
+  const response = await fetch(
+    `https://api.telegram.org/bot${botToken}/sendMessage`,
+    {
+      method: "POST",
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        chat_id: message.chat_id,
+        text,
+        reply_to_message_id: message.message_id || undefined,
+        allow_sending_without_reply: true,
+        disable_web_page_preview: true,
+      }),
+    }
+  );
+
+  return response.ok;
+}
+
+async function notifyTelegramReply(env, message, kind, payload = {}) {
+  const text = buildTelegramReplyText(kind, payload);
+  if (!text) {
+    return false;
+  }
+
+  try {
+    return await sendTelegramReply(env, message, text);
+  } catch {
+    return false;
+  }
+}
+
 function getTelegramThrottleKey(message) {
   if (message.chat_id && message.user_id) {
     return `${message.chat_id}:${message.user_id}`;
@@ -378,22 +448,37 @@ export async function handleTelegramWebhook(request, env) {
 
     const classification = stripPrefix(message.text);
     if (!classification) {
+      const notificationSent = await notifyTelegramReply(
+        env,
+        message,
+        "unrecognized"
+      );
       results.push({
         update_id: message.update_id,
         message_id: message.message_id,
         status: "ignored_unrecognized_format",
+        notification_sent: notificationSent,
       });
       continue;
     }
 
     const throttleCheck = await checkTelegramThrottle(env, message);
     if (!throttleCheck.allowed) {
+      const notificationSent = await notifyTelegramReply(
+        env,
+        message,
+        "throttled",
+        {
+          retry_after_seconds: throttleCheck.retry_after_seconds || null,
+        }
+      );
       results.push({
         update_id: message.update_id,
         message_id: message.message_id,
         status: "throttled",
         retry_after_seconds: throttleCheck.retry_after_seconds || null,
         kind: classification.kind,
+        notification_sent: notificationSent,
       });
       continue;
     }
@@ -401,18 +486,39 @@ export async function handleTelegramWebhook(request, env) {
     const draft = buildIssueDraft(message, classification, env);
     if (dryRun) {
       await recordTelegramThrottle(env, message, throttleCheck.throttleKey);
+      const notificationSent = await notifyTelegramReply(env, message, "dry_run");
       results.push({
         update_id: message.update_id,
         message_id: message.message_id,
         status: "dry_run",
         kind: classification.kind,
         title: draft.title,
+        notification_sent: notificationSent,
       });
       continue;
     }
 
-    const issue = await createGitHubIssue(env, draft);
+    let issue;
+    try {
+      issue = await createGitHubIssue(env, draft);
+    } catch (error) {
+      const notificationSent = await notifyTelegramReply(env, message, "error");
+      results.push({
+        update_id: message.update_id,
+        message_id: message.message_id,
+        status: "error",
+        kind: classification.kind,
+        error: error instanceof Error ? error.message : "unknown_error",
+        notification_sent: notificationSent,
+      });
+      continue;
+    }
+
     await recordTelegramThrottle(env, message, throttleCheck.throttleKey);
+    const notificationSent = await notifyTelegramReply(env, message, "created", {
+      issue_number: issue.number,
+      issue_url: issue.html_url,
+    });
     results.push({
       update_id: message.update_id,
       message_id: message.message_id,
@@ -420,6 +526,7 @@ export async function handleTelegramWebhook(request, env) {
       kind: classification.kind,
       issue_number: issue.number,
       issue_url: issue.html_url,
+      notification_sent: notificationSent,
     });
   }
 

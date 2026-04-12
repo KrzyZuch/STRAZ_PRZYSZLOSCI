@@ -15,7 +15,7 @@ Kanał publiczny działa już pod nazwą **Straż Przyszłości**:
 
 - [`@straz_przyszlosci_bot`](https://t.me/straz_przyszlosci_bot)
 
-![QR do bota Telegram Straż Przyszłości](assets/telegram_bot_qr.jpg)
+<img src="assets/telegram_bot_qr.jpg" alt="QR do bota Telegram Straż Przyszłości" width="160">
 
 To jest najprostsza ścieżka dla nowych osób, które chcą z telefonu szybko zapisać myśl do repozytorium.
 
@@ -35,6 +35,7 @@ Co robi bot:
 
 - tworzy `GitHub Issue` w publicznym repo Straży Przyszłości,
 - pozwala szybko zgłaszać pomysły, uwagi i ryzyka z telefonu,
+- odpisuje krótko, czy zgłoszenie zostało przyjęte, odrzucone przez filtr antyspamowy albo wymaga poprawnego prefiksu,
 - nie służy do wysyłania danych providerskich ani do sterowania urządzeniami.
 
 ## Dlaczego to jest prostsze niż WhatsApp
@@ -217,7 +218,7 @@ Treść issue jest celowo krótka: tytuł, wiadomość i podstawowy ślad źród
 
 Na start rekomenduję:
 
-- brak automatycznych odpowiedzi z bota,
+- tylko krótkie odpowiedzi potwierdzające przyjęcie, odrzucenie przez throttling albo zły format,
 - brak danych providerów przez bota,
 - tylko `Issues`,
 - tylko tekst,
