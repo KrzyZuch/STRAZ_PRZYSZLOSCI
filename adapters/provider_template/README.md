@@ -52,3 +52,7 @@ Nie przejmujemy jako rdzenia:
 - obcego backendu jako formatu nadrzędnego całego systemu.
 
 To adapter ma się dostosować do schematu Straży Przyszłości, a nie schemat Straży Przyszłości do przypadkowej struktury obcego repozytorium.
+
+## Dokumenty pomocnicze
+
+- [Checklist Nowego Providera](CHECKLIST.md)
