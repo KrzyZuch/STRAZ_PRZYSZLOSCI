@@ -832,9 +832,17 @@ function buildPromptPayload(systemInstruction, userPrompt, env, options = {}) {
 
 function buildCommonKnowledgeIntro(query, history) {
   const sections = selectRelevantSections(query, parsePositiveInteger(null, 4));
+  const docsList = (knowledgeBundle.documents || [])
+    .filter((doc) => doc.path.startsWith("PROJEKTY/") || doc.path.startsWith("docs/") || doc.path === "README.md")
+    .map((doc) => `- ${doc.title} (${doc.path})`)
+    .join("\n");
+
   return [
     "### PUBLICZNA WIEDZA Z REPOZYTORIUM",
     `Baza adresów (jeśli widzisz względny link do pliku na przykład w [nazwa](plik.md), zawsze go zamieniaj na pełny klikalny publiczny url i ZAWSZE doklejaj do niego bazę): ${knowledgeBundle.github_base_url}`,
+    "### SPIS DOSTĘPNYCH DOKUMENTÓW I PROJEKTÓW W REPOZYTORIUM:",
+    docsList,
+    "",
     formatKnowledgeContext(sections),
     "",
     "### HISTORIA ROZMOWY",
