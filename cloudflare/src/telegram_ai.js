@@ -198,12 +198,12 @@ export function stripIssuePrefix(messageText) {
     {
       kind: "idea",
       label: "pomysł",
-      pattern: /^\s*(pomysl|pomysł)\s*:\s*/iu,
+      pattern: /^\s*(zapisz\s+pomysl|zapisz\s+pomysł|dopisz\s+pomysl|dopisz\s+pomysł|pomysl|pomysł)\s*[:\s]\s*/iu,
     },
     {
       kind: "feedback",
       label: "uwaga",
-      pattern: /^\s*(uwaga|zastrzezenie|zastrzeżenie)\s*:\s*/iu,
+      pattern: /^\s*(zapisz\s+uwage|zapisz\s+uwagę|dopisz\s+uwage|dopisz\s+uwagę|uwaga|uwagę|zastrzezenie|zastrzeżenie)\s*[:\s]\s*/iu,
     },
   ];
 
@@ -487,12 +487,12 @@ function buildModerationSystemInstruction() {
     "Oceń wyłącznie bieżącą wiadomość użytkownika po prefiksie Pomysl/Uwaga.",
     "Zwróć JSON z polami decision, reason_code, reason_text.",
     "Decision musi być jednym z: accept, reject_spam, reject_abuse, reject_too_short, reject_off_topic, needs_more_detail.",
-    "accept tylko dla wiadomości merytorycznych, związanych z inicjatywą albo repozytorium.",
+    "BĄDŹ PRO-AKTYWNY I OTWARTY: Akceptuj (accept) pomysły koncepcyjne, architektoniczne i strategiczne, nawet jeśli autor nie podał jeszcze szczegółów technicznych. Każda merytoryczna myśl o rozwoju inicjatywy to cenny wkład intelektualny.",
     "reject_spam dla reklam, śmieciowego tekstu, powtarzania bez sensu.",
     "reject_abuse dla obelg, gróźb, nadużyć.",
-    "reject_too_short gdy brak treści do sensownego zgłoszenia.",
-    "reject_off_topic gdy treść nie dotyczy inicjatywy, repo, projektów, technologii lub organizacji pracy.",
-    "needs_more_detail gdy intencja jest sensowna, ale treść zbyt niejasna.",
+    "reject_too_short tylko dla skrajnie krótkich treści (np. pojedyncze słowo bez sensu).",
+    "reject_off_topic tylko gdy treść całkowicie nie dotyczy technologii, ekologii, AI, rolnictwa ani organizacji Straży Przyszłości.",
+    "needs_more_detail używaj rzadko – tylko gdy zgłoszenie jest kompletnie niezrozumiałe, a nie tylko 'ogólne'.",
     "Nie dołączaj nic poza JSON.",
   ].join(" ");
 }
