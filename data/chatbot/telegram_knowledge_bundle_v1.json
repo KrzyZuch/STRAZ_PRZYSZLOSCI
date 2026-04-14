@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "generated_at": "2026-04-14T13:46:07.225785+00:00",
+  "generated_at": "2026-04-14T23:14:59.028314+00:00",
   "allowlist": [
     "README.md",
     "MARKETING.md",
@@ -21,6 +21,7 @@
     "PROJEKTY/09_monitoring_iot_livestock.md",
     "PROJEKTY/10_lacznosc_mesh_lora.md",
     "PROJEKTY/11_autonomiczne_systemy_rd.md",
+    "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
     ".github/ISSUE_TEMPLATE/nowy_straznik.md",
     ".github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md",
     ".github/ISSUE_TEMPLATE/zastrzezenie_uwaga.md",
@@ -123,6 +124,11 @@
       "category": "document"
     },
     {
+      "path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "12. Autonomiczne Projektowanie PCB z Recyklingu: E-odpady jako Inteligentny Zasób",
+      "category": "document"
+    },
+    {
       "path": ".github/ISSUE_TEMPLATE/nowy_straznik.md",
       "title": "Kim jesteś i co Cię tu przyciąga",
       "category": "issue_template"
@@ -150,9 +156,9 @@
     "Energia:** Opracowanie systemów planowania, magazynowania i dystrybucji zielonej oraz konwencjonalnej energii, by zminimalizować jej straty i zoptymalizować gospodarkę sieciową.",
     "Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md).",
     "Optymalizacja zużycia zasobów strategicznych:** Racjonalne, poparte zaawansowaną analizą danych, zarządzanie wodą, surowcami i ziemią, eliminujące gospodarkę rabunkową.",
-    "Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md), [Upcykling LED TV](PROJEKTY/04_lampa_z_recyklingu_tv.md), [Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md).",
+    "Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md), [Upcykling LED TV](PROJEKTY/04_lampa_z_recyklingu_tv.md), [Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md), [Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md).",
     "Logistyka i transport:** Wykorzystanie AI do inteligentnego zarządzania łańcuchami dostaw, trasami przesyłowymi i komunikacją zbiorową w celu minimalizacji czasu, kosztów i śladu węglowego.",
-    "Inspiracje:* [Smartfony jako Sterowniki Edge Computing](PROJEKTY/06_smartfony_jako_sterowniki.md).",
+    "Inspiracje:* [Smartfony jako Sterowniki Edge Computing](PROJEKTY/06_smartfony_jako_sterowniki.md), [Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md).",
     "Finanse (Fundusze):** Pozyskiwanie środków strategicznych, inteligentny wybór programów grantowych i inwestycji dla nowo powstających projektów.",
     "Zgromadzenie twórców** – najpierw skupiamy się na zebraniu wielu ludzi gotowych do zaangażowania intelektualnego.",
     "Burza mózgów, analiza, planowanie oraz praca twórcza** – repozytorium służy jako przestrzeń do zgłaszania i szerokiej analizy pomysłów i możliwości.",
@@ -178,7 +184,7 @@
       "source_path": "README.md",
       "title": "Główne osie rozwoju i obszary działań AI",
       "category": "document",
-      "content": "Aby realnie odpowiedzieć na najpilniejsze problemy gospodarcze i społeczne, nasza uwaga i moc obliczeniowa będą początkowo skupione na najważniejszych systemach podtrzymujących państwo:\n1. **Żywność:** Automatyzacja, robotyzacja i optymalizacja produkcji rolno-spożywczej (np. inteligentna produkcja i dystrybucja, która obniża koszty wyżywienia społeczeństwa).\n   *   *Inspiracje:* [Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md), [Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md), [Monitoring Porodów z Edge AI](PROJEKTY/03_ai_monitoring_porodow.md).\n2. **Medycyna:** Zastosowanie AI w diagnostyce, telemedycynie, wynajdywaniu terapii oraz w logistyce ochrony zdrowia, podnosząc skuteczność i dostępność dla każdego obywatela.\n3. **Energia:** Opracowanie systemów planowania, magazynowania i dystrybucji zielonej oraz konwencjonalnej energii, by zminimalizować jej straty i zoptymalizować gospodarkę sieciową.\n   *   *Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md).\n4. **Optymalizacja zużycia zasobów strategicznych:** Racjonalne, poparte zaawansowaną analizą danych, zarządzanie wodą, surowcami i ziemią, eliminujące gospodarkę rabunkową.\n   *   *Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md), [Upcykling LED TV](PROJEKTY/04_lampa_z_recyklingu_tv.md), [Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md).\n5. **Logistyka i transport:** Wykorzystanie AI do inteligentnego zarządzania łańcuchami dostaw, trasami przesyłowymi i komunikacją zbiorową w celu minimalizacji czasu, kosztów i śladu węglowego.\n   *   *Inspiracje:* [Smartfony jako Sterowniki Edge Computing](PROJEKTY/06_smartfony_jako_sterowniki.md).\n6. **Finanse (Fundusze):** Pozyskiwanie środków strategicznych, inteligentny wybór programów grantowych i inwestycji dla nowo powstających projektów.\n\nSystem ten ma służyć jako potężne wsparcie dla tradycyjnej gospodarki państwowej, w całości się z nią przeplatając i wspomagając jej procesy, jednak w taki sposób, aby nie generować dla niej niepotrzebnej konkurencji. Naszym celem jest synergia, a nie rywalizacja."
+      "content": "Aby realnie odpowiedzieć na najpilniejsze problemy gospodarcze i społeczne, nasza uwaga i moc obliczeniowa będą początkowo skupione na najważniejszych systemach podtrzymujących państwo:\n1. **Żywność:** Automatyzacja, robotyzacja i optymalizacja produkcji rolno-spożywczej (np. inteligentna produkcja i dystrybucja, która obniża koszty wyżywienia społeczeństwa).\n   *   *Inspiracje:* [Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md), [Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md), [Monitoring Porodów z Edge AI](PROJEKTY/03_ai_monitoring_porodow.md).\n2. **Medycyna:** Zastosowanie AI w diagnostyce, telemedycynie, wynajdywaniu terapii oraz w logistyce ochrony zdrowia, podnosząc skuteczność i dostępność dla każdego obywatela.\n3. **Energia:** Opracowanie systemów planowania, magazynowania i dystrybucji zielonej oraz konwencjonalnej energii, by zminimalizować jej straty i zoptymalizować gospodarkę sieciową.\n   *   *Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md).\n4. **Optymalizacja zużycia zasobów strategicznych:** Racjonalne, poparte zaawansowaną analizą danych, zarządzanie wodą, surowcami i ziemią, eliminujące gospodarkę rabunkową.\n   *   *Inspiracje:* [Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md), [Upcykling LED TV](PROJEKTY/04_lampa_z_recyklingu_tv.md), [Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md), [Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md).\n5. **Logistyka i transport:** Wykorzystanie AI do inteligentnego zarządzania łańcuchami dostaw, trasami przesyłowymi i komunikacją zbiorową w celu minimalizacji czasu, kosztów i śladu węglowego.\n   *   *Inspiracje:* [Smartfony jako Sterowniki Edge Computing](PROJEKTY/06_smartfony_jako_sterowniki.md), [Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md).\n6. **Finanse (Fundusze):** Pozyskiwanie środków strategicznych, inteligentny wybór programów grantowych i inwestycji dla nowo powstających projektów.\n\nSystem ten ma służyć jako potężne wsparcie dla tradycyjnej gospodarki państwowej, w całości się z nią przeplatając i wspomagając jej procesy, jednak w taki sposób, aby nie generować dla niej niepotrzebnej konkurencji. Naszym celem jest synergia, a nie rywalizacja."
     },
     {
       "id": "readme-md-3-dlaczego-powsta-ten-projekt-nasza-motywacja",
@@ -199,7 +205,7 @@
       "source_path": "README.md",
       "title": "Projekty Pilotażowe i Inspiracje",
       "category": "document",
-      "content": "W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiązań, które mogą zostać wdrożone w modelu Open-Source przez Narodowe Siły Intelektualne:\n\n*   **[01. Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md)** – Autonomiczne węzły produkcji ryb oparte na IoT i AI.\n*   **[02. Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md)** – Cyfrowy wypas zwierząt bez fizycznej infrastruktury.\n*   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.\n*   **[04. Solarne Okna z Recyklingu TV](PROJEKTY/04_lampa_z_recyklingu_tv.md)** – Upcykling elektrośmieci jako źródło darmowego światła i kapitału.\n*   **[05. Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md)** – Zaawansowany odzysk ogniw krzemowych przy użyciu technologii CNC.\n*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing). Zobacz również: [08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md).\n*   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.\n*   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.\n*   **[09. Monitoring IoT i Akcelerometria](PROJEKTY/09_monitoring_iot_livestock.md)** – Inteligentna obroża AI (Smart Health Tracker) z wykorzystaniem czujników smartfona.\n*   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.\n\n**Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**"
+      "content": "W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiązań, które mogą zostać wdrożone w modelu Open-Source przez Narodowe Siły Intelektualne:\n\n*   **[01. Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md)** – Autonomiczne węzły produkcji ryb oparte na IoT i AI.\n*   **[02. Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md)** – Cyfrowy wypas zwierząt bez fizycznej infrastruktury.\n*   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.\n*   **[04. Solarne Okna z Recyklingu TV](PROJEKTY/04_lampa_z_recyklingu_tv.md)** – Upcykling elektrośmieci jako źródło darmowego światła i kapitału.\n*   **[05. Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md)** – Zaawansowany odzysk ogniw krzemowych przy użyciu technologii CNC.\n*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing). Zobacz również: [08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md).\n*   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.\n*   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.\n*   **[09. Monitoring IoT i Akcelerometria](PROJEKTY/09_monitoring_iot_livestock.md)** – Inteligentna obroża AI (Smart Health Tracker) z wykorzystaniem czujników smartfona.\n*   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.\n*   **[11. Autonomiczne Systemy R+D](PROJEKTY/11_autonomiczne_systemy_rd.md)** – Omijanie paradygmatu \"czystych\" technologii na rzecz brudnej, śmiałej automatyzacji.\n*   **[12. Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md)** – Połączenie Ai i recyklingu e-odpadów w celu budowy suwerennej elektroniki bez kapitału.\n\n**Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**"
     },
     {
       "id": "readme-md-6-zapotrzebowanie-marketingowe-i-promocyjne",
@@ -466,6 +472,20 @@
       "title": "Jak używać takich przykładów w repozytorium Straży Przyszłości",
       "category": "document",
       "content": "Każdy taki przykład powinien odpowiadać na trzy pytania:\n\n1. Co już działa i jaki problem rozwiązuje?\n2. Co z tego da się zaadaptować do standardu Straży Przyszłości?\n3. Jakie zadania mogą z tego wyniknąć dla nowych Strażników?\n\nJeżeli odpowiedź na te trzy pytania jest jasna, przykład nie jest ciekawostką, tylko realnym zasobem strategicznym."
+    },
+    {
+      "id": "docs-przyklady-gotowego-kodu-md-4-ecoeda-recykling-e-waste-w-kicadzie",
+      "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
+      "title": "ecoEDA: Recykling E-Waste w KiCadzie",
+      "category": "document",
+      "content": "### Linki\n- Repozytorium GitHub: [humancomputerintegration/ecoEDA](https://github.com/humancomputerintegration/ecoEDA/tree/main)\n- Publikacja naukowa: [ecoEDA: Recycling E-Waste during Electronics Design](https://doi.org/10.1145/3586183.3606745)\n- Wideo demonstracyjne: [YouTube - ecoEDA](https://youtu.be/XYMRXMVBfNg)\n\n### Analiza Strategiczna\n\n1. **Co już działa i jaki problem rozwiązuje?**\n   ecoEDA rozwiązuje problem marnotrawstwa komponentów elektronicznych, które lądują na wysypiskach, mimo że są sprawne. Narzędzie integryje się z KiCadem i podpowiada projektantowi użycie części z recyklingu, generując tzw. \"Bill of Teardowns\" (BoT) – listę urządzeń, które należy pozyskać i rozmontować, by zbudować dany projekt.\n\n2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**\n   Przede wszystkim paradygmat projektowania \"pod recykling\". Zamiast BOMu opartego na zakupach, model BoT uczy nas budować z tego, co już mamy w narodowym zasobie elektrośmieci. Mechanizm subcircuit suggestions pozwala na zastępowanie nowoczesnych, drogich układów kaskadami prostszych elementów z odzysku.\n\n3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**\n   - Tworzenie otwartych baz danych urządzeń (inwentaryzacja popularnych w Polsce \"złomów\").\n   - Rozwijanie i dostosowywanie skryptów ecoEDA do polskich realiów.\n   - Integracja baz ecoEDA z projektami rolniczymi Straży."
+    },
+    {
+      "id": "docs-przyklady-gotowego-kodu-md-5-kicad-mcp-server-autonomiczne-projektowanie-z-ai",
+      "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
+      "title": "KiCAD-MCP-Server: Autonomiczne Projektowanie z Ai",
+      "category": "document",
+      "content": "### Linki\n- Repozytorium GitHub: [mixelpixx/KiCAD-MCP-Server](https://github.com/mixelpixx/KiCAD-MCP-Server)\n- Dokumentacja MCP: [Model Context Protocol](https://modelcontextprotocol.io/)\n\n### Analiza Strategiczna\n\n1. **Co już działa i jaki problem rozwiązuje?**\n   Ten serwer MCP pozwala modelom językowym (Claude) na bezpośrednie sterowanie KiCadem (122 narzędzia w 16 kategoriach). Rozwiązuje problem progu wejścia w zaawansowane projektowanie PCB – Ai potrafi samo rysować schematy, układać piny i robić routing na podstawie opisu w języku naturalnym.\n\n2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**\n   To kluczowy element naszej wizji \"Intelekt wyprzedza Kapitał\". Wykorzystujemy ten kod jako most umożliwiający Ai projektowanie urządzeń na potrzeby Straży (np. czujników IoT, sterowników maszyn) z minimalnym zaangażowaniem wykwalifikowanych inżynierów.\n\n3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**\n   - Optymalizacja promptów inżynierskich dla Claude'a.\n   - Testowanie i łatanie serwera MCP (szczególnie w środowisku Linux).\n   - **MISJA SPECJALNA:** Integracja KiCAD-MCP z bibliotekami ecoEDA, by Ai autonomicznie projektowało PCB wyłącznie z części z recyklingu."
     },
     {
       "id": "docs-jak-zostac-dostawca-danych-md-intro",
@@ -1229,6 +1249,62 @@
       "title": "Zasoby Wideo (YouTube)",
       "category": "document",
       "content": "Wizualizacja procesów i technologiczne dowody słuszności:\n\n*   **[Automated Black Soldier Fly Larvae System](https://www.youtube.com/watch?v=jm8QH7YGtC8)** – Mechanizacja procesu żywienia i zbioru larw w celu produkcji nawozów i paszy.\n*   **[How to begin Black Soldier Flies farming](https://www.youtube.com/watch?v=4_ILVdh2HHE)** – Film instytucji Better Insect Solutions, prezentujący automatyzację produkcji larw muchy czarnej (BSF) na dużą skalę.\n\n*Klucz do sukcesu Straży Przyszłości leży tam, gdzie inni nie odważą się nawet zajrzeć – w domykaniu obiegu materii tam, gdzie inni widzą tylko odpad i smród.*"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-intro",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# 12. Autonomiczne Projektowanie PCB z Recyklingu: E-odpady jako Inteligentny Zasób"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-1-intelekt-wyprzedza-kapita",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "**Intelekt wyprzedza Kapitał!**",
+      "category": "document",
+      "content": "W dobie kryzysu surowcowego i narastającej góry elektrośmieci, tradycyjne podejście do projektowania elektroniki – oparte na kupowaniu nowych komponentów z globalnych łańcuchów dostaw – staje się wąskim gardłem dla lokalnej, suwerennej produkcji. Inicjatywa **Straż Przyszłości** stawia na radykalną zmianę paradygmatu: zamiast traktować zepsute telefony, routery czy odkurzacze jako odpad, zaczynamy widzieć w nich **precyzyjnie skatalogowany magazyn części zamiennych**.\n\nDzięki połączeniu dwóch przełomowych narzędzi open-source – **ecoEDA** oraz **KiCAD-MCP-Server** – otwieramy drogę do **autonomicznego projektowania urządzeń elektronicznych bezpośrednio ze śmieci**.\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-2-i-filary-technologiczne-suwerennej-elektroniki",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "I. Filary Technologiczne suwerennej elektroniki",
+      "category": "document",
+      "content": "### 1. ecoEDA: Inteligentny Recykling Komponentów\nNarzędzie **ecoEDA** (developed at University of Chicago) to wtyczka do programu KiCad, która zmienia sposób, w jaki myślimy oliście materiałowej (BOM). Zamiast po prostu dodawać symbole z biblioteki producenta, ecoEDA w czasie rzeczywistym analizuje Twój lokalny inwentarz odzyskanych części i sugeruje zamienniki.\n\n**Kluczowe funkcje ecoEDA:**\n*   **In-editor Suggestions:** Podczas rysowania schematu, system wyświetla pop-upy z sugestiami części, które już masz (np. wylutowane ze starego routera).\n*   **Różne typy dopasowań:** System nie szuka tylko identycznych numerów katalogowych. Potrafi zaproponować rozwiązania typu \"drop-in\" (ten sam pin-out i obudowa) lub nawet całe **subcircuits** (kilka części z recyklingu zastępujących jeden nowoczesny układ).\n*   **Bill of Teardowns (BoT):** Zamiast tradycyjnego BOMu, dostajesz instrukcję: \"Aby zbudować to urządzenie, rozbierz ten model telefonu i ten konkretny router\".\n*   **Library Generator:** Możliwość tworzenia własnych baz danych na podstawie posiadanych \"złomów\" elektronicznych.\n\n### 2. KiCAD-MCP-Server: Autonomia Projektowa z Ai\nDrugim filarem jest **KiCAD-MCP-Server**, który pozwala modelom językowym (np. Claude 3.5 Sonnet) na bezpośrednią ingerencję w pliki projektowe KiCada za pomocą protokołu MCP (Model Context Protocol).\n\n**Możliwości integracji Ai:**\n*   **Automatyczne schematy:** Ai potrafi na podstawie opisu tekstowego (\"Zaprojektuj sterownik nawadniania oparty na ESP32\") dodać komponenty, połączyć piny i sprawdzić poprawność połączeń (ERC).\n*   **Routing i Gerber:** Modele Ai mogą zarządzać autorouterem (Freerouting), układać elementy na płytce i wypluwać gotowe pliki Gerber do produkcji.\n*   **122 specjalistyczne narzędzia:** Od zarządzania netlistami po integrację z katalogiem JLCPCB w poszukiwaniu brakujących ogniw.\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-3-ii-synteza-autonomiczna-fabryka-z-odzysku",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "II. Synteza: Autonomiczna Fabryka z Odzysku",
+      "category": "document",
+      "content": "To, co czyni ten projekt przełomowym dla Straży Przyszłości, to **spięcie tych dwóch kodów**. Wyobraźmy sobie proces:\n\n1.  **Skanowanie Zasobów:** Strażnik Przyszłości ma w warsztacie 10 starych dekoderów TV i 5 zepsutych laptopów. Skrypt katalogujący tworzy bazę dostępnych części (ecoEDA library).\n2.  **Prompt do Ai:** Strażnik wydaje polecenie: \"Zaprojektuj autonomiczny czujnik wilgotności gleby dla projektu [01. Inteligentna Akwakultura](01_inteligentna_akwakultura.md), wykorzystując wyłącznie komponenty dostępne w mojej bazie ecoEDA\".\n3.  **Autonomiczne Projektowanie:** Claude, korzystając z serwera MCP, przeszukuje bibliotekę ecoEDA. Zamiast kazać kupić precyzyjny rezystor SMD, Ai dobiera rezystory przewlekane znalezione w dekoderach, modyfikuje footprinty i dostosowuje routing tak, by zmieścić te często większe, używane elementy.\n4.  **Wynik:** Strażnik dostaje gotowy projekt PCB oraz listę \"Bill of Teardowns\". Pozostaje tylko wylutowanie części i montaż.\n\n**To jest moment, w którym Intelekt (algorytm Ai) zastępuje Kapitał (zakup nowych komponentów).**\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-4-iii-cele-operacyjne-i-wdro-enie-w-polsce",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "III. Cele Operacyjne i Wdrożenie w Polsce",
+      "category": "document",
+      "content": "Jako **Straż Przyszłości** nie chcemy wyważać otwartych drzwi. Kod obu narzędzi jest już dostępny na licencjach open-source. Naszym zadaniem jest:\n1.  **Lokalizacja i Bazy Danych:** Stworzenie wspólnej, polskiej bazy urządzeń powszechnie dostępnych w recyklingu (np. popularne w Polsce routery operatorów, dekodery, stare ładowarki).\n2.  **Integracja:** Opracowanie gotowych \"przepisów\" i promptów dla modeli Ai, które najlepiej radzą sobie z wymianą danych między ecoEDA a serwerem MCP.\n3.  **Społeczność:** Zbudowanie sieci osób, które testują te rozwiązania w praktyce – od projektowania prostych czujników IoT po zaawansowane sterowniki maszyn rolniczych.\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-5-iv-materia-y-promocyjne-do-wykorzystania",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "IV. Materiały Promocyjne (Do wykorzystania)",
+      "category": "document",
+      "content": "W celu budowania społeczności przygotowaliśmy gotowe wzorce komunikacji. Każdy Strażnik może ich użyć do promowania idei w sieci:\n\n### 🟠 Wersja na Wykop (Znalezisko)\n**Tytuł:** Inteligentny recykling e-odpadów w projektowaniu PCB. Straż Przyszłości działa!\n**Opis:** ecoEDA to wtyczka m.in. do KiCada. Zamiast kupować nowe części, algorytm sugeruje użycie komponentów z elektrośmieci i generuje instrukcję ich demontażu. Jako \"Straż Przyszłości\" chcemy rozwijać ten projekt w PL. Kod open-source już jest! #elektronika #diy #kicad #ai\n\n**Pierwszy komentarz (od OP):**\nWykopki, patrzcie na to. Model językowy (Claude) wpięty bezpośrednio w KiCada przez MCP. AI dostaje prompta i buduje schemat, układa elementy i robi routing. A teraz najlepsze: spięcie tego z ecoEDA pozwala na projektowanie płytek z elementów, które macie w szafie w zepsutych routerach czy ładowarkach. Kod leży w sieci za darmo. Kto z tagów #programowanie, #ai, #elektronika chce to z nami testować?\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-6-v-zasoby-i-repozytoria",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "V. Zasoby i Repozytoria",
+      "category": "document",
+      "content": "Wspieramy i promujemy twórców tych narzędzi. Dołącz do nas i współtwórz narodowy zasób technologiczny:\n\n*   **ecoEDA (Recykling):** [humancomputerintegration/ecoEDA](https://github.com/humancomputerintegration/ecoEDA/tree/main)\n*   **KiCAD-MCP-Server (Automatyzacja Ai):** [mixelpixx/KiCAD-MCP-Server](https://github.com/mixelpixx/KiCAD-MCP-Server)\n*   **Wideo Prezentacyjne (ecoEDA):** [YouTube - ecoEDA](https://www.youtube.com/watch?v=XYMRXMVBfNg)\n*   **Wideo Prezentacyjne (KiCAD-MCP):** [YouTube - KiCAD AI](https://www.youtube.com/watch?v=C9n7eC16u-Y)\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-7-powi-zane-projekty-w-tym-repozytorium",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "Powiązane projekty w tym repozytorium:",
+      "category": "document",
+      "content": "*   **[04. Solarne Okna z Recyklingu TV](04_lampa_z_recyklingu_tv.md)** – Inny przykład upcyklingu elektrośmieci.\n*   **[05. Laserowy Recykling Paneli PV](05_recykling_pv_laserem.md)** – Zaawansowany odzysk surowców.\n*   **[06. Smartfony jako Sterowniki](06_smartfony_jako_sterowniki.md)** – Wykorzystanie starego hardware'u jako jednostek obliczeniowych.\n\n---\n*Intelekt wyprzedza kapitał!*"
     },
     {
       "id": "github-issue-template-nowy-straznik-md-template",

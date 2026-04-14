@@ -76,3 +76,42 @@ Każdy taki przykład powinien odpowiadać na trzy pytania:
 3. Jakie zadania mogą z tego wyniknąć dla nowych Strażników?
 
 Jeżeli odpowiedź na te trzy pytania jest jasna, przykład nie jest ciekawostką, tylko realnym zasobem strategicznym.
+
+## ecoEDA: Recykling E-Waste w KiCadzie
+
+### Linki
+- Repozytorium GitHub: [humancomputerintegration/ecoEDA](https://github.com/humancomputerintegration/ecoEDA/tree/main)
+- Publikacja naukowa: [ecoEDA: Recycling E-Waste during Electronics Design](https://doi.org/10.1145/3586183.3606745)
+- Wideo demonstracyjne: [YouTube - ecoEDA](https://youtu.be/XYMRXMVBfNg)
+
+### Analiza Strategiczna
+
+1. **Co już działa i jaki problem rozwiązuje?**
+   ecoEDA rozwiązuje problem marnotrawstwa komponentów elektronicznych, które lądują na wysypiskach, mimo że są sprawne. Narzędzie integryje się z KiCadem i podpowiada projektantowi użycie części z recyklingu, generując tzw. "Bill of Teardowns" (BoT) – listę urządzeń, które należy pozyskać i rozmontować, by zbudować dany projekt.
+
+2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**
+   Przede wszystkim paradygmat projektowania "pod recykling". Zamiast BOMu opartego na zakupach, model BoT uczy nas budować z tego, co już mamy w narodowym zasobie elektrośmieci. Mechanizm subcircuit suggestions pozwala na zastępowanie nowoczesnych, drogich układów kaskadami prostszych elementów z odzysku.
+
+3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**
+   - Tworzenie otwartych baz danych urządzeń (inwentaryzacja popularnych w Polsce "złomów").
+   - Rozwijanie i dostosowywanie skryptów ecoEDA do polskich realiów.
+   - Integracja baz ecoEDA z projektami rolniczymi Straży.
+
+## KiCAD-MCP-Server: Autonomiczne Projektowanie z Ai
+
+### Linki
+- Repozytorium GitHub: [mixelpixx/KiCAD-MCP-Server](https://github.com/mixelpixx/KiCAD-MCP-Server)
+- Dokumentacja MCP: [Model Context Protocol](https://modelcontextprotocol.io/)
+
+### Analiza Strategiczna
+
+1. **Co już działa i jaki problem rozwiązuje?**
+   Ten serwer MCP pozwala modelom językowym (Claude) na bezpośrednie sterowanie KiCadem (122 narzędzia w 16 kategoriach). Rozwiązuje problem progu wejścia w zaawansowane projektowanie PCB – Ai potrafi samo rysować schematy, układać piny i robić routing na podstawie opisu w języku naturalnym.
+
+2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**
+   To kluczowy element naszej wizji "Intelekt wyprzedza Kapitał". Wykorzystujemy ten kod jako most umożliwiający Ai projektowanie urządzeń na potrzeby Straży (np. czujników IoT, sterowników maszyn) z minimalnym zaangażowaniem wykwalifikowanych inżynierów.
+
+3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**
+   - Optymalizacja promptów inżynierskich dla Claude'a.
+   - Testowanie i łatanie serwera MCP (szczególnie w środowisku Linux).
+   - **MISJA SPECJALNA:** Integracja KiCAD-MCP z bibliotekami ecoEDA, by Ai autonomicznie projektowało PCB wyłącznie z części z recyklingu.

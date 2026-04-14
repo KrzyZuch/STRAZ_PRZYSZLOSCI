@@ -32,6 +32,7 @@ ALLOWLIST = [
     "PROJEKTY/09_monitoring_iot_livestock.md",
     "PROJEKTY/10_lacznosc_mesh_lora.md",
     "PROJEKTY/11_autonomiczne_systemy_rd.md",
+    "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
     ".github/ISSUE_TEMPLATE/nowy_straznik.md",
     ".github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md",
     ".github/ISSUE_TEMPLATE/zastrzezenie_uwaga.md",
