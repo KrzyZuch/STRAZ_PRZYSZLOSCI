@@ -76,6 +76,24 @@ Tylko seed do D1:
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-d1-sql
 ```
 
+Synchronizacja kolejki `queued` z Telegram/D1 do katalogu GitHub-first (dry-run):
+
+```bash
+python3 pipelines/sync_recycled_queue.py --remote --limit 25
+```
+
+Zapis zmian + przebudowa artefaktow + aktualizacja statusow D1:
+
+```bash
+python3 pipelines/sync_recycled_queue.py --remote --apply --sync-d1-status
+```
+
+Automatyczny branch + commit + push + PR:
+
+```bash
+python3 pipelines/sync_recycled_queue.py --remote --apply --git-mode pr --push --create-pr --sync-d1-status
+```
+
 ## Rekomendacje projektowe
 
 - Marketplace i grupy spolecznosciowe warto traktowac jako strumien sygnalow, nie jako kanoniczna baze wiedzy. Do GitHub najlepiej zapisywac rekordy znormalizowane, a nie surowe ogloszenia.
