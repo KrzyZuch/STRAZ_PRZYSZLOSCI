@@ -520,7 +520,7 @@ async function processConversationMessage(env, message, intent) {
     };
   }
 
-    const history = await loadTelegramChatHistory(env, message);
+  const history = await loadTelegramChatHistory(env, message);
 
   try {
     let response;
@@ -532,14 +532,15 @@ async function processConversationMessage(env, message, intent) {
         // Rejestrujemy jako część, bez ponownej identyfikacji vizyjnej całego urządzenia 
         // (AI może być użyte do identyfikacji konkretnej CZĘŚCI, ale kontekst urządzenia mamy z sesji).
         await sendTelegramReply(env, message, "Otrzymałem zdjęcie części. Przypisuję je do aktywnego urządzenia...");
-        
-        
+
+
         await recordRecycledSubmission(env, {
           chat_id: message?.chat_id,
           user_id: message?.user_id,
           message_id: message?.message_id,
           lookup_kind: "part_media",
           matched_device_id: session.active_device_id,
+          query_text: session.active_device_name || null,
           attachment_file_id: message?.file_id,
           attachment_mime_type: message?.mime_type,
           status: "queued"
@@ -617,29 +618,51 @@ async function processCommandMessage(env, message, command) {
 
 async function handleTelegramCallback(env, callback) {
   const { id, from, message, data } = callback;
-  const chat_id = String(message.chat.id);
+  const chat_id = message ? String(message.chat.id) : null;
   const user_id = String(from.id);
 
-  if (data.startsWith("recycled_add_parts:")) {
-    const deviceId = parseInt(data.split(":")[1]);
-    await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId);
-    
-    await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "✅ Tryb dodawania części AKTYWNY. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia. Aby zakończyć, wpisz /stop.");
-  } else if (data === "recycled_cancel") {
-    await closeUserSession(env, chat_id, user_id, "recycled_parts");
-    await answerCallbackQuery(env, id, "Anulowano.");
-    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Przerwałem proces dodawania części.");
-  } else if (data.startsWith("recycled_show_info:")) {
-    const deviceId = parseInt(data.split(":")[1]);
-    await closeUserSession(env, chat_id, user_id, "recycled_parts");
-    
-    const device = await getDeviceById(env, deviceId);
-    await answerCallbackQuery(env, id, "Wyświetlam katalog.");
-    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `Katalog dla ${device.brand} ${device.model} jest dostępny w repozytorium.`);
+  if (!chat_id) {
+    await answerCallbackQuery(env, id, "Ten przycisk nie jest już aktywny.");
+    return jsonResponse({ status: "error", message: "no_chat_id" });
   }
 
-  return jsonResponse({ status: "ok" });
+  try {
+    await removeInlineKeyboard(env, chat_id, message?.message_id);
+
+    if (data.startsWith("recycled_add_parts:")) {
+      const deviceId = parseInt(data.split(":")[1]);
+      await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, null);
+
+      await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "✅ Tryb dodawania części AKTYWNY. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia. Aby zakończyć, wpisz /stop.");
+    } else if (data.startsWith("recycled_add_parts_unknown:")) {
+      const deviceName = data.substring("recycled_add_parts_unknown:".length);
+      await upsertUserSession(env, chat_id, user_id, "recycled_parts", null, deviceName);
+
+      await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName}. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia. Aby zakończyć, wpisz /stop.`);
+    } else if (data === "recycled_cancel") {
+      await closeUserSession(env, chat_id, user_id, "recycled_parts");
+      await answerCallbackQuery(env, id, "Anulowano.");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Przerwałem proces dodawania części.");
+    } else if (data.startsWith("recycled_show_info:")) {
+      const deviceId = parseInt(data.split(":")[1]);
+      await closeUserSession(env, chat_id, user_id, "recycled_parts");
+
+      const device = await getDeviceById(env, deviceId);
+      await answerCallbackQuery(env, id, "Wyświetlam katalog.");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `Katalog dla ${device.brand} ${device.model} jest dostępny w repozytorium.`);
+    } else {
+      await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Nieznana komenda.");
+    }
+
+    return jsonResponse({ status: "ok" });
+  } catch (error) {
+    const errorString = error instanceof Error ? error.message : String(error);
+    await answerCallbackQuery(env, id, "Wystąpił błąd.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, `⚠️ [CALLBACK ERROR]: ${errorString}`);
+    return jsonResponse({ status: "error", error: errorString });
+  }
 }
 
 async function answerCallbackQuery(env, callbackQueryId, text) {
@@ -650,6 +673,23 @@ async function answerCallbackQuery(env, callbackQueryId, text) {
     body: JSON.stringify({
       callback_query_id: callbackQueryId,
       text: text
+    })
+  });
+}
+
+async function removeInlineKeyboard(env, chat_id, message_id) {
+  const botToken = env.TELEGRAM_BOT_TOKEN;
+  if (!botToken || !chat_id || !message_id) return;
+
+  await fetch(`https://api.telegram.org/bot${botToken}/editMessageReplyMarkup`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chat_id,
+      message_id: message_id,
+      reply_markup: {
+        inline_keyboard: []
+      }
     })
   });
 }
@@ -672,6 +712,7 @@ export async function handleTelegramWebhook(request, env) {
   let payload;
   try {
     payload = await request.json();
+    console.log("INBOUND WEBHOOK PAYLOAD:", JSON.stringify(payload, null, 2));
   } catch (error) {
     return jsonResponse({ error: "Nieprawidłowy body JSON." }, 400);
   }

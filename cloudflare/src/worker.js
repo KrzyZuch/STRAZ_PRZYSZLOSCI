@@ -8,10 +8,10 @@ import {
   isTelegramWebhookRequest,
 } from "./telegram_issues.js";
 
-class AuthError extends Error {}
-class ConflictError extends Error {}
-class NotFoundError extends Error {}
-class ForbiddenError extends Error {}
+class AuthError extends Error { }
+class ConflictError extends Error { }
+class NotFoundError extends Error { }
+class ForbiddenError extends Error { }
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -396,6 +396,36 @@ export default {
     try {
       if (request.method === "POST" && isTelegramWebhookRequest(url, env)) {
         return await handleTelegramWebhook(request, env);
+      }
+
+      if (request.method === "GET" && url.pathname === "/integrations/telegram/webhook-info") {
+        const botToken = env.TELEGRAM_BOT_TOKEN;
+        const resp = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
+        return jsonResponse(await resp.json(), 200);
+      }
+
+      if (request.method === "GET" && url.pathname === "/integrations/telegram/webhook-reset") {
+        const botToken = env.TELEGRAM_BOT_TOKEN;
+        // First get current info to preserve url
+        const infoResp = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
+        const info = await infoResp.json();
+        const currentUrl = info?.result?.url || "https://fish-pond-api-v1-prod.liderpasdom.workers.dev/integrations/telegram/webhook";
+
+        const resetBody = {
+          url: currentUrl,
+          drop_pending_updates: false,
+          allowed_updates: []
+        };
+        if (env.TELEGRAM_WEBHOOK_SECRET_TOKEN) {
+          resetBody.secret_token = env.TELEGRAM_WEBHOOK_SECRET_TOKEN;
+        }
+
+        const setResp = await fetch(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(resetBody)
+        });
+        return jsonResponse(await setResp.json(), 200);
       }
 
       if (request.method === "GET" && url.pathname === "/integrations/whatsapp/webhook") {

@@ -1925,19 +1925,20 @@ export async function recordRecycledSubmission(env, payload) {
   ).run();
 }
 
-export async function upsertUserSession(env, chat_id, user_id, session_type, device_id) {
+export async function upsertUserSession(env, chat_id, user_id, session_type, device_id, device_name = null) {
   const db = env.DB;
   const now = toIsoNow();
   await db.prepare(
     `
-    INSERT INTO telegram_user_sessions (chat_id, user_id, session_type, active_device_id, status, created_at, updated_at)
-    VALUES (?, ?, ?, ?, 'active', ?, ?)
+    INSERT INTO telegram_user_sessions (chat_id, user_id, session_type, active_device_id, active_device_name, status, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, 'active', ?, ?)
     ON CONFLICT(chat_id, user_id, session_type) DO UPDATE SET
       active_device_id = EXCLUDED.active_device_id,
+      active_device_name = EXCLUDED.active_device_name,
       status = 'active',
       updated_at = EXCLUDED.updated_at
     `
-  ).bind(chat_id, user_id, session_type, device_id, now, now).run();
+  ).bind(chat_id, user_id, session_type, device_id, device_name, now, now).run();
 }
 
 export async function getUserSession(env, chat_id, user_id, session_type) {
@@ -2248,7 +2249,7 @@ export async function recognizeDeviceAndListParts(env, message, mediaBase64) {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "✅ Tak, prześlij części", callback_data: `recycled_add_parts_unknown:${encodeURIComponent(formatDeviceName(identity))}` },
+            { text: "✅ Tak, prześlij części", callback_data: `recycled_add_parts_unknown:${formatDeviceName(identity).substring(0, 30)}` },
             { text: "❌ Nie", callback_data: "recycled_cancel" }
           ]
         ]
