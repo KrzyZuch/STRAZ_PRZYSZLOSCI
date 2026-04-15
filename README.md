@@ -69,6 +69,7 @@ W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiąza
 *   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.
 *   **[11. Autonomiczne Systemy R+D](PROJEKTY/11_autonomiczne_systemy_rd.md)** – Omijanie paradygmatu "czystych" technologii na rzecz brudnej, śmiałej automatyzacji.
 *   **[12. Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md)** – Połączenie Ai i recyklingu e-odpadów w celu budowy suwerennej elektroniki bez kapitału.
+*   **[13. GitHub-first baza części z recyklingu](PROJEKTY/13_baza_czesci_recykling/README.md)** – Kanoniczny katalog urządzeń-dawców i części (JSONL) + generatory artefaktów dla ecoEDA, seed dla Cloudflare D1 oraz zasób pod przyszły lookup MCP.
 
 **Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**
 
