@@ -2178,6 +2178,7 @@ export async function recognizeDeviceAndListParts(env, message, mediaBase64) {
   const visionSystem = [
     "Jesteś ekspertem od recyklingu elektroniki.",
     "Zidentyfikuj model urządzenia ze zdjęcia (etykieta, naklejka znamionowa, napisy na obudowie).",
+    "BEZWZGLĘDNIE POMIJAJ numery IMEI - to dane wrażliwe, które nie mogą trafić do bazy.",
     "Zwróć TYLKO nazwę modelu i marki w formacie JSON: { \"brand\": \"...\", \"model\": \"...\", \"confidence\": 0.9 }",
     "Jeżeli nie widzisz modelu, zwróć { \"error\": \"not_found\" }."
   ].join(" ");
@@ -2287,6 +2288,7 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session)
   const visionSystem = [
     "Jesteś ekspertem od elektroniki i części zamiennych.",
     "Zidentyfikuj część ze zdjęcia (odczytaj numery z etykiety, układów scalonych, chipu PCB itp.).",
+    "BEZWZGLĘDNIE POMIJAJ numery IMEI. Jeżeli na zdjęciu widnieje IMEI, nie wpisuj go do żadnego pola - traktuj go jako zabronioną informację.",
     "Zwróć wynik TYLKO w formacie JSON podając typ i numery, bez Markdownu z kodem. Oczekiwany format: { \"part_name\": \"krótka nazwa np. Płyta główna, Pamięć RAM, Bateria\", \"part_number\": \"zidentyfikowane oznaczenia\", \"confidence\": 0.9 }",
     "Jeśli część całkowicie nie nadaje się do identyfikacji, zwróć { \"error\": \"not_recognized\" }."
   ].join(" ");
@@ -2302,7 +2304,12 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session)
   
   const identity = extractJsonObject(visionResp.text);
   const partName = identity.part_name || (identity.error ? "Nierozpoznana część" : "Część urządzenia");
-  const partNumber = identity.part_number || "Brak wyraźnych oznaczeń";
+  
+  // Usuwanie potencjalnych IMEI (15 cyfr) na wszelki wypadek
+  let partNumber = identity.part_number || "Brak wyraźnych oznaczeń";
+  if (typeof partNumber === "string") {
+    partNumber = partNumber.replace(/\b\d{15}\b/g, "[REDACTED IMEI]");
+  }
 
   await recordRecycledSubmission(env, {
     chat_id: message?.chat_id,
