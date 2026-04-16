@@ -1880,45 +1880,46 @@ function buildPartLookupReply(queryText, matches) {
 export async function recordRecycledSubmission(env, payload) {
   const db = env.DB;
   if (!db) {
-    return;
+    return null;
   }
   await ensureRecycledKnowledgeSchema(db);
-    let finalizedQueryText = payload.query_text || null;
-    if (!finalizedQueryText && payload.matched_device_id) {
-      const device = await db.prepare("SELECT brand, model FROM recycled_devices WHERE id = ?").bind(payload.matched_device_id).first();
-      if (device) {
-        finalizedQueryText = `${device.brand || ""} ${device.model || ""}`.trim();
-      }
+  
+  let finalizedQueryText = payload.query_text || null;
+  if (!finalizedQueryText && payload.matched_device_id) {
+    const device = await db.prepare("SELECT brand, model FROM recycled_devices WHERE id = ?").bind(payload.matched_device_id).first();
+    if (device) {
+      finalizedQueryText = `${device.brand || ""} ${device.model || ""}`.trim();
     }
+  }
 
-    await db.prepare(
-      `
-      INSERT INTO recycled_device_submissions (
-        chat_id,
-        user_id,
-        message_id,
-        lookup_kind,
-        query_text,
-        recognized_brand,
-        recognized_model,
-        matched_device_id,
-        matched_part_name,
-        matched_part_number,
-        attachment_file_id,
-        attachment_mime_type,
-        provider_name,
-        model_name,
-        status,
-        raw_payload_json,
-        created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
-    ).bind(
-      payload.chat_id || null,
-      payload.user_id || null,
-      payload.message_id || null,
-      payload.lookup_kind || "unknown",
-      finalizedQueryText,
+  const res = await db.prepare(
+    `
+    INSERT INTO recycled_device_submissions (
+      chat_id,
+      user_id,
+      message_id,
+      lookup_kind,
+      query_text,
+      recognized_brand,
+      recognized_model,
+      matched_device_id,
+      matched_part_name,
+      matched_part_number,
+      attachment_file_id,
+      attachment_mime_type,
+      provider_name,
+      model_name,
+      status,
+      raw_payload_json,
+      created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `
+  ).bind(
+    payload.chat_id || null,
+    payload.user_id || null,
+    payload.message_id || null,
+    payload.lookup_kind || "unknown",
+    finalizedQueryText,
     payload.recognized_brand || null,
     payload.recognized_model || null,
     payload.matched_device_id || null,
@@ -1932,6 +1933,8 @@ export async function recordRecycledSubmission(env, payload) {
     payload.raw_payload_json ? JSON.stringify(payload.raw_payload_json) : null,
     toIsoNow()
   ).run();
+
+  return res.meta.last_row_id;
 }
 
 export async function upsertUserSession(env, chat_id, user_id, session_type, device_id, device_name = null) {
@@ -2371,7 +2374,7 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session,
     }
   }
 
-  await recordRecycledSubmission(env, {
+  const submissionId = await recordRecycledSubmission(env, {
     chat_id: message?.chat_id,
     user_id: message?.user_id,
     message_id: message?.message_id,
@@ -2388,10 +2391,21 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session,
     raw_payload_json: identity,
   });
   
-  let replyText = `✅ Zapisano część: *${partName}*`;
+  let replyText = `✅ Zidentyfikowano część: *${partName}*`;
   if (partNumber && partNumber !== "Brak wyraźnych oznaczeń") {
     replyText += `\n🔢 Oznaczenia odczytane przez AI: \`${partNumber}\``;
   }
+  replyText += `\n\nCzy chcesz dodać tę część do bazy danych urządzenia?`;
+
+  const replyMarkup = {
+    inline_keyboard: [
+      [
+        { text: "✅ Dodaj do bazy", callback_data: `recycled_part_add:${submissionId}` },
+        { text: "✏️ Edytuj dane części", callback_data: `recycled_part_edit:${submissionId}` }
+      ]
+    ]
+  };
+
   // Trigger automated batch curation check in background
   if (ctx && typeof ctx.waitUntil === 'function') {
     ctx.waitUntil(curateSubmissions(env));
@@ -2399,6 +2413,7 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session,
 
   return {
     reply_text: replyText,
+    reply_markup: replyMarkup,
     provider_name: visionResp.provider_name,
     model_name: visionResp.model_name
   };

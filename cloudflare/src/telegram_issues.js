@@ -667,6 +667,14 @@ async function handleTelegramCallback(env, callback, ctx = null) {
         await answerCallbackQuery(env, id, "Błąd.");
         await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Nie znaleziono urządzenia.");
       }
+    } else if (data.startsWith("recycled_part_add:")) {
+      const submissionId = data.split(":")[1];
+      await env.DB.prepare("UPDATE recycled_device_submissions SET status = 'approved' WHERE id = ?").bind(submissionId).run();
+      await answerCallbackQuery(env, id, "Zatwierdzono!");
+      await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "✅ Część została zatwierdzona i dodana do bazy!");
+    } else if (data.startsWith("recycled_part_edit:")) {
+      await answerCallbackQuery(env, id, "Edycja wkrótce.");
+      await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "Funkcja edycji danych części będzie dostępna wkrótce.");
     } else {
       await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Nieznana komenda.");
     }
