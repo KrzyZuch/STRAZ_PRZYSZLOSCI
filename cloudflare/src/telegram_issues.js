@@ -27,6 +27,8 @@ import {
   upsertUserSession,
   closeUserSession,
   getDeviceById,
+  buildDeviceCatalogReply,
+  getPartsForModel,
 } from "./telegram_ai.js";
 
 function jsonResponse(payload, status = 200) {

@@ -2028,14 +2028,39 @@ export async function getPartsForModel(env, modelName) {
       quantity,
       datasheet_url,
       kicad_symbol,
-      kicad_footprint
+      kicad_footprint,
+      NULL as part_number
     FROM recycled_parts
     WHERE device_id = ?
     ORDER BY part_name ASC
     `
   ).bind(device.id).all();
 
-  return { device, parts: parts.results || [] };
+  // Fetch crowdsourced parts from submissions
+  const submissions = await db.prepare(
+    `
+    SELECT
+      matched_part_name as part_name,
+      'crowdsourced' as species,
+      matched_part_number as value,
+      NULL as designator,
+      'Zasób z kolejki (niezweryfikowany)' as description,
+      1 as quantity,
+      NULL as datasheet_url,
+      NULL as kicad_symbol,
+      NULL as kicad_footprint,
+      matched_part_number as part_number
+    FROM recycled_device_submissions
+    WHERE matched_device_id = ? AND lookup_kind = 'part_media' AND matched_part_name IS NOT NULL
+    `
+  ).bind(device.id).all();
+
+  const allParts = [
+    ...(parts.results || []),
+    ...(submissions.results || [])
+  ];
+
+  return { device, parts: allParts };
 }
 
 async function searchPartDonors(env, queryText) {
