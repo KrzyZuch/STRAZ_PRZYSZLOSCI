@@ -1883,34 +1883,42 @@ export async function recordRecycledSubmission(env, payload) {
     return;
   }
   await ensureRecycledKnowledgeSchema(db);
-  await db.prepare(
-    `
-    INSERT INTO recycled_device_submissions (
-      chat_id,
-      user_id,
-      message_id,
-      lookup_kind,
-      query_text,
-      recognized_brand,
-      recognized_model,
-      matched_device_id,
-      matched_part_name,
-      matched_part_number,
-      attachment_file_id,
-      attachment_mime_type,
-      provider_name,
-      model_name,
-      status,
-      raw_payload_json,
-      created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
-  ).bind(
-    payload.chat_id || null,
-    payload.user_id || null,
-    payload.message_id || null,
-    payload.lookup_kind || "unknown",
-    payload.query_text || null,
+    let finalizedQueryText = payload.query_text || null;
+    if (!finalizedQueryText && payload.matched_device_id) {
+      const device = await db.prepare("SELECT brand, model FROM recycled_devices WHERE id = ?").bind(payload.matched_device_id).first();
+      if (device) {
+        finalizedQueryText = `${device.brand || ""} ${device.model || ""}`.trim();
+      }
+    }
+
+    await db.prepare(
+      `
+      INSERT INTO recycled_device_submissions (
+        chat_id,
+        user_id,
+        message_id,
+        lookup_kind,
+        query_text,
+        recognized_brand,
+        recognized_model,
+        matched_device_id,
+        matched_part_name,
+        matched_part_number,
+        attachment_file_id,
+        attachment_mime_type,
+        provider_name,
+        model_name,
+        status,
+        raw_payload_json,
+        created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `
+    ).bind(
+      payload.chat_id || null,
+      payload.user_id || null,
+      payload.message_id || null,
+      payload.lookup_kind || "unknown",
+      finalizedQueryText,
     payload.recognized_brand || null,
     payload.recognized_model || null,
     payload.matched_device_id || null,
