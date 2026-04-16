@@ -637,10 +637,13 @@ async function handleTelegramCallback(env, callback) {
 
     if (data.startsWith("recycled_add_parts:")) {
       const deviceId = parseInt(data.split(":")[1]);
-      await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, null);
+      const device = await getDeviceById(env, deviceId);
+      const deviceName = device ? `${device.brand || ""} ${device.model || ""}`.trim() : null;
+      
+      await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, deviceName);
 
       await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "✅ Tryb dodawania części AKTYWNY. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia. Aby zakończyć, wpisz /stop.");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName || "urządzenia"}. Każde kolejne zdjęcie zostanie przypisane do tego modelu. Aby zakończyć, wpisz /stop.`);
     } else if (data.startsWith("recycled_add_parts_unknown:")) {
       const deviceName = data.substring("recycled_add_parts_unknown:".length);
       await upsertUserSession(env, chat_id, user_id, "recycled_parts", null, deviceName);

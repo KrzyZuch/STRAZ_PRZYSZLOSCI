@@ -2061,10 +2061,19 @@ export async function getPartsForModel(env, modelName) {
       NULL as kicad_footprint,
       matched_part_number as part_number
     FROM recycled_device_submissions
-    WHERE (matched_device_id = ? OR (matched_device_id IS NULL AND (LOWER(query_text) = LOWER(?) OR LOWER(recognized_model) = LOWER(?))))
+    WHERE (
+      (matched_device_id IS NOT NULL AND matched_device_id = ?)
+      OR
+      (matched_device_id IS NULL AND (
+        LOWER(query_text) = LOWER(?) 
+        OR LOWER(recognized_model) = LOWER(?)
+        OR LOWER(query_text) LIKE LOWER(?)
+        OR LOWER(recognized_model) LIKE LOWER(?)
+      ))
+    )
     AND lookup_kind = 'part_media' AND matched_part_name IS NOT NULL
     `
-  ).bind(device.id, device.model, device.model).all();
+  ).bind(device.id, device.model, device.model, `%${device.model}%`, `%${device.model}%`).all();
 
   const allParts = [
     ...(parts.results || []),
@@ -2346,13 +2355,21 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session)
     partNumber = partNumber.replace(/\b\d{15}\b/g, "[REDACTED IMEI]");
   }
 
+  let deviceName = session.active_device_name;
+  if (!deviceName && session.active_device_id) {
+    const device = await getDeviceById(env, session.active_device_id);
+    if (device) {
+      deviceName = `${device.brand || ""} ${device.model || ""}`.trim();
+    }
+  }
+
   await recordRecycledSubmission(env, {
     chat_id: message?.chat_id,
     user_id: message?.user_id,
     message_id: message?.message_id,
     lookup_kind: "part_media",
     matched_device_id: session.active_device_id,
-    query_text: session.active_device_name || null,
+    query_text: deviceName || null,
     matched_part_name: identity.part_name || null,
     matched_part_number: identity.part_number || null,
     attachment_file_id: message?.file_id || null,
