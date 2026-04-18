@@ -26,7 +26,7 @@ RESULTS_FILE = BASE_DIR / "results" / "test_db.jsonl"
 HISTORY_FILE = BASE_DIR / "processed_videos.json"
 LOG_DIR = BASE_DIR / "logs"
 
-# Słowa kluczowe i influencerzy (Priorytet: Polska Elektronika i Elektrośmieci)
+# Słowa kluczowe i influencerzy
 KEYWORDS = [
     "Daniel Rakowiecki naprawa", "serwis elektroniki laptopy", "naprawa telewizora płyta główna",
     "elektrośmieci odzysk części", "naprawa elektroniki AGD moduł", "diagnostyka płyt głównych",
@@ -45,7 +45,7 @@ class YTPartsExtractor:
         self.current_key_idx = 0
         self.clients = [genai.Client(api_key=k) for k in api_keys]
         
-        # Używamy modeli określonych w poprzednich iteracjach
+        # Wymuszony model gemma-4-31b-it
         self.MODEL_ANALYSIS = "gemma-4-31b-it" 
         self.MODEL_VERIFICATION = "gemma-4-31b-it" 
         
@@ -74,7 +74,6 @@ class YTPartsExtractor:
         print(f"📸 Wycinam klatkę HQ z lokalnego pliku ({timestamp}s)...")
         
         try:
-            # Błyskawiczne wycięcie klatki z pobranego wideo
             subprocess.run([
                 "ffmpeg", "-y", "-ss", str(timestamp), "-i", high_res_video_path,
                 "-vframes", "1", "-q:v", "2", frame_path
@@ -100,7 +99,6 @@ class YTPartsExtractor:
             os.remove(frame_path)
             
             try:
-                # Czyszczenie odpowiedzi na wypadek gdyby model dokleił znaczniki markdown
                 clean_text = response.text.replace('```json', '').replace('```', '').strip()
                 return json.loads(clean_text), None
             except json.JSONDecodeError:
@@ -117,7 +115,6 @@ class YTPartsExtractor:
         print(f"🚀 Przesyłam wideo do File API: {video_path}")
         video_file = client.files.upload(file=video_path)
         
-        # Czekanie na przetworzenie...
         print("⏳ Oczekuję na przetworzenie wideo w chmurze Google...")
         while video_file.state.name == "PROCESSING":
             time.sleep(5)
@@ -153,9 +150,10 @@ class YTPartsExtractor:
         
         prompt = f"Przeanalizuj ten film z YouTube ({youtube_url}). Skup się na identyfikacji części z ich numerami. Podaj precyzyjne czasy dla każdej znalezionej części."
         
-        print("🧠 Analiza multimodalna w toku...")
+        print("🧠 Analiza multimodalna przez Gemma 4 w toku...")
         response = client.models.generate_content(
             model=self.MODEL_ANALYSIS,
+            # Bezpieczny oryginalny format dla modelu Gemma
             contents=[
                 genai_types.Content(role="user", parts=[
                     genai_types.Part.from_uri(file_uri=video_file.uri, mime_type=video_file.mime_type),
@@ -173,7 +171,7 @@ class YTPartsExtractor:
         try:
             client.files.delete(name=video_file.name)
         except Exception as e:
-            print(f"⚠ Nie udało się usunąć pliku z API (możliwy brak uprawnień): {e}")
+            print(f"⚠ Nie udało się usunąć pliku z API: {e}")
             
         return json.loads(response.text)
 
@@ -183,7 +181,6 @@ class YTPartsExtractor:
         video_high = f"temp_high_{base_time}.mp4"
         high_res_downloaded = False
         
-        # --- 1. POBIERANIE LOW-RES DO ANALIZY API (Max 360p) ---
         print(f"📥 Pobieram wideo (low-res) do analizy wstępnej: {youtube_url}...")
         subprocess.run([
             "yt-dlp",
@@ -199,16 +196,17 @@ class YTPartsExtractor:
             print(f"❌ Błąd: yt-dlp nie mógł pobrać filmu (odrzucony / zablokowany).")
             return None
 
-        # --- 2. OMINIĘCIE LIMITU API (TIME-LAPSE MAX 15 MINUT) ---
+        # --- 2. OMINIĘCIE LIMITU TOKENÓW GEMMA 4 (TIME-LAPSE) ---
         duration = self.get_video_duration(video_low)
         speed_factor = 1.0
         
-        # Ograniczamy wideo do max 900 sekund (15 minut), co daje ok. 230 tys. tokenów (bezpiecznie < 262k)
-        TARGET_MAX_SECONDS = 900.0 
+        # Limit tokenów 262144 pozwala na ~1000 sekund wideo. 
+        # Ustawiamy bezpieczny cel na 800 sekund (13.3 minuty), aby zostawić tokeny na prompt i JSON
+        TARGET_MAX_SECONDS = 800.0 
         
         if duration > TARGET_MAX_SECONDS:
             speed_factor = duration / TARGET_MAX_SECONDS
-            print(f"⏱️ Wideo przekracza limit ({duration:.0f}s). Przyspieszam algorytm Time-Lapse {speed_factor:.2f}x (do 15 min)...")
+            print(f"⏱️ Wideo przekracza limit tokenów modelu ({duration:.0f}s). Przyspieszam algorytm Time-Lapse {speed_factor:.2f}x (kompresja do ~13 min)...")
             processed_low = f"processed_{video_low}"
             
             subprocess.run([
@@ -220,7 +218,7 @@ class YTPartsExtractor:
             if os.path.exists(processed_low):
                 os.replace(processed_low, video_low)
         else:
-            print("🔇 Usuwam ścieżkę dźwiękową (Gemma/Gemini w Google API odrzuca wideo z audio)...")
+            print("🔇 Usuwam ścieżkę dźwiękową (Gemma wymaga wideo bez audio do multimodal)...")
             silent_low = f"silent_{video_low}"
             subprocess.run([
                 "ffmpeg", "-y", "-i", video_low, 
@@ -231,13 +229,13 @@ class YTPartsExtractor:
                 os.replace(silent_low, video_low)
 
         try:
-            # 3. Analiza kontekstowa przez Google GenAI
+            # 3. Analiza kontekstowa
             analysis = self.analyze_video_context(video_low, youtube_url)
             
             final_results = []
             parts_to_verify = [p for p in analysis.get("detected_parts", []) if p["part_number"] != "UNCERTAIN"]
             
-            # --- 4. POBIERAMY HIGH-RES TYLKO JEŚLI ZNALEZIONO KONKRETNE NUMERY ---
+            # --- 4. POBIERAMY HIGH-RES DO WERYFIKACJI ---
             if parts_to_verify:
                 print(f"🌟 Znaleziono {len(parts_to_verify)} części do weryfikacji! Pobieram plik High-Res (Tylko Video)...")
                 subprocess.run([
@@ -252,7 +250,7 @@ class YTPartsExtractor:
                 ], capture_output=True)
                 high_res_downloaded = os.path.exists(video_high)
             else:
-                print("⏭ AI nie znalazło na filmie żadnych wyraźnych numerów seryjnych. Pomijam pobieranie High-Res.")
+                print("⏭ Gemma nie znalazła na filmie żadnych wyraźnych numerów seryjnych. Pomijam pobieranie High-Res.")
 
             # --- 5. WERYFIKACJA (Z KOREKTĄ CZASU) ---
             for part in analysis.get("detected_parts", []):
@@ -297,7 +295,6 @@ class YTHunter:
         self.history = self.load_history()
 
     def load_history(self):
-        # Upewniamy się, że folder na wyniki istnieje
         RESULTS_FILE.parent.mkdir(parents=True, exist_ok=True)
         LOG_DIR.mkdir(parents=True, exist_ok=True)
         
@@ -343,12 +340,10 @@ class YTHunter:
                     print(f"⏭️ Pomijam (już w bazie): {vid_id}")
                     continue
                 
-                # Naprawiony ucięty kod tworzenia URLa z oryginalnego skryptu
                 yt_url = f"https://www.youtube.com/watch?v={vid_id}"
                 print(f"🎯 Atakuję film: {v['snippet']['title']} ({yt_url})")
                 
                 try:
-                    # Przetwarzanie przez multimodalne API
                     result = self.extractor.process_url(yt_url)
                     
                     if result and result.get("results"):
@@ -365,13 +360,11 @@ class YTHunter:
                 time.sleep(10)
 
     def save_result(self, result):
-        # Zapisujemy każdą wykrytą część jako osobny wiersz (prawdziwa baza części)
         with open(RESULTS_FILE, "a", encoding="utf-8") as f:
             device = result.get("device", "Unknown")
             url = result.get("url", "")
             
             for part in result.get("results", []):
-                # Tworzymy płaski rekord dla lepszej czytelności wierszami
                 record = {
                     "timestamp_db": time.strftime("%Y-%m-%d %H:%M:%S"),
                     "device": device,
@@ -389,7 +382,6 @@ class YTHunter:
 # MAIN ROUTINE
 # ==========================================
 if __name__ == "__main__":
-    # Automatyczne pobieranie kluczy
     YT_KEY = os.environ.get("YOUTUBE_API_KEY")
     GEMINI_KEYS = [os.environ.get("GEMINI_API_KEY")]
 
