@@ -7,6 +7,9 @@ on:
     types: [trigger-backup]
   workflow_dispatch: # Możliwość ręcznego uruchomienia
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -30,18 +33,42 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          mkdir -p PROJEKTY/13_baza_czesci_recykling/data/backups
-          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
-          npx wrangler d1 export fish-pond-v1 --remote --output=PROJEKTY/13_baza_czesci_recykling/data/backups/recycled_db_backup_${TIMESTAMP}.sql
+          mkdir -p temp_backups
+          npx wrangler d1 export fish-pond-v1 --remote --output=temp_backups/full_dump.sql
 
-      - name: Cleanup old backups (older than 90 days)
+      - name: Split Backup into Public and Private
         run: |
-          find PROJEKTY/13_baza_czesci_recykling/data/backups/ -name "recycled_db_backup_*.sql" -mtime +90 -delete
+          mkdir -p PROJEKTY/13_baza_czesci_recykling/data/backups
+          mkdir -p private_backups
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
+          python3 pipelines/split_d1_backup.py temp_backups/full_dump.sql \
+            PROJEKTY/13_baza_czesci_recykling/data/backups/recycled_parts_catalog_${TIMESTAMP}.sql \
+            private_backups/chat_history_${TIMESTAMP}.sql
+          echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
 
-      - name: Commit and push changes
+      - name: Cleanup old public backups (older than 90 days)
+        run: |
+          find PROJEKTY/13_baza_czesci_recykling/data/backups/ -name "recycled_parts_catalog_*.sql" -mtime +90 -delete
+
+      - name: Commit and push Public Backup
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add PROJEKTY/13_baza_czesci_recykling/data/backups/
-          git commit -m "Auto: D1 Database Backup ${TIMESTAMP}" || echo "No changes to commit"
+          git commit -m "Auto: Public D1 Parts Catalog Backup ${TIMESTAMP}" || echo "No changes to commit"
+          git push
+
+      - name: Push Private Backup to separate repository
+        env:
+          PRIVATE_REPO: "StrazPrzyszlosci/STRAZ_PRZYSZLOSCI_PRIVATE"
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone https://${GH_PAT}@github.com/${PRIVATE_REPO}.git private_repo_dir
+          mkdir -p private_repo_dir/backups
+          cp private_backups/chat_history_${TIMESTAMP}.sql private_repo_dir/backups/
+          cd private_repo_dir
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backups/
+          git commit -m "Auto: Private Chat History Backup ${TIMESTAMP}" || echo "No changes to commit"
           git push
