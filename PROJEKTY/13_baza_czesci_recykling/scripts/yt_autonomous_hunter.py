@@ -46,8 +46,8 @@ class YTPartsExtractor:
         self.clients =[genai.Client(api_key=k) for k in api_keys]
         
         # Wymuszony model gemma-4-31b-it
-        self.MODEL_ANALYSIS = "gemma-4-31b-it" 
-        self.MODEL_VERIFICATION = "gemma-4-31b-it" 
+        self.MODEL_ANALYSIS = "gemini-3.1-flash-lite" 
+        self.MODEL_VERIFICATION = "gemini-3.1-flash-lite" 
         
     def get_client(self):
         client = self.clients[self.current_key_idx]
