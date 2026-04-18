@@ -21,11 +21,17 @@ Wniosek: najczystsza architektura to osobny katalog donorow i czesci w tym repo,
 Przeplyw danych:
 
 1. `Telegram / OCR / scraping forow / PDF / teardowny` dostarczaja surowe sygnaly.
-2. **AI Enrichment Agent** (uruchamiany periodycznie):
-   - skanuje internet w poszukiwaniu brakujacych danych dla modeli w bazie,
-   - analizuje schematy ideowe (PDF), datasheety, fora techniczne (np. BadCaps, Elektroda),
-   - przetwarza transkrypcje i obraz z filmów YouTube (kanały naprawcze jak Louis Rossmann, NorthridgeFix itp.) w celu ekstrakcji list komponentów,
-   - weryfikuje i poprawia bledne wpisy w bazie na podstawie krzyzowej analizy zrodel.
+2. **Automatyczne Wzbogacanie AI (Project 13/15)**: Uruchomienie agenta `pipelines/yt_parts_extractor.py`, który analizuje filmy z napraw (YouTube) i zasila bazę zweryfikowanymi częściami.
+- **Dwuetapowa Weryfikacja**: Każda część musi zostać "zauważona" w kontekście filmu, a następnie "potwierdzona" na stopklatce przez niezależny model OCR (Gemma).
+
+### Narzędzia Agentyczne
+
+W folderze `pipelines/` znajduje się skrypt `yt_parts_extractor.py`, który realizuje proces:
+1. **Analiza Multimodalna**: Pełny film trafia do Gemma 4.
+2. **Precyzyjne Timestampty**: AI wskazuje momenty wystąpienia części.
+3. **Weryfikacja Wizualna**: Gemma 4 31B analizuje stopklatki w celu potwierdzenia numerów seryjnych.
+4. **Kolejka Społeczności**: Niepewne trafienia są publikowane z linkiem czasowym do YouTube dla ludzkiej weryfikacji.
+
 3. Sygnaly trafiaja do kolejki kuracji i sa porzadkowane do katalogu w `data/devices.jsonl` oraz `data/device_parts.jsonl`.
 4. Skrypt budujacy generuje artefakty:
    - `data/inventory.csv` dla `ecoEDA`

@@ -1,3 +1,15 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+autonomous_test/results/
+autonomous_test/logs/
+temp_*.mp4
+temp_frame_*.jpg
 .codex
 .firecrawl/
 __pycache__/
