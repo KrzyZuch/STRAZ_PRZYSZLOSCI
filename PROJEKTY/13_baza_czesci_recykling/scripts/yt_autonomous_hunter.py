@@ -27,7 +27,7 @@ HISTORY_FILE = BASE_DIR / "processed_videos.json"
 LOG_DIR = BASE_DIR / "logs"
 
 # Słowa kluczowe i influencerzy
-KEYWORDS = [
+KEYWORDS =[
     "Daniel Rakowiecki naprawa", "serwis elektroniki laptopy", "naprawa telewizora płyta główna",
     "elektrośmieci odzysk części", "naprawa elektroniki AGD moduł", "diagnostyka płyt głównych",
     "wymiana procesora laptop", "naprawa matrycy TV", "serwis RTV elektronika",
@@ -43,7 +43,7 @@ class YTPartsExtractor:
     def __init__(self, api_keys: List[str]):
         self.api_keys = api_keys
         self.current_key_idx = 0
-        self.clients = [genai.Client(api_key=k) for k in api_keys]
+        self.clients =[genai.Client(api_key=k) for k in api_keys]
         
         # Wymuszony model gemma-4-31b-it
         self.MODEL_ANALYSIS = "gemma-4-31b-it" 
@@ -57,7 +57,7 @@ class YTPartsExtractor:
     def get_video_duration(self, video_path: str) -> float:
         """Pobiera długość wideo w sekundach przy pomocy ffprobe."""
         try:
-            cmd = [
+            cmd =[
                 "ffprobe", "-v", "error", "-show_entries",
                 "format=duration", "-of",
                 "default=noprint_wrappers=1:nokey=1", video_path
@@ -136,7 +136,7 @@ class YTPartsExtractor:
         FORMAT WYJŚCIOWY (JSON):
         {
           "device_model": "Dokładny model urządzenia",
-          "detected_parts": [
+          "detected_parts":[
             {
               "part_name": "Nazwa części (np. pompa odpływowa / zasilacz / płyta główna)",
               "part_number": "Numer seryjny/katalogowy (lub UNCERTAIN)",
@@ -232,7 +232,7 @@ class YTPartsExtractor:
             # 3. Analiza kontekstowa
             analysis = self.analyze_video_context(video_low, youtube_url)
             
-            final_results = []
+            final_results =[]
             parts_to_verify = [p for p in analysis.get("detected_parts", []) if p["part_number"] != "UNCERTAIN"]
             
             # --- 4. POBIERAMY HIGH-RES DO WERYFIKACJI ---
@@ -253,7 +253,7 @@ class YTPartsExtractor:
                 print("⏭ Gemma nie znalazła na filmie żadnych wyraźnych numerów seryjnych. Pomijam pobieranie High-Res.")
 
             # --- 5. WERYFIKACJA (Z KOREKTĄ CZASU) ---
-            for part in analysis.get("detected_parts", []):
+            for part in analysis.get("detected_parts",[]):
                 
                 # PRZYWRÓCENIE ORYGINALNEGO CZASU
                 original_ts = int(part["timestamp_seconds"] * speed_factor)
@@ -326,10 +326,10 @@ class YTHunter:
         try:
             with urlopen(req, timeout=30) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                return data.get("items", [])
+                return data.get("items",[])
         except Exception as e:
             print(f"❌ Błąd wyszukiwania YouTube: {e}")
-            return []
+            return[]
 
     def hunt(self):
         for kw in KEYWORDS:
@@ -340,6 +340,7 @@ class YTHunter:
                     print(f"⏭️ Pomijam (już w bazie): {vid_id}")
                     continue
                 
+                # POPRAWIONA LINIJKA: Pełny i poprawny link do youtube
                 yt_url = f"https://www.youtube.com/watch?v={vid_id}"
                 print(f"🎯 Atakuję film: {v['snippet']['title']} ({yt_url})")
                 
@@ -364,7 +365,7 @@ class YTHunter:
             device = result.get("device", "Unknown")
             url = result.get("url", "")
             
-            for part in result.get("results", []):
+            for part in result.get("results",[]):
                 record = {
                     "timestamp_db": time.strftime("%Y-%m-%d %H:%M:%S"),
                     "device": device,
@@ -383,7 +384,7 @@ class YTHunter:
 # ==========================================
 if __name__ == "__main__":
     YT_KEY = os.environ.get("YOUTUBE_API_KEY")
-    GEMINI_KEYS = [os.environ.get("GEMINI_API_KEY")]
+    GEMINI_KEYS =[os.environ.get("GEMINI_API_KEY")]
 
     if not YT_KEY or not GEMINI_KEYS[0]:
         print("❌ Brak kluczy API (YOUTUBE_API_KEY / GEMINI_API_KEY)!")
