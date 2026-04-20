@@ -34,7 +34,7 @@ import {
   handleFinalDatasheetRagFinal,
   handleResistorAnalysis,
 } from "./telegram_ai.js";
-import { sanitizeTelegramReply, sendTelegramReply } from "./telegram_utils.js";
+import { sanitizeTelegramReply, sendTelegramReply, getMainMenuKeyboard } from "./telegram_utils.js";
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -675,7 +675,7 @@ async function processCommandMessage(env, message, command) {
     await sendTelegramReply(env, message, "Nie jesteś obecnie w procesie analizy części. Wyślij PDF lub nazwę części, aby zacząć.");
     return { status: "command_ignored" };
   }
-  const notificationSent = await sendTelegramReply(env, message, buildCommandReply(command));
+  const notificationSent = await sendTelegramReply(env, message, buildCommandReply(command), getMainMenuKeyboard());
   return {
     update_id: message.update_id,
     message_id: message.message_id,
