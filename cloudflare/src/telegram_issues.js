@@ -526,6 +526,8 @@ async function handleActiveSessions(env, message, ctx) {
     
     await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
     return { reply_text: `✅ Ręcznie zaktualizowano część: *${name}*. Status: Zatwierdzono.` };
+  } else if (editSession && message.file_id) {
+    return { reply_text: "✏️ Oczekuję na tekst w formacie: `Nazwa | Numer`. Zdjęcia nie są obsługiwane w trybie edycji części." };
   }
 
   // --- SESJA DATASHEET (TARGET) ---
@@ -540,8 +542,8 @@ async function handleActiveSessions(env, message, ctx) {
   // --- SESJA DATASHEET (MODEL) ---
   const datasheetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
   if (datasheetSession) {
-    if (message.text && message.text.startsWith("/") && message.text !== "/niemammodelu") {
-      return null; // Zwykłe komendy niech anulują sesję
+    if (message.text && message.text.startsWith("/")) {
+      return null; // Komendy (np. /stop) niech anulują sesję normalnie
     }
     
     let deviceModel = message.text || "Zidentyfikowany ze zdjęcia";
@@ -559,6 +561,10 @@ async function handleActiveSessions(env, message, ctx) {
   // --- SESJA DATASHEET (PYTANIE) ---
   const questionSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
   if (questionSession) {
+    if (!message.text) {
+      return { reply_text: "✍️ Proszę wpisz swoje pytanie tekstem (np. \"Jaki jest pinout?\")." };
+    }
+    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
     return await handleFinalDatasheetRagFinal(env, message, questionSession, message.text, ctx);
   }
 
@@ -694,10 +700,7 @@ async function processCommandMessage(env, message, command) {
     return { status: "reset_complete" };
   } else if (command === "stop" || command === "anuluj") {
     const session = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts");
-    await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts");
-    await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
-    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
-    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
+    await closeAllUserSessions(env, message.chat_id, message.user_id);
     
     let stopMsg = "Zakończyłem aktywne sesje i anulowałem operację.";
     if (session && session.active_device_id) {
@@ -714,12 +717,13 @@ async function processCommandMessage(env, message, command) {
   } else if (command === "niemammodelu") {
     const session = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
     if (session) {
-        // Zamykamy sesję, by bot nie pożerał kolejnej wiadomości jako model
         await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
-        
-        // Kontynuujemy bez modelu
         const res = await handleFinalDatasheetRag(env, message, session, "Nieznany (użytkownik nie posiada)");
-        return { status: "datasheet_processed", ...res };
+        // handleFinalDatasheetRag wysyła "Przyjąłem model", ale prompt do pytania musimy wysłać sami
+        if (res && res.reply_text) {
+            await sendTelegramReply(env, message, res.reply_text);
+        }
+        return { status: "datasheet_processed" };
     }
     await sendTelegramReply(env, message, "Nie jesteś obecnie w procesie analizy części. Wyślij PDF lub nazwę części, aby zacząć.");
     return { status: "command_ignored" };
@@ -835,13 +839,27 @@ const CALLBACK_HANDLERS = {
     const mockMessage = { chat_id, user_id, text: partQuery };
     const res = await initDatasheetWorkflow(env, mockMessage, "datasheet_analysis");
     await answerCallbackQuery(env, id, "Uruchamiam asystenta datasheet.");
-    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, res.reply_text);
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, res.reply_text, res.reply_markup);
   },
   "cancel_session": async (env, id, chat_id, user_id, message, data) => {
     const sessionType = data.split(":")[1] || "recycled_parts";
     await closeUserSession(env, chat_id, user_id, sessionType);
     await answerCallbackQuery(env, id, "Sesja została anulowana.");
     await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Przerwałem proces. Możesz powrócić do normalnego korzystania z bota.");
+  },
+  "datasheet_no_model": async (env, id, chat_id, user_id, message, data) => {
+    const session = await getUserSession(env, chat_id, user_id, "datasheet_wait_model");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnej sesji datasheet.");
+      return;
+    }
+    await closeUserSession(env, chat_id, user_id, "datasheet_wait_model");
+    const mockMessage = { chat_id, user_id, message_id: message?.message_id };
+    const res = await handleFinalDatasheetRag(env, mockMessage, session, "Nieznany (użytkownik nie posiada)");
+    await answerCallbackQuery(env, id, "Kontynuuję bez modelu.");
+    if (res && res.reply_text) {
+      await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, res.reply_text);
+    }
   }
 };
 

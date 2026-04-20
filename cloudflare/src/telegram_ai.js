@@ -1986,7 +1986,7 @@ export async function upsertUserSession(env, chat_id, user_id, session_type, dev
 export async function getUserSession(env, chat_id, user_id, session_type) {
   const db = env.DB;
   return await db.prepare(
-    `SELECT * FROM telegram_user_sessions WHERE chat_id = ? AND user_id = ? AND session_type = ? AND status = 'active' AND updated_at > datetime('now', '-1 hour')`
+    `SELECT * FROM telegram_user_sessions WHERE chat_id = ? AND user_id = ? AND session_type = ? AND status = 'active' AND updated_at > datetime('now', '-4 hours')`
   ).bind(chat_id, user_id, session_type).first();
 }
 
@@ -2533,6 +2533,7 @@ export async function curateSubmissions(env) {
 
     const result = extractJsonObject(visionResp.text);
     if (result && result.curations) {
+      const results = [];
       for (const cur of result.curations) {
         await db.prepare(`
           UPDATE recycled_device_submissions 
@@ -2576,12 +2577,15 @@ export async function initDatasheetWorkflow(env, message, intent) {
         "",
         `👉 *Wyślij zdjęcie etykiety/modelu urządzenia* lub *wpisz jego nazwę* (np. HP LaserJet P1102).`,
         "",
-        `Jeśli absolutnie nie masz modelu, wpisz /niemammodelu.`,
-        "",
         `_Twoja informacja pomoże innym w naprawach i recyklingu!_`
     ].join("\n");
     
-    return { reply_text: replyText };
+    return {
+        reply_text: replyText,
+        reply_markup: {
+            inline_keyboard: [[{ text: "🤷‍♂️ Nie mam modelu", callback_data: "datasheet_no_model" }]]
+        }
+    };
 }
 
 /**
