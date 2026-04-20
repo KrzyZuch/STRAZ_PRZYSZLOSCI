@@ -714,6 +714,9 @@ async function processCommandMessage(env, message, command) {
   } else if (command === "niemammodelu") {
     const session = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
     if (session) {
+        // Zamykamy sesję, by bot nie pożerał kolejnej wiadomości jako model
+        await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
+        
         // Kontynuujemy bez modelu
         const res = await handleFinalDatasheetRag(env, message, session, "Nieznany (użytkownik nie posiada)");
         return { status: "datasheet_processed", ...res };
