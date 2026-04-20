@@ -2617,11 +2617,13 @@ export async function handleFinalDatasheetRag(env, message, session, deviceModel
             datasheetUrl = "Przesłany przez użytkownika";
         }
     } else {
-        // SCENARIUSZ B: Szukamy datasheetu po nazwie
-        const searchPrompt = `Znajdź informacje i stabilny link do datasheetu (najlepiej PDF) dla części: ${partQuery}. Pochodzi z urządzenia: ${deviceModel}. Odpowiedz technicznie, podaj parametry i link.`;
+        // SCENARIUSZ B: Szukamy datasheetu w sieci (Metoda 2: Direct Source)
+        const foundUrl = await searchAllDatasheet(partQuery);
+        datasheetUrl = foundUrl || "Nie znaleziono bezpośredniego linku PDF";
+        
+        const searchPrompt = `Przeanalizuj informacje o części: ${partQuery}. Pochodzi z urządzenia: ${deviceModel}. Link do dokumentacji: ${datasheetUrl}. Odpowiedz technicznie, podaj kluczowe parametry i pinout jeśli go znasz.`;
         const searchResp = await generateChatReply(env, { text: searchPrompt }, []);
         aiContext = searchResp.reply_text;
-        datasheetUrl = "Znaleziony przez AI";
     }
 
     // ZAPIS DO BAZY (D1)
@@ -2644,4 +2646,31 @@ export async function handleFinalDatasheetRag(env, message, session, deviceModel
     return { 
         reply_text: `✅ *Analiza ukończona!*\n\n*Urządzenie:* ${deviceModel}\n*Dokumentacja:* ${datasheetUrl}\n\n${aiContext}`
     };
+}
+
+/**
+ * Szuka linku do datasheetu na AllDataSheet (Metoda 2)
+ */
+async function searchAllDatasheet(part) {
+    try {
+        const searchUrl = `https://www.alldatasheet.com/view.jsp?Searchword=${encodeURIComponent(part)}`;
+        const response = await fetch(searchUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+        });
+        const html = await response.text();
+        
+        // Szukamy pierwszego linku do PDF w formacie /datasheet-pdf/pdf/...
+        const pdfLinkRegex = /\/datasheet-pdf\/pdf\/[^\s'"]+/;
+        const match = html.match(pdfLinkRegex);
+        
+        if (match) {
+            return `https://www.alldatasheet.com${match[0]}`;
+        }
+        return null;
+    } catch (e) {
+        console.error("Błąd wyszukiwania datasheetu:", e);
+        return null;
+    }
 }
