@@ -2596,42 +2596,64 @@ export async function handleFinalDatasheetRag(env, message, session, deviceModel
     const fileId = sessionParts[0] === "NO_FILE" ? null : sessionParts[0];
     const partQuery = sessionParts.slice(1).join('|');
     
-    await sendTelegramReply(env, message, `⏳ Przyjąłem model: *${deviceModel}*.`);
+    await sendTelegramReply(env, message, `⏳ Przyjąłem model: *${deviceModel}*. Szukam dokumentacji...`);
 
-    // Przechodzimy do kroku 2: Pytanie techniczne
-    const newSessionData = `${fileId || "NO_FILE"}|${partQuery}|${deviceModel}`;
+    // Jeśli nie ma PDF od użytkownika, szukamy już teraz w sieci
+    let pdfUrl = "";
+    if (!fileId) {
+        pdfUrl = await findDatasheetPdfLink(partQuery) || "";
+    }
+
+    // Przechowujemy: fileId|partQuery|deviceModel|pdfUrl
+    const newSessionData = `${fileId || "NO_FILE"}|${partQuery}|${deviceModel}|${pdfUrl}`;
     await upsertUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question", null, newSessionData);
     
-    const replyText = [
+    const replyLines = [
         `💡 *Świetnie!* Mamy model: \`${deviceModel}\`.`,
-        "",
-        `O co chciałbyś zapytać w kontekście tej części/dokumentacji?`,
-        "",
-        `_Przykłady:_`,
+        ""
+    ];
+
+    if (pdfUrl) {
+        replyLines.push(`🟢 Znalazłem dokumentację PDF: [Otwórz PDF](${pdfUrl})`);
+    } else if (!fileId) {
+        replyLines.push(`🟡 Nie znalazłem bezpośredniego linku PDF w sieci. Analizuję na podstawie wiedzy o modelu.`);
+    } else {
+        replyLines.push(`🟢 Mam PDF przesłany przez Ciebie. Gotowy do analizy.`);
+    }
+
+    replyLines.push("", `O co chciałbyś zapytać?`, "", `_Przykłady:_`,
         `- "Jaki jest pinout tego układu?"`,
         `- "Jakie jest maksymalne napięcie zasilania (VCC)?"`,
         `- "Podaj parametry i zaproponuj popularny zamiennik."`,
         `- "Jak to podłączyć do Arduino?"`
-    ].join("\n");
+    );
 
-    return { reply_text: replyText };
+    const replyMarkup = pdfUrl ? {
+        inline_keyboard: [[{ text: "📄 Otwórz PDF", url: pdfUrl }]]
+    } : undefined;
+
+    return { reply_text: replyLines.join("\n"), reply_markup: replyMarkup };
 }
 
 /**
  * KROK 2: Finalna analiza RAG z pytaniem użytkownika.
  */
 export async function handleFinalDatasheetRagFinal(env, message, session, userQuestion, ctx = null) {
-    const sessionParts = (session.active_device_name || "NO_FILE||").split('|');
+    // Format sesji: fileId|partQuery|deviceModel|pdfUrl
+    const sessionParts = (session.active_device_name || "NO_FILE|||").split('|');
     const fileId = sessionParts[0] === "NO_FILE" ? null : sessionParts[0];
     const partQuery = sessionParts[1] || "";
-    const deviceModel = sessionParts.slice(2).join('|');
+    // pdfUrl jest zawsze ostatnim segmentem; deviceModel może zawierać '|'
+    const cachedPdfUrl = sessionParts[sessionParts.length - 1] || "";
+    const deviceModel = sessionParts.slice(2, sessionParts.length - 1).join('|');
     
     await sendTelegramReply(env, message, `🔎 Analizuję datasheet pod kątem Twojego pytania: _"${userQuestion}"_...`);
 
     let aiContext = "";
-    let datasheetUrl = "";
+    let resolvedPdfUrl = cachedPdfUrl; // Używamy URL z sesji – bez ponownego szukania
 
     if (fileId) {
+        // SCENARIUSZ A: PDF przesłany przez użytkownika
         const base64 = await fetchTelegramFileAsBase64(env, fileId);
         if (base64) {
             const ragSystem = [
@@ -2649,25 +2671,18 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
                 media: [{ data: base64, mime_type: "application/pdf" }]
             });
             aiContext = visionResp.text;
-            datasheetUrl = "Przesłany przez użytkownika";
         }
-    } else {
-        // SCENARIUSZ B: Szukamy datasheetu w sieci
-        const foundUrl = await findDatasheetPdfLink(partQuery);
-        datasheetUrl = foundUrl || "Nie znaleziono bezpośredniego linku PDF";
-        
-        let fetchedBase64 = null;
-        if (datasheetUrl.toLowerCase().endsWith(".pdf") || datasheetUrl.includes("alldatasheet.com/datasheet-pdf/")) {
-            await sendTelegramReply(env, message, "📥 Próbuję pobrać dokumentację do analizy...");
-            fetchedBase64 = await fetchExternalPdfAsBase64(datasheetUrl);
-        }
+    } else if (resolvedPdfUrl) {
+        // SCENARIUSZ B: Mamy URL z sesji – pobieramy i analizujemy
+        await sendTelegramReply(env, message, "📥 Pobieram dokumentację do analizy...");
+        const fetchedBase64 = await fetchExternalPdfAsBase64(resolvedPdfUrl);
 
         if (fetchedBase64) {
-            // Mamy pobrany PDF! Analizujemy go jak plik od użytkownika
             const ragSystem = [
                 "Jesteś inżynierem elektronikiem. Analizujesz POBRANY datasheet PDF.",
                 `KONTEKST: Część z urządzenia ${deviceModel}.`,
-                "Twoim zadaniem jest odpowiedzieć PRECYZYJNIE na pytanie użytkownika na podstawie dostarczonego dokumentu."
+                "Twoim zadaniem jest odpowiedzieć PRECYZYJNIE na pytanie użytkownika na podstawie dostarczonego dokumentu.",
+                "Jeśli w dokumencie nie ma odpowiedzi, powiedz to szczerze."
             ].join(" ");
             
             const visionResp = await callGoogleProvider(env, {
@@ -2679,11 +2694,16 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
             });
             aiContext = visionResp.text;
         } else {
-            // Nie udało się pobrać PDF (np. zabezpieczenia strony) - analizujemy po samej nazwie
-            const searchPrompt = `Przeanalizuj informacje o części: ${partQuery}. Pochodzi z: ${deviceModel}. Link do dokumentacji (może być nieosiągalny bezpośrednio): ${datasheetUrl}. Odpowiedz na pytanie użytkownika: ${userQuestion}.`;
+            // PDF niedostępny mimo URL – fallback do wiedzy AI
+            const searchPrompt = `Odpowiedz na pytanie o część elektroniczną: ${partQuery} z urządzenia ${deviceModel}. Pytanie: ${userQuestion}. Link do dokumentacji (niedostępny do pobrania): ${resolvedPdfUrl}.`;
             const searchResp = await generateChatReply(env, { text: searchPrompt }, []);
             aiContext = searchResp.reply_text;
         }
+    } else {
+        // SCENARIUSZ C: Brak PDF, brak URL – czysty fallback AI
+        const searchPrompt = `Odpowiedz na pytanie o część elektroniczną: ${partQuery} z urządzenia ${deviceModel}. Pytanie: ${userQuestion}. Nie znaleziono datasheetu PDF online.`;
+        const searchResp = await generateChatReply(env, { text: searchPrompt }, []);
+        aiContext = searchResp.reply_text;
     }
 
     // ZAPIS DO BAZY
@@ -2696,22 +2716,23 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
         matched_part_name: partQuery,
         matched_part_number: partQuery,
         status: "approved",
-        raw_payload_json: { question: userQuestion, answer: aiContext, device: deviceModel }
+        raw_payload_json: { question: userQuestion, answer: aiContext, device: deviceModel, pdf_url: resolvedPdfUrl }
     });
 
     await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
 
-    const replyMarkup = datasheetUrl.startsWith("http") ? null : {
-        inline_keyboard: [
-            [
-                { text: "🔍 Szukaj PDF w Google", url: `https://www.google.com/search?q=${encodeURIComponent(partQuery)}+datasheet+filetype:pdf` }
-            ]
-        ]
-    };
+    // Przycisk PDF - zawsze pokazujemy jeśli mamy URL, plus Google jako fallback
+    const pdfButtons = [];
+    if (resolvedPdfUrl) {
+        pdfButtons.push({ text: "📄 Otwórz PDF", url: resolvedPdfUrl });
+    }
+    pdfButtons.push({ text: "🔍 Szukaj w Google", url: `https://www.google.com/search?q=${encodeURIComponent(partQuery)}+datasheet+filetype:pdf` });
+
+    const sourceLabel = fileId ? "Przesłany PDF" : (resolvedPdfUrl ? resolvedPdfUrl : "Baza wiedzy AI");
 
     return { 
-        reply_text: `✅ *Analiza zakończona!*\n\n${aiContext}\n\n🔗 *Źródło:* ${datasheetUrl}`,
-        reply_markup: replyMarkup
+        reply_text: `✅ *Analiza zakończona!*\n\n${aiContext}\n\n🔗 *Źródło:* ${sourceLabel}`,
+        reply_markup: { inline_keyboard: [pdfButtons] }
     };
 }
 
