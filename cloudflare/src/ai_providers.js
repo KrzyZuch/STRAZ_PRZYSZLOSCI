@@ -115,12 +115,12 @@ export async function callGoogleProvider(env, promptPayload, options = {}) {
   if (!apiKey) {
     throw new AiProviderError("Brak GEMINI_API_KEY.", {
       provider: "google",
-      model: env.TELEGRAM_AI_GOOGLE_MODEL || "gemma-3-27b-it",
+      model: env.TELEGRAM_AI_GOOGLE_MODEL || "gemini-3.1-flash-lite-preview",
       retriable: true,
     });
   }
 
-  const model = (env.TELEGRAM_AI_GOOGLE_MODEL || "gemma-3-27b-it").trim();
+  const model = (env.TELEGRAM_AI_GOOGLE_MODEL || "gemini-3.1-flash-lite-preview").trim();
   const timeoutMs = parsePositiveInteger(env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
   const fetchImpl = options.fetchImpl || fetch;
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
