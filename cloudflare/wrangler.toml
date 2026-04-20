@@ -1,6 +1,7 @@
 name = "fish-pond-api-v1"
 main = "src/worker.js"
 compatibility_date = "2026-04-12"
+compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
 [observability]

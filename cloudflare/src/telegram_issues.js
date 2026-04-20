@@ -17,7 +17,6 @@ import {
   recommendOnboardingPath,
   routeTelegramIntent,
   saveTelegramConversation,
-  sanitizeTelegramReply,
   fetchTelegramFileAsBase64,
   handleRecycledKnowledgeLookup,
   recognizeDeviceAndListParts,
@@ -26,10 +25,16 @@ import {
   getUserSession,
   upsertUserSession,
   closeUserSession,
+  closeAllUserSessions,
   getDeviceById,
   buildDeviceCatalogReply,
   getPartsForModel,
+  initDatasheetWorkflow,
+  handleFinalDatasheetRag,
+  handleFinalDatasheetRagFinal,
+  handleResistorAnalysis,
 } from "./telegram_ai.js";
+import { sanitizeTelegramReply, sendTelegramReply } from "./telegram_utils.js";
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -75,32 +80,6 @@ function getConfiguredLabels(kind, env) {
   return labels;
 }
 
-async function sendTelegramReply(env, message, text, replyMarkup = null) {
-  const botToken = env.TELEGRAM_BOT_TOKEN;
-  if (!botToken || !message?.chat_id || !text) {
-    return false;
-  }
-
-  const response = await fetch(
-    `https://api.telegram.org/bot${botToken}/sendMessage`,
-    {
-      method: "POST",
-      headers: {
-        "content-type": "application/json; charset=utf-8",
-      },
-      body: JSON.stringify({
-        chat_id: message.chat_id,
-        text: sanitizeTelegramReply(text, env),
-        reply_to_message_id: message.message_id || undefined,
-        allow_sending_without_reply: true,
-        disable_web_page_preview: true,
-        reply_markup: replyMarkup || undefined,
-      }),
-    }
-  );
-
-  return response.ok;
-}
 
 function getTelegramThrottleKey(message) {
   if (message.chat_id && message.user_id) {
@@ -492,13 +471,85 @@ async function processIssueMessage(env, message, classification, dryRun) {
   };
 }
 
+async function handleActiveSessions(env, message, ctx) {
+  // --- SESJA ZGŁASZANIA POMYSŁU ---
+  const issueSession = await getUserSession(env, message.chat_id, message.user_id, "issue_wait_idea");
+  if (issueSession) {
+    if (message.text && !message.text.startsWith("/")) {
+      await closeUserSession(env, message.chat_id, message.user_id, "issue_wait_idea");
+      // Przekierowujemy wywołanie na format `Pomysl: treść` by wykorzystać istniejącą logikę
+      message.text = `Pomysl: ${message.text}`;
+      return null; // Zwracamy null, żeby processConversationMessage puścił to dalej jako nowy intent (ale text jest już z prefiksem)
+    }
+  }
+  // --- SESJA EDYCJI CZEŚCI ---
+  const editSession = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
+  if (editSession && message.text) {
+    const parts = (message.text || "").split("|").map(s => s.trim());
+    const name = parts[0] || "Nieznana część";
+    const number = parts.length > 1 ? parts[1] : "";
+    
+    const rawName = editSession.active_device_name || "";
+    const submissionIdFromSession = rawName.startsWith("submission:")
+      ? rawName.replace("submission:", "")
+      : editSession.active_device_id;
+
+    await env.DB.prepare("UPDATE recycled_device_submissions SET matched_part_name = ?, matched_part_number = ?, status = 'approved' WHERE id = ?")
+      .bind(name, number, submissionIdFromSession).run();
+    
+    await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
+    return { reply_text: `✅ Ręcznie zaktualizowano część: *${name}*. Status: Zatwierdzono.` };
+  }
+
+  // --- SESJA DATASHEET (MODEL) ---
+  const datasheetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
+  if (datasheetSession) {
+    let deviceModel = message.text || "Zidentyfikowany ze zdjęcia";
+    if (message.file_id) {
+      await sendTelegramReply(env, message, "Otrzymałem zdjęcie urządzenia. Identyfikuję model...");
+      const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+      const vision = await recognizeDeviceAndListParts(env, message, base64);
+      deviceModel = vision.recognized_model || "Nieznany model ze zdjęcia";
+    }
+    return await handleFinalDatasheetRag(env, message, datasheetSession, deviceModel, ctx);
+  }
+
+  // --- SESJA DATASHEET (PYTANIE) ---
+  const questionSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
+  if (questionSession) {
+    return await handleFinalDatasheetRagFinal(env, message, questionSession, message.text, ctx);
+  }
+
+  // --- SESJA DODAWANIA CZĘŚCI (MEDIA) ---
+  const partsSession = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts");
+  if (partsSession) {
+    if (message.file_id) {
+      await sendTelegramReply(env, message, "Otrzymałem zdjęcie części. Analizuje oznaczenia i układy...");
+      const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+      if (base64) {
+        return await recognizePartAndRecord(env, message, base64, partsSession, ctx);
+      }
+      return { reply_text: "Nie udało się pobrać zdjęcia części do analizy." };
+    } else if (message.text && !message.text.startsWith("/")) {
+      return {
+        reply_text: "Oczekuję na zdjęcie części. Czy chcesz przerwać?",
+        reply_markup: {
+          inline_keyboard: [[{ text: "❌ Anuluj dodawanie", callback_data: "cancel_session:recycled_parts" }]]
+        }
+      };
+    }
+  }
+
+  return null;
+}
+
 async function processConversationMessage(env, message, intent, ctx = null) {
+  if (message.text && (message.text.toLowerCase().trim() === "menu" || message.text.toLowerCase().trim() === "pomoc" || message.text.toLowerCase().trim() === "start")) {
+    return await processCommandMessage(env, message, "help");
+  }
+
   if (!isTruthy(env.TELEGRAM_AI_ENABLED || "")) {
-    const notificationSent = await sendTelegramReply(
-      env,
-      message,
-      buildIssueReplyText("unrecognized")
-    );
+    const notificationSent = await sendTelegramReply(env, message, buildIssueReplyText("unrecognized"));
     return {
       update_id: message.update_id,
       message_id: message.message_id,
@@ -509,11 +560,7 @@ async function processConversationMessage(env, message, intent, ctx = null) {
 
   const limitCheck = await checkTelegramChatRateLimit(env, message);
   if (!limitCheck.allowed) {
-    const notificationSent = await sendTelegramReply(
-      env,
-      message,
-      buildChatThrottleReply(limitCheck.retry_after_seconds || null)
-    );
+    const notificationSent = await sendTelegramReply(env, message, buildChatThrottleReply(limitCheck.retry_after_seconds || null));
     return {
       update_id: message.update_id,
       message_id: message.message_id,
@@ -526,79 +573,38 @@ async function processConversationMessage(env, message, intent, ctx = null) {
   const history = await loadTelegramChatHistory(env, message);
 
   try {
-    let response;
+    // 1. Handle Active Sessions
+    let response = await handleActiveSessions(env, message, ctx);
 
-    // --- SESJA EDYCJI CZEŚCI ---
-    const editSession = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
-    if (editSession && message.text) {
-      const parts = (message.text || "").split("|").map(s => s.trim());
-      const name = parts[0] || "Nieznana część";
-      const number = parts.length > 1 ? parts[1] : "";
-      
-      // submissionId jest zakodowany w active_device_name jako 'submission:ID'
-      const rawName = editSession.active_device_name || "";
-      const submissionIdFromSession = rawName.startsWith("submission:")
-        ? rawName.replace("submission:", "")
-        : editSession.active_device_id; // fallback dla starych sesji
-
-      await env.DB.prepare("UPDATE recycled_device_submissions SET matched_part_name = ?, matched_part_number = ?, status = 'approved' WHERE id = ?")
-        .bind(name, number, submissionIdFromSession).run();
-      
-      await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
-      response = { reply_text: `✅ Ręcznie zaktualizowano część: *${name}*. Status: Zatwierdzono.` };
-    } else if (intent === "device_media") {
-      // Sprawdź czy mamy aktywną sesję dodawania części
-      const session = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts");
-      if (session) {
-        // Mamy aktywną sesję dodawania części dla konkretnego urządzenia!
-        // Rejestrujemy jako część, bez ponownej identyfikacji vizyjnej całego urządzenia 
-        // (AI może być użyte do identyfikacji konkretnej CZĘŚCI, ale kontekst urządzenia mamy z sesji).
-        await sendTelegramReply(env, message, "Otrzymałem zdjęcie części. Analizuje oznaczenia i układy...");
-        
-        const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
-        if (base64) {
-          // Import the function dynamically if needed, or rely on it being imported at top
-          response = await recognizePartAndRecord(env, message, base64, session, ctx);
-        } else {
-          response = { reply_text: "Nie udało się pobrać zdjęcia części do analizy." };
-        }
-      } else {
-        await sendTelegramReply(env, message, "Otrzymałem zdjęcie. Proszę o chwilę, analizuję model urządzenia...");
-        const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
-        if (base64) {
-          response = await recognizeDeviceAndListParts(env, message, base64);
-        } else {
-          response = { reply_text: "Nie udało się pobrać zdjęcia do analizy." };
-        }
+    // 2. Handle Base Intents if no session active
+    if (!response) {
+      switch (intent) {
+        case "device_media":
+          await sendTelegramReply(env, message, "Otrzymałem zdjęcie. Proszę o chwilę, analizuję model urządzenia...");
+          const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+          response = base64 
+            ? await recognizeDeviceAndListParts(env, message, base64)
+            : { reply_text: "Nie udało się pobrać zdjęcia do analizy." };
+          break;
+        case "datasheet_analysis":
+          response = await initDatasheetWorkflow(env, message, intent);
+          break;
+        case "resistor_reader":
+          response = await handleResistorAnalysis(env, message);
+          break;
+        case "device_lookup":
+          response = await handleRecycledKnowledgeLookup(env, message);
+          break;
+        case "onboarding":
+          response = await recommendOnboardingPath(env, message, history);
+          break;
+        default:
+          response = await generateChatReply(env, message, history);
       }
-    } else if (intent === "datasheet_analysis") {
-      response = await initDatasheetWorkflow(env, message, intent);
-    } else if (intent === "resistor_reader") {
-      response = await handleResistorAnalysis(env, message);
-    } else {
-      const datasheetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
-      if (datasheetSession) {
-          // Użytkownik podał model (tekst lub zdjęcie)
-          let deviceModel = message.text || "Zidentyfikowany ze zdjęcia";
-          if (intent === "device_media") {
-              await sendTelegramReply(env, message, "Otrzymałem zdjęcie urządzenia. Identyfikuję model...");
-              const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
-              const vision = await recognizeDeviceAndListParts(env, message, base64);
-              deviceModel = vision.recognized_model || "Nieznany model ze zdjęcia";
-          }
-          response = await handleFinalDatasheetRag(env, message, datasheetSession, deviceModel, ctx);
-      } else {
-          const questionSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
-          if (questionSession) {
-              response = await handleFinalDatasheetRagFinal(env, message, questionSession, message.text, ctx);
-          } else if (intent === "device_lookup") {
-              response = await handleRecycledKnowledgeLookup(env, message);
-          } else {
-              response =
-                intent === "onboarding"
-                  ? await recommendOnboardingPath(env, message, history)
-                  : await generateChatReply(env, message, history);
-          }
+      
+      // Jeśli jesteśmy w zwykłej konwersacji (generateChatReply), dołączamy menu główne
+      if (intent === "unknown" && response && !response.reply_markup) {
+        // Menu jest już przypinane wewnątrz buildCommandReply / generateChatReply w telegram_ai.js
       }
     }
 
@@ -637,11 +643,17 @@ async function processConversationMessage(env, message, intent, ctx = null) {
 async function processCommandMessage(env, message, command) {
   if (command === "reset") {
     await clearTelegramChatHistory(env, message);
-  } else if (command === "stop") {
+    await closeAllUserSessions(env, message.chat_id, message.user_id);
+    await sendTelegramReply(env, message, "Zresetowałem całą historię i aktywne sesje.");
+    return { status: "reset_complete" };
+  } else if (command === "stop" || command === "anuluj") {
     const session = await getUserSession(env, message.chat_id, message.user_id, "recycled_parts");
     await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts");
+    await closeUserSession(env, message.chat_id, message.user_id, "recycled_parts_edit");
+    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
+    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
     
-    let stopMsg = "Zakończyłem sesję dodawania części.";
+    let stopMsg = "Zakończyłem aktywne sesje i anulowałem operację.";
     if (session && session.active_device_id) {
       const device = await getDeviceById(env, session.active_device_id);
       if (device) {
@@ -672,6 +684,105 @@ async function processCommandMessage(env, message, command) {
   };
 }
 
+const CALLBACK_HANDLERS = {
+  "recycled_add_parts": async (env, id, chat_id, user_id, message, data) => {
+    const parts = data.split(":");
+    const deviceId = parts.length > 1 ? parseInt(parts[1]) : NaN;
+    if (isNaN(deviceId)) {
+      await answerCallbackQuery(env, id, "Błędny identyfikator urządzenia.");
+      return;
+    }
+    const device = await getDeviceById(env, deviceId);
+    const deviceName = device ? `${device.brand || ""} ${device.model || ""}`.trim() : null;
+    await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, deviceName);
+    await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
+    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName || "urządzenia"}. Każde kolejne zdjęcie zostanie przypisane do tego modelu.`, {
+      inline_keyboard: [[{ text: "❌ Anuluj dodawanie", callback_data: "cancel_session:recycled_parts" }]]
+    });
+  },
+  "recycled_add_parts_unknown": async (env, id, chat_id, user_id, message, data) => {
+    const deviceName = data.substring("recycled_add_parts_unknown:".length);
+    await upsertUserSession(env, chat_id, user_id, "recycled_parts", null, deviceName);
+    await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
+    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName}. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia.`, {
+      inline_keyboard: [[{ text: "❌ Anuluj dodawanie", callback_data: "cancel_session:recycled_parts" }]]
+    });
+  },
+  "recycled_cancel": async (env, id, chat_id, user_id, message) => {
+    await closeUserSession(env, chat_id, user_id, "recycled_parts");
+    await answerCallbackQuery(env, id, "Anulowano.");
+    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Przerwałem proces dodawania części.");
+  },
+  "recycled_show_info": async (env, id, chat_id, user_id, message, data) => {
+    const parts = data.split(":");
+    const deviceId = parts.length > 1 ? parseInt(parts[1]) : NaN;
+    if (isNaN(deviceId)) {
+      await answerCallbackQuery(env, id, "Błędny identyfikator urządzenia.");
+      return;
+    }
+    await closeUserSession(env, chat_id, user_id, "recycled_parts");
+    const device = await getDeviceById(env, deviceId);
+    if (device) {
+      const partsInfo = await getPartsForModel(env, device.model);
+      await answerCallbackQuery(env, id, "Wyświetlam katalog.");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, buildDeviceCatalogReply(partsInfo));
+    } else {
+      await answerCallbackQuery(env, id, "Błąd.");
+      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Nie znaleziono urządzenia.");
+    }
+  },
+  "recycled_part_add": async (env, id, chat_id, user_id, message, data) => {
+    const submissionId = data.split(":")[1];
+    await env.DB.prepare("UPDATE recycled_device_submissions SET status = 'approved' WHERE id = ?").bind(submissionId).run();
+    await answerCallbackQuery(env, id, "Zatwierdzono!");
+    await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "✅ Część została zatwierdzona i dodana do bazy!");
+  },
+  "recycled_part_edit": async (env, id, chat_id, user_id, message, data) => {
+    const submissionId = data.split(":")[1];
+    await upsertUserSession(env, chat_id, user_id, "recycled_parts_edit", null, `submission:${submissionId}`);
+    await answerCallbackQuery(env, id, "Tryb edycji aktywny.");
+    await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "Proszę, podaj poprawną nazwę i numer części w formacie: `Nazwa | Numer` (np. `Karta WiFi | 631954-001`).", {
+      inline_keyboard: [[{ text: "❌ Anuluj edycję", callback_data: "cancel_session:recycled_parts_edit" }]]
+    });
+  },
+  "menu_scan": async (env, id, chat_id, user_id, message, data) => {
+    await answerCallbackQuery(env, id, "Instrukcja skanowania.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi zdjęcie płyty głównej (PCB) lub pojedynczego układu / rezystora. Rozpoznam komponenty, a w razie potrzeby poproszę o założenie nowej bazy urządzenia.");
+  },
+  "menu_datasheet": async (env, id, chat_id, user_id, message, data) => {
+    await answerCallbackQuery(env, id, "Instrukcja Datasheet.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi plik PDF z dokumentacją (Datasheet) lub wpisz nazwę układu (np. `NE555 datasheet`), abym mógł go przeanalizować i odpowiedzieć na Twoje pytania.");
+  },
+  "menu_search": async (env, id, chat_id, user_id, message, data) => {
+    await answerCallbackQuery(env, id, "Instrukcja Wyszukiwania.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Wpisz zapytanie (np. `Jakie części ma Xbox 360?` albo `Szukam kondensatora 10uF`), a ja przeszukam nasz zrecyklingowany katalog.");
+  },
+  "menu_issue": async (env, id, chat_id, user_id, message, data) => {
+    await upsertUserSession(env, chat_id, user_id, "issue_wait_idea");
+    await answerCallbackQuery(env, id, "Tryb zgłaszania pomysłu.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Jasne! Opisz mi krótko swój pomysł lub uwagę. Co chciałbyś zgłosić do projektu?", {
+      inline_keyboard: [[{ text: "❌ Anuluj", callback_data: "cancel_session:issue_wait_idea" }]]
+    });
+  },
+  "menu_onboarding": async (env, id, chat_id, user_id, message, data) => {
+    await answerCallbackQuery(env, id, "Onboarding.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Napisz mi kilka słów o sobie, czym się zajmujesz lub co potrafisz, a ja zasugeruję Ci pasujące zadania i miejsce w projekcie Straż Przyszłości.");
+  },
+  "datasheet_start_search": async (env, id, chat_id, user_id, message, data) => {
+    const partQuery = data.substring("datasheet_start_search:".length);
+    const mockMessage = { chat_id, user_id, text: partQuery };
+    const res = await initDatasheetWorkflow(env, mockMessage, "datasheet_analysis");
+    await answerCallbackQuery(env, id, "Uruchamiam asystenta datasheet.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, res.reply_text);
+  },
+  "cancel_session": async (env, id, chat_id, user_id, message, data) => {
+    const sessionType = data.split(":")[1] || "recycled_parts";
+    await closeUserSession(env, chat_id, user_id, sessionType);
+    await answerCallbackQuery(env, id, "Sesja została anulowana.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Przerwałem proces. Możesz powrócić do normalnego korzystania z bota.");
+  }
+};
+
 async function handleTelegramCallback(env, callback, ctx = null) {
   const { id, from, message, data } = callback;
   const chat_id = message ? String(message.chat.id) : null;
@@ -685,56 +796,11 @@ async function handleTelegramCallback(env, callback, ctx = null) {
   try {
     await removeInlineKeyboard(env, chat_id, message?.message_id);
 
-    if (data.startsWith("recycled_add_parts:")) {
-      const deviceId = parseInt(data.split(":")[1]);
-      const device = await getDeviceById(env, deviceId);
-      const deviceName = device ? `${device.brand || ""} ${device.model || ""}`.trim() : null;
-      
-      await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, deviceName);
-
-      await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName || "urządzenia"}. Każde kolejne zdjęcie zostanie przypisane do tego modelu. Aby zakończyć, wpisz /stop.`);
-    } else if (data.startsWith("recycled_add_parts_unknown:")) {
-      const deviceName = data.substring("recycled_add_parts_unknown:".length);
-      await upsertUserSession(env, chat_id, user_id, "recycled_parts", null, deviceName);
-
-      await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName}. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia. Aby zakończyć, wpisz /stop.`);
-    } else if (data === "recycled_cancel") {
-      await closeUserSession(env, chat_id, user_id, "recycled_parts");
-      await answerCallbackQuery(env, id, "Anulowano.");
-      await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Przerwałem proces dodawania części.");
-    } else if (data.startsWith("recycled_show_info:")) {
-      const deviceId = parseInt(data.split(":")[1]);
-      await closeUserSession(env, chat_id, user_id, "recycled_parts");
-
-      const device = await getDeviceById(env, deviceId);
-      if (device) {
-        const partsInfo = await getPartsForModel(env, device.model);
-        await answerCallbackQuery(env, id, "Wyświetlam katalog.");
-        await sendTelegramReply(env, { chat_id, message_id: message.message_id }, buildDeviceCatalogReply(partsInfo));
-      } else {
-        await answerCallbackQuery(env, id, "Błąd.");
-        await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Nie znaleziono urządzenia.");
-      }
-    } else if (data.startsWith("recycled_part_add:")) {
-      const submissionId = data.split(":")[1];
-      await env.DB.prepare("UPDATE recycled_device_submissions SET status = 'approved' WHERE id = ?").bind(submissionId).run();
-      await answerCallbackQuery(env, id, "Zatwierdzono!");
-      await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "✅ Część została zatwierdzona i dodana do bazy!");
-    } else if (data.startsWith("recycled_part_edit:")) {
-      const submissionId = data.split(":")[1];
-      // device_id = null (nie znamy urządzenia w tym kontekście), submissionId kodujemy w nazwie
-      await upsertUserSession(env, chat_id, user_id, "recycled_parts_edit", null, `submission:${submissionId}`);
-      await answerCallbackQuery(env, id, "Tryb edycji aktywny.");
-      await sendTelegramReply(env, { chat_id: chat_id, message_id: message?.message_id }, "Proszę, podaj poprawną nazwę i numer części w formacie: `Nazwa | Numer` (np. `Karta WiFi | 631954-001`).");
-    } else if (data.startsWith("datasheet_start_search:")) {
-      const partQuery = data.substring("datasheet_start_search:".length);
-      // Uruchamiamy workflow datasheetu (bez fileId, bo to wyszukiwanie tekstowe)
-      const mockMessage = { chat_id, user_id, text: partQuery };
-      const res = await initDatasheetWorkflow(env, mockMessage, "datasheet_analysis");
-      await answerCallbackQuery(env, id, "Uruchamiam asystenta datasheet.");
-      await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, res.reply_text);
+    const actionPrefix = data.split(":")[0];
+    const handler = CALLBACK_HANDLERS[actionPrefix];
+    
+    if (handler) {
+      await handler(env, id, chat_id, user_id, message, data);
     } else {
       await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Nieznana komenda.");
     }
