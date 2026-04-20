@@ -573,6 +573,8 @@ async function processConversationMessage(env, message, intent, ctx = null) {
       }
     } else if (intent === "datasheet_analysis") {
       response = await initDatasheetWorkflow(env, message, intent);
+    } else if (intent === "resistor_reader") {
+      response = await handleResistorAnalysis(env, message);
     } else {
       const datasheetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
       if (datasheetSession) {
@@ -585,13 +587,18 @@ async function processConversationMessage(env, message, intent, ctx = null) {
               deviceModel = vision.recognized_model || "Nieznany model ze zdjęcia";
           }
           response = await handleFinalDatasheetRag(env, message, datasheetSession, deviceModel, ctx);
-      } else if (intent === "device_lookup") {
-          response = await handleRecycledKnowledgeLookup(env, message);
       } else {
-          response =
-            intent === "onboarding"
-              ? await recommendOnboardingPath(env, message, history)
-              : await generateChatReply(env, message, history);
+          const questionSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
+          if (questionSession) {
+              response = await handleFinalDatasheetRagFinal(env, message, questionSession, message.text, ctx);
+          } else if (intent === "device_lookup") {
+              response = await handleRecycledKnowledgeLookup(env, message);
+          } else {
+              response =
+                intent === "onboarding"
+                  ? await recommendOnboardingPath(env, message, history)
+                  : await generateChatReply(env, message, history);
+          }
       }
     }
 

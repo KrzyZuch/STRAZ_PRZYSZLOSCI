@@ -332,6 +332,10 @@ export function routeTelegramIntent(message) {
     if (message.mime_type === "application/pdf") {
       return { intent: "datasheet_analysis" };
     }
+    const text = (message.text || message.caption || "").toLowerCase();
+    if (text.includes("rezystor") || text.includes("resistor")) {
+      return { intent: "resistor_reader" };
+    }
     return { intent: "device_media" };
   }
 
@@ -1565,6 +1569,7 @@ export function buildCommandReply(command) {
       "🚀 Zgłoszenia: Wyślij wiadomość z prefiksem \"Pomysl:\" lub \"Uwaga:\", aby utworzyć Issue na GitHubie.",
       "♻️ Recykling: Wyślij model lub zdjęcie PCB, a sprawdzę bazę reuse.",
       "📄 Datasheet: Wyślij PDF lub nazwę części, aby pobrać dokumentację i zadać pytanie AI (RAG).",
+      "🎨 Rezystory: Wyślij zdjęcie rezystora, a odczytam jego wartość (paski/SMD).",
       "",
       "Komendy: /help, /reset",
     ].join("\n");
@@ -2585,66 +2590,122 @@ export async function handleFinalDatasheetRag(env, message, session, deviceModel
     const partQuery = session.active_device_name; // Nazwa części lub PDF caption
     const fileId = session.active_device_id; // Telegram File ID dla PDF
     
-    await sendTelegramReply(env, message, `⏳ Przetwarzam... Urządzenie: *${deviceModel}*, Część: *${partQuery}*. Szukam dokumentacji i analizuję parametry.`);
+    await sendTelegramReply(env, message, `⏳ Przyjąłem model: *${deviceModel}*.`);
+
+    // Przechodzimy do kroku 2: Pytanie techniczne
+    await upsertUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question", session.active_device_id, `${session.active_device_name}|${deviceModel}`);
+    
+    const replyText = [
+        `💡 *Świetnie!* Mamy model: \`${deviceModel}\`.`,
+        "",
+        `O co chciałbyś zapytać w kontekście tej części/dokumentacji?`,
+        "",
+        `_Przykłady:_`,
+        `- "Jaki jest pinout tego układu?"`,
+        `- "Jakie jest maksymalne napięcie zasilania (VCC)?"`,
+        `- "Podaj parametry i zaproponuj popularny zamiennik."`,
+        `- "Jak to podłączyć do Arduino?"`
+    ].join("\n");
+
+    return { reply_text: replyText };
+}
+
+/**
+ * KROK 2: Finalna analiza RAG z pytaniem użytkownika.
+ */
+export async function handleFinalDatasheetRagFinal(env, message, session, userQuestion, ctx = null) {
+    const sessionData = session.active_device_name.split('|');
+    const partQuery = sessionData[0];
+    const deviceModel = sessionData[1];
+    const fileId = session.active_device_id;
+    
+    await sendTelegramReply(env, message, `🔎 Analizuję datasheet pod kątem Twojego pytania: _"${userQuestion}"_...`);
 
     let aiContext = "";
     let datasheetUrl = "";
 
-    if (fileId && message.mime_type === "application/pdf") {
-        // SCENARIUSZ A: Mamy plik PDF od użytkownika
+    if (fileId && session.active_device_name.toLowerCase().includes("pdf")) {
         const base64 = await fetchTelegramFileAsBase64(env, fileId);
         if (base64) {
             const ragSystem = [
                 "Jesteś inżynierem elektronikiem. Analizujesz datasheet PDF.",
-                "1. Wyodrębnij parametry techniczne (VCC, prąd, obudowa, funkcje).",
-                "2. Zidentyfikuj Pinout.",
-                "3. Zapisz dane do bazy wiedzy.",
-                "Zwróć odpowiedź dla użytkownika: co to za układ i odpowiedz na jego pytanie (jeśli zadał w opisie).",
-                `KONTEKST URZĄDZENIA: Ta część pochodzi z: ${deviceModel}`
+                `KONTEKST: Część z urządzenia ${deviceModel}.`,
+                "Twoim zadaniem jest odpowiedzieć PRECYZYJNIE na pytanie użytkownika na podstawie dostarczonego dokumentu.",
+                "Jeśli w dokumencie nie ma odpowiedzi, powiedz to szczerze."
             ].join(" ");
-            
-            const ragPrompt = `Przeanalizuj ten datasheet. Użytkownik pyta/opisuje: ${partQuery}`;
             
             const visionResp = await callGoogleProvider(env, {
                 systemInstruction: ragSystem,
-                userPrompt: ragPrompt,
-                temperature: 0.2,
+                userPrompt: `Pytanie użytkownika: ${userQuestion}\n\nNazwa części: ${partQuery}`,
+                temperature: 0.1,
                 maxTokens: 1500,
                 media: [{ data: base64, mime_type: "application/pdf" }]
             });
-            
             aiContext = visionResp.text;
             datasheetUrl = "Przesłany przez użytkownika";
         }
     } else {
-        // SCENARIUSZ B: Szukamy datasheetu w sieci (Metoda 2: Direct Source)
         const foundUrl = await searchAllDatasheet(partQuery);
         datasheetUrl = foundUrl || "Nie znaleziono bezpośredniego linku PDF";
         
-        const searchPrompt = `Przeanalizuj informacje o części: ${partQuery}. Pochodzi z urządzenia: ${deviceModel}. Link do dokumentacji: ${datasheetUrl}. Odpowiedz technicznie, podaj kluczowe parametry i pinout jeśli go znasz.`;
+        const searchPrompt = `Przeanalizuj informacje o części: ${partQuery}. Pochodzi z: ${deviceModel}. Link do dokumentacji: ${datasheetUrl}. Odpowiedz na pytanie użytkownika: ${userQuestion}.`;
         const searchResp = await generateChatReply(env, { text: searchPrompt }, []);
         aiContext = searchResp.reply_text;
     }
 
-    // ZAPIS DO BAZY (D1)
+    // ZAPIS DO BAZY
     await recordRecycledSubmission(env, {
         chat_id: message?.chat_id,
         user_id: message?.user_id,
         message_id: message?.message_id,
-        lookup_kind: "datasheet_rag",
+        lookup_kind: "datasheet_rag_complete",
         query_text: deviceModel,
         matched_part_name: partQuery,
         matched_part_number: partQuery,
-        attachment_file_id: fileId,
-        attachment_mime_type: fileId ? "application/pdf" : null,
         status: "approved",
-        raw_payload_json: { ai_analysis: aiContext, device_model: deviceModel }
+        raw_payload_json: { question: userQuestion, answer: aiContext, device: deviceModel }
     });
 
-    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
+    await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_question");
 
     return { 
-        reply_text: `✅ *Analiza ukończona!*\n\n*Urządzenie:* ${deviceModel}\n*Dokumentacja:* ${datasheetUrl}\n\n${aiContext}`
+        reply_text: `✅ *Analiza zakończona!*\n\n${aiContext}\n\n🔗 *Źródło:* ${datasheetUrl}`
+    };
+}
+
+/**
+ * Funkcja Czytnika Rezystorów (6. funkcjonalność)
+ */
+export async function handleResistorAnalysis(env, message) {
+    if (!message.file_id) {
+        return { reply_text: "Aby odczytać rezystor, wyślij jego zdjęcie." };
+    }
+    
+    await sendTelegramReply(env, message, "🎨 Analizuję paski/kod na rezystorze...");
+    
+    const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+    if (!base64) return { reply_text: "Nie udało się pobrać zdjęcia." };
+
+    const systemPrompt = [
+        "Jesteś ekspertem od komponentów elektronicznych.",
+        "Zidentyfikuj wartość rezystora ze zdjęcia.",
+        "Jeśli to rezystor THT, zidentyfikuj kolory pasków i oblicz rezystancję oraz tolerancję.",
+        "Jeśli to rezystor SMD, odczytaj kod (np. 103, 1002, 47R) i podaj wartość.",
+        "Zwróć wynik w formacie: 'Wartość: [X] Ohm, Tolerancja: [Y]%' oraz krótkie wyjaśnienie."
+    ].join(" ");
+
+    const visionResp = await callProviderWithFallback(
+        env,
+        buildPromptPayload(systemPrompt, "Podaj wartość tego rezystora.", env, {
+            media: [{ data: base64, mime_type: message.mime_type || "image/jpeg" }],
+            maxTokens: 500
+        })
+    );
+
+    return { 
+        reply_text: `🎨 *Wynik odczytu rezystora:*\n\n${visionResp.text}`,
+        provider_name: visionResp.provider_name,
+        model_name: visionResp.model_name
     };
 }
 
