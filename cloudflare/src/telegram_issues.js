@@ -520,6 +520,15 @@ async function handleActiveSessions(env, message, ctx) {
     return { reply_text: `✅ Ręcznie zaktualizowano część: *${name}*. Status: Zatwierdzono.` };
   }
 
+  // --- SESJA DATASHEET (TARGET) ---
+  const datasheetTargetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_target");
+  if (datasheetTargetSession) {
+    if ((message.text && !message.text.startsWith("/")) || message.file_id) {
+      await closeUserSession(env, message.chat_id, message.user_id, "datasheet_wait_target");
+      return await initDatasheetWorkflow(env, message, "datasheet_analysis");
+    }
+  }
+
   // --- SESJA DATASHEET (MODEL) ---
   const datasheetSession = await getUserSession(env, message.chat_id, message.user_id, "datasheet_wait_model");
   if (datasheetSession) {
@@ -776,8 +785,11 @@ const CALLBACK_HANDLERS = {
     await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi zdjęcie płyty głównej (PCB) lub pojedynczego układu / rezystora. Rozpoznam komponenty, a w razie potrzeby poproszę o założenie nowej bazy urządzenia.");
   },
   "menu_datasheet": async (env, id, chat_id, user_id, message, data) => {
-    await answerCallbackQuery(env, id, "Instrukcja Datasheet.");
-    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi plik PDF z dokumentacją (Datasheet) lub wpisz nazwę układu (np. `NE555 datasheet`), abym mógł go przeanalizować i odpowiedzieć na Twoje pytania.");
+    await upsertUserSession(env, chat_id, user_id, "datasheet_wait_target");
+    await answerCallbackQuery(env, id, "Analiza Datasheet.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi plik PDF z dokumentacją lub po prostu *wpisz nazwę układu* (np. `NE555`), abym mógł go przeanalizować i odpowiedzieć na Twoje pytania.", {
+      inline_keyboard: [[{ text: "❌ Anuluj", callback_data: "cancel_session:datasheet_wait_target" }]]
+    });
   },
   "menu_search": async (env, id, chat_id, user_id, message, data) => {
     await answerCallbackQuery(env, id, "Instrukcja Wyszukiwania.");
