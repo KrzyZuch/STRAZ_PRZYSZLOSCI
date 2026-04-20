@@ -493,9 +493,10 @@ async function handleActiveSessions(env, message, ctx) {
   if (issueSession) {
     if (message.text && !message.text.startsWith("/")) {
       await closeUserSession(env, message.chat_id, message.user_id, "issue_wait_idea");
-      // Przekierowujemy wywołanie na format `Pomysl: treść` by wykorzystać istniejącą logikę
-      message.text = `Pomysl: ${message.text}`;
-      return null; // Zwracamy null, żeby processConversationMessage puścił to dalej jako nowy intent (ale text jest już z prefiksem)
+      const classification = { kind: "idea", label: "pomysł", content: message.text, original_text: message.text };
+      const dryRun = isTruthy(env.TELEGRAM_ISSUES_DRY_RUN || "");
+      const issueResult = await processIssueMessage(env, message, classification, dryRun);
+      return { skip_reply: true, reply_text: "[Zgłoszenie przetworzone]", ...issueResult };
     }
   }
   // --- SESJA EDYCJI CZEŚCI ---
@@ -625,7 +626,10 @@ async function processConversationMessage(env, message, intent, ctx = null) {
     }
 
     await saveTelegramConversation(env, message, intent, message.text || "[media]", response.reply_text);
-    const notificationSent = await sendTelegramReply(env, message, response.reply_text, response.reply_markup);
+    let notificationSent = false;
+    if (!response.skip_reply) {
+      notificationSent = await sendTelegramReply(env, message, response.reply_text, response.reply_markup);
+    }
     return {
       update_id: message.update_id,
       message_id: message.message_id,
@@ -641,10 +645,11 @@ async function processConversationMessage(env, message, intent, ctx = null) {
     };
   } catch (error) {
     const errorString = error instanceof Error ? error.message : JSON.stringify(error);
+    console.error(`[DEBUG AI ERROR]: ${errorString}`);
     const notificationSent = await sendTelegramReply(
       env,
       message,
-      `[DEBUG AI ERROR]: ${errorString}\n\n` + buildIssueReplyText("ai_unavailable")
+      buildIssueReplyText("ai_unavailable")
     );
     return {
       update_id: message.update_id,

@@ -1783,6 +1783,7 @@ async function ensureRecycledKnowledgeSchema(db) {
         user_id TEXT NOT NULL,
         session_type TEXT NOT NULL,
         active_device_id INTEGER,
+        active_device_name TEXT,
         status TEXT NOT NULL DEFAULT 'active',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
@@ -1966,7 +1967,7 @@ export async function recordRecycledSubmission(env, payload) {
   return newId;
 }
 
-export async function upsertUserSession(env, chat_id, user_id, session_type, device_id, device_name = null) {
+export async function upsertUserSession(env, chat_id, user_id, session_type, device_id = null, device_name = null) {
   const db = env.DB;
   const now = toIsoNow();
   await db.prepare(
@@ -1985,7 +1986,7 @@ export async function upsertUserSession(env, chat_id, user_id, session_type, dev
 export async function getUserSession(env, chat_id, user_id, session_type) {
   const db = env.DB;
   return await db.prepare(
-    `SELECT * FROM telegram_user_sessions WHERE chat_id = ? AND user_id = ? AND session_type = ? AND status = 'active'`
+    `SELECT * FROM telegram_user_sessions WHERE chat_id = ? AND user_id = ? AND session_type = ? AND status = 'active' AND updated_at > datetime('now', '-1 hour')`
   ).bind(chat_id, user_id, session_type).first();
 }
 
