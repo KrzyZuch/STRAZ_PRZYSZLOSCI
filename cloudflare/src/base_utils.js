@@ -59,6 +59,7 @@ export function tokenize(text) {
 export function getMessageText(message) {
   if (typeof message === "string") return message;
   if (typeof message?.text === "string") return message.text;
+  if (typeof message?.caption === "string") return message.caption;
   return "";
 }
 
