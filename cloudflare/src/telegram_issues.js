@@ -475,12 +475,14 @@ async function handleActiveSessions(env, message, ctx) {
   // --- SESJA ODCZYTU REZYSTORA ---
   const resistorSession = await getUserSession(env, message.chat_id, message.user_id, "resistor_wait_photo");
   if (resistorSession) {
-    if (message.file_id) {
+    if (message.file_id || (message.text && !message.text.startsWith("/"))) {
       await closeUserSession(env, message.chat_id, message.user_id, "resistor_wait_photo");
       return await handleResistorAnalysis(env, message);
-    } else if (message.text && !message.text.startsWith("/")) {
+    } else if (message.text && message.text.startsWith("/")) {
+      return null; // Komendy (np. /stop, /cancel) niech wpadną do routera
+    } else {
       return {
-        reply_text: "Oczekuję na zdjęcie rezystora. Czy chcesz przerwać?",
+        reply_text: "Oczekuję na zdjęcie rezystora lub wpisane kolory pasków. Czy chcesz przerwać?",
         reply_markup: {
           inline_keyboard: [[{ text: "❌ Anuluj", callback_data: "cancel_session:resistor_wait_photo" }]]
         }
@@ -795,7 +797,7 @@ const CALLBACK_HANDLERS = {
   "menu_resistor": async (env, id, chat_id, user_id, message, data) => {
     await upsertUserSession(env, chat_id, user_id, "resistor_wait_photo");
     await answerCallbackQuery(env, id, "Odczyt rezystora.");
-    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi proszę zdjęcie rezystora (THT lub SMD), a odczytam jego wartość.", {
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi proszę zdjęcie rezystora (THT lub SMD) *ALBO* wpisz jego kolory (np. `brązowy, czarny, czerwony, złoty`), a ja odczytam jego wartość.", {
       inline_keyboard: [[{ text: "❌ Anuluj", callback_data: "cancel_session:resistor_wait_photo" }]]
     });
   },

@@ -2712,29 +2712,45 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
  * Funkcja Czytnika Rezystorów (6. funkcjonalność)
  */
 export async function handleResistorAnalysis(env, message, preFetchedBase64 = null) {
-    if (!message.file_id) {
-        return { reply_text: "Aby odczytać rezystor, wyślij jego zdjęcie." };
+    if (!message.file_id && !message.text) {
+        return { reply_text: "Aby odczytać rezystor, wyślij jego zdjęcie lub wpisz kolory pasków / kod SMD." };
     }
     
-    await sendTelegramReply(env, message, "🎨 Analizuję paski/kod na rezystorze...");
+    await sendTelegramReply(env, message, "🎨 Analizuję dane rezystora...");
     
-    const base64 = preFetchedBase64 || await fetchTelegramFileAsBase64(env, message.file_id);
-    if (!base64) return { reply_text: "Nie udało się pobrać zdjęcia." };
+    let systemPrompt = "";
+    let userPrompt = "";
+    let mediaPayload = null;
 
-    const systemPrompt = [
-        "Jesteś ekspertem od komponentów elektronicznych.",
-        "Zidentyfikuj wartość rezystora ze zdjęcia.",
-        "Jeśli to rezystor THT, zidentyfikuj kolory pasków i oblicz rezystancję oraz tolerancję.",
-        "Jeśli to rezystor SMD, odczytaj kod (np. 103, 1002, 47R) i podaj wartość.",
-        "Zwróć wynik w formacie: 'Wartość: [X] Ohm, Tolerancja: [Y]%' oraz krótkie wyjaśnienie."
-    ].join(" ");
+    if (message.file_id) {
+        const base64 = preFetchedBase64 || await fetchTelegramFileAsBase64(env, message.file_id);
+        if (!base64) return { reply_text: "Nie udało się pobrać zdjęcia." };
+        
+        systemPrompt = [
+            "Jesteś ekspertem od komponentów elektronicznych.",
+            "Zidentyfikuj wartość rezystora ze zdjęcia.",
+            "Jeśli to rezystor THT, zidentyfikuj kolory pasków i oblicz rezystancję oraz tolerancję.",
+            "Jeśli to rezystor SMD, odczytaj kod (np. 103, 1002, 47R) i podaj wartość.",
+            "Zwróć wynik w formacie: 'Wartość: [X] Ohm, Tolerancja: [Y]%' oraz krótkie wyjaśnienie."
+        ].join(" ");
+        userPrompt = "Podaj wartość tego rezystora ze zdjęcia.";
+        mediaPayload = [{ data: base64, mime_type: message.mime_type || "image/jpeg" }];
+    } else {
+        systemPrompt = [
+            "Jesteś ekspertem od komponentów elektronicznych.",
+            "Oblicz wartość rezystora na podstawie kolorów pasków lub kodu SMD podanego przez użytkownika.",
+            "Użytkownik może podać kolory (np. brązowy czarny czerwony złoty) lub kod SMD (np. 103, 47R).",
+            "Zwróć wynik w formacie: 'Wartość: [X] Ohm, Tolerancja: [Y]%' oraz krótkie wyjaśnienie."
+        ].join(" ");
+        userPrompt = `Użytkownik napisał: "${message.text}". Oblicz wartość.`;
+    }
+
+    const payloadOptions = { maxTokens: 500 };
+    if (mediaPayload) payloadOptions.media = mediaPayload;
 
     const visionResp = await callProviderWithFallback(
         env,
-        buildPromptPayload(systemPrompt, "Podaj wartość tego rezystora.", env, {
-            media: [{ data: base64, mime_type: message.mime_type || "image/jpeg" }],
-            maxTokens: 500
-        })
+        buildPromptPayload(systemPrompt, userPrompt, env, payloadOptions)
     );
 
     return { 
