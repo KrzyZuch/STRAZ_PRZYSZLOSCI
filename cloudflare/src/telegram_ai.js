@@ -4056,7 +4056,49 @@ function _fmtOhm(o){if(o===null||o===undefined)return null;if(o>=1e6&&o%1e6===0)
 function _parseOhmAI(s){if(!s)return null;const v=String(s).replace(/[ΩOhm\s]/gi,"").replace(",",".").trim();const m=v.match(/^([\d.]+)\s*([kKMmGg])?$/);if(!m)return null;let val=parseFloat(m[1]);if(isNaN(val))return null;const p=(m[2]||"").toLowerCase();if(p==="k")val*=1e3;else if(p==="m")val*=1e6;else if(p==="g")val*=1e9;return val}
 function _cmpV(ai,calc){if(ai===null||calc===null)return"inconclusive";if(ai===calc)return"match";const r=Math.max(ai,calc)/Math.min(ai,calc);if(r<=1.001)return"match";if(r<=10)return"mismatch_minor";return"mismatch_major"}
 function _verReply(ai){const af=ai.value||"—",at=ai.tolerance||"—",cf=ai.code_format||"—",ab=ai.bands&&ai.bands.length>0?ai.bands.join(" → "):"—",ac=ai.confidence?Math.round(ai.confidence*100):null;let l=[];l.push("🎨 *Wynik odczytu rezystora:*");l.push("");l.push(`📊 Wartość AI: *${af}*`);if(at!=="—")l.push(`📏 Tolerancja AI: ${at}`);if(cf!=="—")l.push(`🔧 Format: ${cf}`);if(ab!=="—")l.push(`🎨 Paski AI: ${ab}`);if(ac!==null)l.push(`🤖 Pewność AI: ${ac}%`);l.push("");l.push("_Kliknij 🔍 Weryfikuj poniżej, aby przeliczyć rozpoznane kolory/kod niezależnym algorytmem i porównać z wynikiem AI._");return l.join("\n")}
-function _verificationReply(ai,calc,aiO){if(!calc)return "❌ Nie udało się przeliczyć podanych kolorów/kodu algorytmem. Sprawdź poprawność danych.";const af=ai.value||"—",cF=_fmtOhm(calc.ohms),cT=calc.tolerance||"—",v=_cmpV(aiO,calc.ohms);let l=[];l.push("🔍 *Weryfikacja algorytmiczna:*");l.push("");l.push(`📊 Wartość AI: *${af}*`);if(calc.bands){l.push(`📐 Obliczono z pasków (${calc.bandCount}-paskowy): *${cF}*`);l.push(`🎨 Paski: ${calc.bands.join(" → ")}`)}else if(calc.smdCode){l.push(`📐 Obliczono z kodu SMD \`${calc.smdCode}\`: *${cF}*`)}if(cT!=="—")l.push(`📏 Tolerancja: ${cT}`);l.push("");if(v==="match")l.push("✅ *Wynik zweryfikowany* — obliczenia algorytmiczne potwierdzają odpowiedź modelu AI. Odczyt jest spójny i wiarygodny.");else if(v==="mismatch_minor"){l.push("⚠️ *Niewielka rozbieżność* — wartość AI i obliczona różnią się, ale w granicach jednego rzędu wielkości. Możliwy błąd w rozpoznaniu paska mnożnika. Zalecam ostrożność.");l.push(`🔍 AI: ${af} | Obliczono: ${cF}`)}else if(v==="mismatch_major"){l.push("🚨 *Istotna rozbieżność* — odpowiedź AI znacząco odstaje od obliczeń algorytmicznych. Prawdopodobne halucynacje modelu. Zdecydowanie polecam weryfikację ręczną.");l.push(`🔍 AI: ${af} | Obliczono: *${cF}*`)}else l.push("❓ *Weryfikacja niejednoznaczna* — nie udało się porównać wyników.");l.push("");l.push("_Warstwa zabezpieczająca: oznaczenia przeliczono niezależnym algorytmem i skonfrontowano z odpowiedzią AI._");return l.join("\n")}
+function _verificationReply(ai, calc, aiO) {
+  if (!calc) return "❌ Nie udało się przeliczyć podanych kolorów/kodu algorytmem. Sprawdź poprawność danych.";
+  const af = ai.value || "—",
+    cF = _fmtOhm(calc.ohms),
+    cT = calc.tolerance || "—",
+    v = _cmpV(aiO, calc.ohms);
+  let l = [];
+  l.push("🔍 *Weryfikacja algorytmiczna:*");
+  l.push("");
+
+  if (v === "match") {
+    l.push(`✅ *Wynik zweryfikowany:* **${cF}**`);
+    l.push(`📊 Wartość AI: ${af} | Obliczono: ${cF}`);
+  } else {
+    // Mismatch - Calculated value FIRST as requested
+    const icon = v === "mismatch_minor" ? "⚠️" : "🚨";
+    l.push(`${icon} *ROZBIEŻNOŚĆ - Wartość obliczona:* **${cF}**`);
+    l.push(`📊 Wartość AI: ${af}`);
+  }
+
+  l.push("");
+  if (calc.bands) {
+    l.push(`🎨 Paski: ${calc.bands.join(" → ")} (${calc.bandCount}-paskowy)`);
+  } else if (calc.smdCode) {
+    l.push(`🔢 Kod SMD: \`${calc.smdCode}\``);
+  }
+  if (cT !== "—") l.push(`📏 Tolerancja (algorytm): ${cT}`);
+
+  l.push("");
+  if (v === "match") {
+    l.push("Obliczenia algorytmiczne potwierdzają odpowiedź modelu AI. Odczyt jest spójny.");
+  } else if (v === "mismatch_minor") {
+    l.push("⚠️ *Niewielka rozbieżność* — wartość AI i obliczona różnią się, ale w granicach jednego rzędu wielkości. Możliwy błąd w rozpoznaniu paska mnożnika.");
+  } else if (v === "mismatch_major") {
+    l.push("🚨 *Istotna rozbieżność* — odpowiedź AI znacząco odstaje od obliczeń algorytmicznych. Prawdopodobne halucynacje modelu AI. *Zaufaj obliczeniom algorytmicznym.*");
+  } else {
+    l.push("❓ *Weryfikacja niejednoznaczna* — nie udało się porównać wyników.");
+  }
+
+  l.push("");
+  l.push("_Warstwa zabezpieczająca: oznaczenia przeliczono niezależnym algorytmem._");
+  return l.join("\n");
+}
 export function runResistorVerification(aiValue,aiTolerance,aiFormat,editData,userText){const ai={value:aiValue||"—",tolerance:aiTolerance||"—",code_format:aiFormat||"—"};let calc=null,aiO=null;if(userText){const bands=_tryParseBands(userText);if(bands)calc=_calcTHT(bands);if(!calc){const smd=_tryParseSMD(userText);if(smd)calc=_calcSMD(smd)}}if(!calc&&editData){if(editData.startsWith("THT:")){const bands=editData.substring(4).split(",");calc=_calcTHT(bands)}else if(editData.startsWith("SMD:")){const code=editData.substring(4);calc=_calcSMD(code)}}if(!calc)return "❌ Nie udało się przeliczyć podanych danych algorytmem. Sprawdź poprawność kolorów/kodu.\n\n_Wskazówka: wpisz kolory oddzielone przecinkami (np. brązowy, czarny, czerwony, złoty) lub kod SMD (np. 103)._";if(aiValue&&typeof aiValue==="number")aiO=aiValue;else if(ai.value!=="—")aiO=_parseOhmAI(ai.value);return _verificationReply(ai,calc,aiO)}
 
 function _tryParseBands(text){
