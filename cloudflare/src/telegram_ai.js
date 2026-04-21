@@ -2877,7 +2877,9 @@ async function findDatasheetPdfLink(part) {
     const googlePdf = await searchGoogleForPdf(part);
     if (googlePdf) return googlePdf;
 
-    return null;
+    // 3. Ostatnia szansa: Znane bazy zewnętrzne (często blokują boty, ale użytkownik może otworzyć w przeglądarce)
+    // Zwracamy link do wyszukiwania, jeśli nic innego nie zadziałało
+    return `https://www.alldatasheet.com/view.jsp?Searchword=${encodeURIComponent(p)}`;
 }
 
 /**
