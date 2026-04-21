@@ -460,6 +460,128 @@ function parseDatasheetSessionPayload(rawValue) {
   };
 }
 
+function serializeScanPartPayload(payload) {
+  return JSON.stringify({
+    version: 1,
+    part_name: payload?.part_name || "",
+    part_number: payload?.part_number || "",
+    description: payload?.description || "",
+    category: payload?.category || "",
+    keywords: Array.isArray(payload?.keywords) ? payload.keywords : splitKeywords(payload?.keywords),
+    parameters: normalizeParametersObject(payload?.parameters || {}),
+    confidence: Number(payload?.confidence || 0),
+    provider_name: payload?.provider_name || "",
+    model_name: payload?.model_name || "",
+    attachment_file_id: payload?.attachment_file_id || "",
+    attachment_mime_type: payload?.attachment_mime_type || "",
+    source: payload?.source || "",
+    donor_device_model: payload?.donor_device_model || "",
+    donor_device_id: payload?.donor_device_id || null,
+    pdf_url: payload?.pdf_url || "",
+    batch_mode: Boolean(payload?.batch_mode),
+  });
+}
+
+function parseScanPartPayload(rawValue) {
+  const parsed = parseJsonSafe(rawValue, null);
+  if (parsed && typeof parsed === "object" && parsed.version === 1) {
+    return {
+      version: 1,
+      part_name: parsed.part_name || "",
+      part_number: parsed.part_number || "",
+      description: parsed.description || "",
+      category: parsed.category || "",
+      keywords: Array.isArray(parsed.keywords) ? parsed.keywords : splitKeywords(parsed.keywords),
+      parameters: normalizeParametersObject(parsed.parameters || {}),
+      confidence: Number(parsed.confidence || 0),
+      provider_name: parsed.provider_name || "",
+      model_name: parsed.model_name || "",
+      attachment_file_id: parsed.attachment_file_id || "",
+      attachment_mime_type: parsed.attachment_mime_type || "",
+      source: parsed.source || "",
+      donor_device_model: parsed.donor_device_model || "",
+      donor_device_id: parsed.donor_device_id || null,
+      pdf_url: parsed.pdf_url || "",
+      batch_mode: Boolean(parsed.batch_mode),
+    };
+  }
+
+  return {
+    version: 1,
+    part_name: "",
+    part_number: "",
+    description: "",
+    category: "",
+    keywords: [],
+    parameters: {},
+    confidence: 0,
+    provider_name: "",
+    model_name: "",
+    attachment_file_id: "",
+    attachment_mime_type: "",
+    source: "",
+    donor_device_model: "",
+    donor_device_id: null,
+    pdf_url: "",
+    batch_mode: false,
+  };
+}
+
+function serializeBatchScanPayload(payload) {
+  return JSON.stringify({
+    version: 1,
+    device_model: payload?.device_model || "",
+    device_brand: payload?.device_brand || "",
+    source: payload?.source || "",
+    provider_name: payload?.provider_name || "",
+    model_name: payload?.model_name || "",
+  });
+}
+
+function parseBatchScanPayload(rawValue) {
+  const parsed = parseJsonSafe(rawValue, null);
+  if (parsed && typeof parsed === "object" && parsed.version === 1) {
+    return {
+      version: 1,
+      device_model: parsed.device_model || "",
+      device_brand: parsed.device_brand || "",
+      source: parsed.source || "",
+      provider_name: parsed.provider_name || "",
+      model_name: parsed.model_name || "",
+    };
+  }
+
+  return {
+    version: 1,
+    device_model: "",
+    device_brand: "",
+    source: "",
+    provider_name: "",
+    model_name: "",
+  };
+}
+
+function isMissingSourceDeviceLabel(value) {
+  const normalized = normalizeForSearch(value);
+  return !normalized || normalized === normalizeForSearch("bez urządzenia źródłowego");
+}
+
+export function createScanPartPayload(payload) {
+  return serializeScanPartPayload(payload);
+}
+
+export function readScanPartPayload(rawValue) {
+  return parseScanPartPayload(rawValue);
+}
+
+export function createBatchScanPayload(payload) {
+  return serializeBatchScanPayload(payload);
+}
+
+export function readBatchScanPayload(rawValue) {
+  return parseBatchScanPayload(rawValue);
+}
+
 function looksLikeStructuredCatalogToken(token) {
   const trimmed = String(token || "").replace(/^[^\p{Letter}\p{Number}]+|[^\p{Letter}\p{Number}]+$/gu, "");
   if (trimmed.length < 4 || trimmed.length > 40) {
@@ -2659,6 +2781,273 @@ function buildPartLookupReply(queryText, matches) {
   return { text: lines.join("\n"), reply_markup: replyMarkup };
 }
 
+function buildPartSummaryLines(partLike) {
+  const parameters = Object.entries(normalizeParametersObject(partLike?.parameters || {}))
+    .slice(0, 5)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(", ");
+  return [
+    `Nazwa: ${partLike?.part_name || "Nieznana część"}`,
+    partLike?.part_number ? `Oznaczenie: \`${partLike.part_number}\`` : "",
+    partLike?.category ? `Kategoria: ${partLike.category}` : "",
+    partLike?.description ? `Opis: ${partLike.description}` : "",
+    parameters ? `Parametry: ${parameters}` : "",
+  ].filter(Boolean);
+}
+
+function buildScanPartPreviewText(payload) {
+  const lines = [
+    "🔎 Rozpoznałem część ze zdjęcia.",
+    "",
+    ...buildPartSummaryLines(payload),
+  ];
+  if (payload?.confidence) {
+    lines.push(`Pewność AI: ${Math.round(Number(payload.confidence || 0) * 100)}%`);
+  }
+  lines.push("");
+  lines.push("Jeśli oznaczenie wymaga poprawki, użyj edycji przed zapisaniem do bazy.");
+  return lines.join("\n");
+}
+
+function buildExistingPartFromScanText(match, donorMatches = []) {
+  const lines = [
+    "✅ Ta część jest już w bazie.",
+    "",
+    ...buildPartSummaryLines(match),
+    typeof match?.donor_count === "number" && match.donor_count > 0
+      ? `Znani dawcy: ${match.donor_count}`
+      : "",
+  ].filter(Boolean);
+
+  if (donorMatches.length) {
+    lines.push("");
+    lines.push("Przykładowi dawcy:");
+    for (const donor of donorMatches.slice(0, 3)) {
+      lines.push(`- ${formatDeviceName(donor.device)}`);
+    }
+  }
+
+  lines.push("");
+  lines.push("Jeśli chcesz, mogę odpowiedzieć na pytania o tę część na podstawie lokalnej bazy.");
+  lines.push("Funkcja *Analiza Datasheet* jest dostępna w menu głównym.");
+  return lines.join("\n");
+}
+
+function pickPartLookupQuery(partName, partNumber) {
+  const candidates = uniqueStrings([
+    partNumber && !/brak wyraznych oznaczen/i.test(normalizeForSearch(partNumber)) ? partNumber : "",
+    partName && normalizeForSearch(partName) !== normalizeForSearch("Część urządzenia") ? partName : "",
+  ]);
+  return candidates;
+}
+
+export async function recognizePartForScanFlow(env, message, mediaBase64, options = {}) {
+  const mediaData = [{ data: mediaBase64, mime_type: message.mime_type || "image/jpeg" }];
+  const visionSystem = [
+    "Jesteś ekspertem od elektroniki i części zamiennych.",
+    "Zidentyfikuj część ze zdjęcia i odczytaj jej oznaczenia.",
+    "BEZWZGLĘDNIE POMIJAJ numery IMEI.",
+    "Zwróć wyłącznie JSON w formacie:",
+    '{ "part_name": "krótka nazwa", "part_number": "dokładne oznaczenie", "description": "krótki opis", "category": "kategoria", "parameters": {"Voltage":"5V"}, "confidence": 0.9 }',
+    'Jeśli nie da się rozpoznać części, zwróć { "error": "not_recognized" }.',
+  ].join(" ");
+
+  const visionResp = await callProviderWithFallback(
+    env,
+    buildPromptPayload(
+      visionSystem,
+      "Rozpoznaj część ze zdjęcia i odczytaj najważniejsze oznaczenia serwisowe.",
+      env,
+      {
+        media: mediaData,
+        responseMimeType: "application/json",
+        maxTokens: 500,
+      }
+    )
+  );
+
+  const identity = extractJsonObject(visionResp.text);
+  if (!identity || identity.error === "not_recognized") {
+    return {
+      type: "unrecognized",
+      reply_text: "Nie udało mi się pewnie rozpoznać tej części. Spróbuj dodać wyraźniejsze zdjęcie oznaczeń lub układu.",
+    };
+  }
+
+  let partNumber = identity.part_number || "";
+  if (typeof partNumber === "string") {
+    partNumber = partNumber.replace(/\b\d{15}\b/g, "[REDACTED IMEI]");
+  }
+
+  const payload = {
+    part_name: identity.part_name || "Część urządzenia",
+    part_number: partNumber || "",
+    description: identity.description || "",
+    category: identity.category || "",
+    keywords: uniqueStrings([identity.part_name, partNumber, identity.category]),
+    parameters: identity.parameters || {},
+    confidence: Number(identity.confidence || 0),
+    provider_name: visionResp.provider_name,
+    model_name: visionResp.model_name,
+    attachment_file_id: message?.file_id || "",
+    attachment_mime_type: message?.mime_type || "",
+    source: options.source || "image_scan",
+    donor_device_model: options.donor_device_model || "",
+    donor_device_id: options.donor_device_id || null,
+    pdf_url: "",
+    batch_mode: Boolean(options.batch_mode),
+  };
+
+  const queries = pickPartLookupQuery(payload.part_name, payload.part_number);
+  for (const query of queries) {
+    const matches = await findPartMasterMatches(env, query);
+    if (matches.length) {
+      const bestMatch = matches[0];
+      const donorMatches = await searchPartDonors(env, bestMatch.part_number || bestMatch.part_name);
+      return {
+        type: "existing_part",
+        match: bestMatch,
+        donor_matches: donorMatches,
+        reply_text: buildExistingPartFromScanText(bestMatch, donorMatches),
+      };
+    }
+  }
+
+  return {
+    type: "preview",
+    payload,
+    reply_text: buildScanPartPreviewText(payload),
+  };
+}
+
+export async function recognizeDeviceForScanFlow(env, message, mediaBase64, options = {}) {
+  const mediaData = [{ data: mediaBase64, mime_type: message.mime_type || "image/jpeg" }];
+  const prompt = [
+    "Jesteś ekspertem od identyfikacji modeli elektrośmieci i urządzeń elektronicznych.",
+    "Rozpoznaj model urządzenia wyłącznie na podstawie etykiety, obudowy lub naklejki znamionowej.",
+    "BEZWZGLĘDNIE POMIJAJ IMEI i inne dane wrażliwe.",
+    'Zwróć tylko JSON: { "brand": "...", "model": "...", "confidence": 0.9 }',
+    'Jeśli nie da się rozpoznać, zwróć { "error": "not_found" }.',
+  ].join(" ");
+
+  const visionResp = await callProviderWithFallback(
+    env,
+    buildPromptPayload(prompt, options.user_prompt || "Rozpoznaj model urządzenia ze zdjęcia.", env, {
+      media: mediaData,
+      responseMimeType: "application/json",
+      maxTokens: 300,
+    })
+  );
+
+  const identity = extractJsonObject(visionResp.text);
+  if (!identity || identity.error === "not_found" || !identity.model) {
+    return {
+      type: "unrecognized",
+      reply_text: "Nie udało mi się pewnie rozpoznać modelu ze zdjęcia. Spróbuj zrobić wyraźniejsze zdjęcie etykiety lub wpisz model ręcznie.",
+    };
+  }
+
+  const payload = {
+    device_model: [identity.brand, identity.model].filter(Boolean).join(" ").trim() || identity.model,
+    device_brand: identity.brand || "",
+    source: options.source || "image_scan",
+    provider_name: visionResp.provider_name,
+    model_name: visionResp.model_name,
+  };
+
+  return {
+    type: "preview",
+    payload,
+    reply_text: [
+      "🔎 Rozpoznałem model elektrośmiecia ze zdjęcia.",
+      "",
+      `Model: *${payload.device_model}*`,
+      identity.confidence ? `Pewność AI: ${Math.round(Number(identity.confidence || 0) * 100)}%` : "",
+      "",
+      "Jeśli oznaczenie wymaga poprawki, użyj edycji przed potwierdzeniem.",
+    ].filter(Boolean).join("\n"),
+  };
+}
+
+function buildSavedPartReply(partRecord, options = {}) {
+  const sourceDeviceLabel = isMissingSourceDeviceLabel(options?.donor_device_model)
+    ? "bez urządzenia źródłowego"
+    : options?.donor_device_model;
+  const lines = [
+    `✅ Zapisano część: *${partRecord?.part_name || "Nieznana część"}*`,
+    partRecord?.part_number ? `Oznaczenie: \`${partRecord.part_number}\`` : "",
+    sourceDeviceLabel ? `Źródło: ${sourceDeviceLabel}` : "",
+    options?.linked_device ? "Powiązanie urządzenie-część zostało zapisane w bazie." : "",
+    options?.pdf_url ? `Znalazłem też link do PDF dla tej części.` : "Nie znalazłem od razu linku do PDF dla tej części.",
+    "Funkcja *Analiza Datasheet* jest dostępna w menu głównym.",
+  ].filter(Boolean);
+
+  const replyMarkup = options?.pdf_url
+    ? { inline_keyboard: [[{ text: "📄 Otwórz PDF z linka", url: options.pdf_url }]] }
+    : undefined;
+
+  return withMainMenuReply({
+    reply_text: lines.join("\n"),
+    reply_markup: replyMarkup,
+  });
+}
+
+export async function saveScanFlowPart(env, message, payload, options = {}) {
+  const donorDeviceModel = coalesceText(options?.donor_device_model, payload?.donor_device_model);
+  const partRecordBase = await upsertPartMaster(env, {
+    part_number: coalesceText(payload?.part_number, payload?.part_name, "Nieznana część"),
+    part_name: coalesceText(payload?.part_name, payload?.part_number, "Nieznana część"),
+    description: coalesceText(payload?.description),
+    category: coalesceText(payload?.category),
+    keywords: uniqueStrings([payload?.keywords, payload?.part_name, payload?.part_number]),
+    parameters: payload?.parameters || {},
+    datasheet_url: coalesceText(payload?.pdf_url),
+  });
+
+  let donorDevice = null;
+  if (!isMissingSourceDeviceLabel(donorDeviceModel)) {
+    donorDevice = await ensureDonorDevice(env, donorDeviceModel);
+    if (donorDevice && partRecordBase?.id) {
+      await linkMasterPartToDevice(env, {
+        device_id: donorDevice.id,
+        master_part_id: partRecordBase.id,
+        quantity: 1,
+        confidence: Math.max(0.6, Number(payload?.confidence || 0.6)),
+      });
+    }
+  }
+
+  let pdfUrl = coalesceText(partRecordBase?.datasheet_url, payload?.pdf_url);
+  if (!pdfUrl) {
+    pdfUrl = (await findDatasheetPdfLink(partRecordBase?.part_number || partRecordBase?.part_name || payload?.part_number || payload?.part_name || "")) || "";
+  }
+
+  let partRecord = partRecordBase;
+  if (pdfUrl && pdfUrl !== partRecordBase?.datasheet_url) {
+    partRecord = await upsertPartMaster(env, {
+      id: partRecordBase?.id || null,
+      part_number: partRecordBase?.part_number || payload?.part_number || payload?.part_name,
+      part_name: partRecordBase?.part_name || payload?.part_name || payload?.part_number,
+      description: partRecordBase?.description || payload?.description || "",
+      category: partRecordBase?.category || payload?.category || "",
+      keywords: uniqueStrings([partRecordBase?.keywords, payload?.keywords]),
+      parameters: mergeParametersObjects(partRecordBase?.parameters, payload?.parameters),
+      datasheet_url: pdfUrl,
+    });
+  }
+
+  return {
+    part_record: partRecord,
+    donor_device: donorDevice,
+    pdf_url: pdfUrl,
+    reply: buildSavedPartReply(partRecord, {
+      donor_device_model: donorDevice?.model || donorDeviceModel || "",
+      linked_device: Boolean(donorDevice),
+      pdf_url: pdfUrl,
+    }),
+  };
+}
+
 export async function recordRecycledSubmission(env, payload) {
   const db = env.DB;
   if (!db) {
@@ -3250,6 +3639,91 @@ export async function answerDeviceLookupQuestion(env, session, userQuestion) {
       `Nie udało się przygotować odpowiedzi o urządzeniu ${deviceLabel}.`,
       error
     );
+  }
+}
+
+export async function answerPartLookupQuestion(env, session, userQuestion) {
+  const payload = parseJsonSafe(session?.active_device_name, {}) || {};
+  const partId = payload.part_id || session?.active_device_id || null;
+  const queryText = payload.part_query || payload.part_number || payload.part_name || "";
+  const partRecord =
+    (partId ? await getPartMasterById(env, partId) : null) ||
+    (queryText ? (await findPartMasterMatches(env, queryText))[0] : null);
+
+  if (!partRecord) {
+    return withMainMenuReply({
+      reply_text: "Nie udało mi się odtworzyć kontekstu tej części. Spróbuj ponownie rozpoznać ją albo wyszukać w bazie.",
+      provider_name: "local",
+      model_name: "d1",
+    });
+  }
+
+  const donorMatches = await searchPartDonors(env, partRecord.part_number || partRecord.part_name);
+  const parameterPairs = Object.entries(normalizeParametersObject(partRecord.parameters || {}))
+    .slice(0, 8)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(", ");
+  const donorLines = donorMatches
+    .slice(0, 8)
+    .map((item) => `- ${formatDeviceName(item.device)}${item.designator ? ` | ${item.designator}` : ""}`)
+    .join("\n");
+
+  try {
+    const response = await callProviderWithFallback(
+      env,
+      buildPromptPayload(
+        [
+          "Jesteś asystentem elektronika i odpowiadasz wyłącznie na podstawie lokalnej bazy części reuse.",
+          "Jeśli danych brakuje, powiedz to wprost zamiast zgadywać.",
+          "Oddziel informacje o części od listy urządzeń-dawców.",
+        ].join(" "),
+        [
+          `Część: ${partRecord.part_name}`,
+          partRecord.part_number ? `Oznaczenie: ${partRecord.part_number}` : "",
+          partRecord.category ? `Kategoria: ${partRecord.category}` : "",
+          partRecord.description ? `Opis: ${partRecord.description}` : "",
+          parameterPairs ? `Parametry: ${parameterPairs}` : "",
+          partRecord.datasheet_url ? `Datasheet URL: ${partRecord.datasheet_url}` : "",
+          "",
+          donorLines ? `Znani dawcy:\n${donorLines}` : "Znani dawcy: brak danych",
+          "",
+          `Pytanie użytkownika: ${userQuestion}`,
+        ].filter(Boolean).join("\n"),
+        env,
+        { maxTokens: 900, temperature: 0.2 }
+      )
+    );
+
+    await closeUserSession(env, session.chat_id, session.user_id, "part_lookup_question");
+    return withMainMenuReply({
+      reply_text: sanitizeTelegramReply(response.text, env),
+      reply_markup: partRecord.datasheet_url
+        ? { inline_keyboard: [[{ text: "📄 Otwórz PDF z linka", url: partRecord.datasheet_url }]] }
+        : undefined,
+      provider_name: response.provider_name,
+      model_name: response.model_name,
+    });
+  } catch (error) {
+    console.error("[answerPartLookupQuestion]", error instanceof Error ? error.message : String(error));
+    await closeUserSession(env, session.chat_id, session.user_id, "part_lookup_question");
+
+    const fallbackLines = [
+      `Część: ${partRecord.part_name}`,
+      partRecord.part_number ? `Oznaczenie: ${partRecord.part_number}` : "",
+      partRecord.description ? `Opis: ${partRecord.description}` : "",
+      parameterPairs ? `Parametry: ${parameterPairs}` : "",
+      donorLines ? `Znani dawcy:\n${donorLines}` : "Znani dawcy: brak danych",
+      "",
+      "Nie udało się uruchomić pełnej odpowiedzi AI, ale powyżej są dane lokalne z bazy.",
+    ].filter(Boolean);
+    return withMainMenuReply({
+      reply_text: fallbackLines.join("\n"),
+      reply_markup: partRecord.datasheet_url
+        ? { inline_keyboard: [[{ text: "📄 Otwórz PDF z linka", url: partRecord.datasheet_url }]] }
+        : undefined,
+      provider_name: "local",
+      model_name: "fallback",
+    });
   }
 }
 

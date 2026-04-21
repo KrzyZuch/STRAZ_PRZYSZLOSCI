@@ -37,7 +37,15 @@ runResistorVerification,
   handleFinalDatasheetRag,
   handleFinalDatasheetRagFinal,
   answerDeviceLookupQuestion,
+  answerPartLookupQuestion,
   attachPdfToDatasheetSession,
+  recognizePartForScanFlow,
+  recognizeDeviceForScanFlow,
+  saveScanFlowPart,
+  createScanPartPayload,
+  readScanPartPayload,
+  createBatchScanPayload,
+  readBatchScanPayload,
 } from "./telegram_ai.js";
 import { buildVerificationResultReply } from "./vision.js";
 import { sanitizeTelegramReply, sendTelegramReply, getMainMenuKeyboard } from "./telegram_utils.js";
@@ -84,6 +92,167 @@ function getConfiguredLabels(kind, env) {
     labels.push(channelLabel);
   }
   return labels;
+}
+
+function withMenuRow(inlineKeyboard = []) {
+  return {
+    inline_keyboard: [
+      ...inlineKeyboard,
+      [{ text: "🏠 Menu główne", callback_data: "command_start" }],
+    ],
+  };
+}
+
+function getScanMenuKeyboard() {
+  return withMenuRow([
+    [{ text: "🔎 Skanuj i rozpoznaj część", callback_data: "scan_part_start" }],
+    [{ text: "🧩 Rozpocznij tryb dodawania wielu części dla podanego urządzenia/elektrośmiecia", callback_data: "scan_batch_start" }],
+  ]);
+}
+
+function getScanPartPreviewKeyboard() {
+  return withMenuRow([
+    [
+      { text: "✅ Dodaj część do bazy danych", callback_data: "scan_part_add" },
+      { text: "✏️ Edytuj rozpoznane oznaczenie części", callback_data: "scan_part_edit" },
+    ],
+  ]);
+}
+
+function getScanPartModelKeyboard() {
+  return withMenuRow([
+    [{ text: "🤷 Nie mam modelu", callback_data: "scan_part_no_model" }],
+  ]);
+}
+
+function getScanPartModelPreviewKeyboard() {
+  return withMenuRow([
+    [
+      { text: "✅ Użyj tego modelu", callback_data: "scan_part_model_use" },
+      { text: "✏️ Edytuj rozpoznane oznaczenie modelu/elektrośmiecia", callback_data: "scan_part_model_edit" },
+    ],
+  ]);
+}
+
+function getBatchChoiceKeyboard() {
+  return withMenuRow([
+    [
+      { text: "✍️ Wpisz model ręcznie", callback_data: "scan_batch_enter_model" },
+      { text: "📷 Rozpoznaj model ze zdjęcia", callback_data: "scan_batch_photo_model" },
+    ],
+  ]);
+}
+
+function getBatchModelPreviewKeyboard() {
+  return withMenuRow([
+    [
+      { text: "✅ Użyj tego modelu", callback_data: "scan_batch_model_use" },
+      { text: "✏️ Edytuj rozpoznane oznaczenie modelu/elektrośmiecia", callback_data: "scan_batch_model_edit" },
+    ],
+  ]);
+}
+
+function getBatchCollectKeyboard() {
+  return withMenuRow([
+    [
+      { text: "🔁 Zmień model elektrośmiecia źródłowego", callback_data: "scan_batch_change_model" },
+      { text: "✅ Zakończ dodawanie", callback_data: "scan_batch_finish" },
+    ],
+  ]);
+}
+
+function getPartQuestionKeyboard(partId) {
+  return withMenuRow([
+    [{ text: "💬 Zapytaj o tę część", callback_data: `part_question_start:${partId}` }],
+  ]);
+}
+
+function parseManualPartEntry(text) {
+  const parts = String(text || "").split("|").map((item) => item.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    return {
+      part_name: parts[0] || "Część urządzenia",
+      part_number: parts.slice(1).join(" | "),
+    };
+  }
+  return {
+    part_name: "Część urządzenia",
+    part_number: parts[0] || String(text || "").trim(),
+  };
+}
+
+async function closeScanPartFlowSessions(env, chatId, userId) {
+  for (const sessionType of [
+    "scan_part_wait_photo",
+    "scan_part_preview",
+    "scan_part_edit",
+    "scan_part_wait_model",
+    "scan_part_model_preview",
+    "scan_part_model_edit",
+  ]) {
+    await closeUserSession(env, chatId, userId, sessionType);
+  }
+}
+
+async function closeBatchFlowSessions(env, chatId, userId) {
+  for (const sessionType of [
+    "scan_batch_wait_model_text",
+    "scan_batch_wait_model_photo",
+    "scan_batch_model_preview",
+    "scan_batch_model_edit",
+    "scan_batch_collect_parts",
+  ]) {
+    await closeUserSession(env, chatId, userId, sessionType);
+  }
+}
+
+async function activateBatchCollectSession(env, chatId, userId, payload) {
+  await closeBatchFlowSessions(env, chatId, userId);
+  await upsertUserSession(env, chatId, userId, "scan_batch_collect_parts", null, createBatchScanPayload(payload));
+}
+
+function buildBatchCollectReply(deviceModel) {
+  return {
+    reply_text: [
+      `✅ Tryb dodawania wielu części aktywny dla modelu: *${deviceModel}*.`,
+      "",
+      "Możesz teraz wpisywać dokładne oznaczenia części albo wysyłać zdjęcia części.",
+      "Gdy skończysz, użyj przycisku *Zakończ dodawanie*.",
+    ].join("\n"),
+    reply_markup: getBatchCollectKeyboard(),
+  };
+}
+
+function buildBatchPartSavedReply(partRecord, deviceModel, pdfUrl = "") {
+  const keyboardRows = [];
+  if (pdfUrl) {
+    keyboardRows.push([{ text: "📄 Otwórz PDF z linka", url: pdfUrl }]);
+  }
+  keyboardRows.push(
+    [{ text: "🔁 Zmień model elektrośmiecia źródłowego", callback_data: "scan_batch_change_model" }],
+    [{ text: "✅ Zakończ dodawanie", callback_data: "scan_batch_finish" }]
+  );
+  return {
+    reply_text: [
+      `✅ Zapisano część dla modelu *${deviceModel}*.`,
+      partRecord?.part_name ? `Nazwa: ${partRecord.part_name}` : "",
+      partRecord?.part_number ? `Oznaczenie: \`${partRecord.part_number}\`` : "",
+      pdfUrl ? "Znalazłem też link do PDF dla tej części." : "PDF nie został znaleziony automatycznie.",
+      "",
+      "Możesz dodać kolejną część, zmienić model źródłowy albo zakończyć dodawanie.",
+    ].filter(Boolean).join("\n"),
+    reply_markup: withMenuRow(keyboardRows),
+  };
+}
+
+async function startBatchWithModel(env, chatId, userId, deviceModel, source = "known_device") {
+  const normalizedModel = String(deviceModel || "").trim();
+  await closeAllUserSessions(env, chatId, userId);
+  await activateBatchCollectSession(env, chatId, userId, {
+    device_model: normalizedModel,
+    source,
+  });
+  return buildBatchCollectReply(normalizedModel);
 }
 
 
@@ -610,6 +779,386 @@ async function handleActiveSessions(env, message, ctx) {
     }
   }
 
+  // --- SESJA SKANU POJEDYNCZEJ CZĘŚCI: OCZEKIWANIE NA ZDJĘCIE ---
+  const scanPartWaitPhotoSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_wait_photo");
+  if (scanPartWaitPhotoSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.file_id || message.mime_type === "application/pdf") {
+      return {
+        reply_text: "Dodaj zdjęcie części. W tym trybie nie obsługuję PDF.",
+        reply_markup: getScanMenuKeyboard(),
+      };
+    }
+
+    await closeUserSession(env, message.chat_id, message.user_id, "scan_part_wait_photo");
+    await sendTelegramReply(env, message, "Otrzymałem zdjęcie części. Analizuję oznaczenia i komponenty...");
+    const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+    if (!base64) {
+      return { reply_text: "Nie udało się pobrać zdjęcia części do analizy." };
+    }
+
+    const scanResult = await recognizePartForScanFlow(env, message, base64, { source: "single_part_scan" });
+    if (scanResult.type === "preview" && scanResult.payload) {
+      await upsertUserSession(env, message.chat_id, message.user_id, "scan_part_preview", null, createScanPartPayload(scanResult.payload));
+      return {
+        reply_text: scanResult.reply_text,
+        reply_markup: getScanPartPreviewKeyboard(),
+      };
+    }
+    if (scanResult.type === "existing_part" && scanResult.match?.id) {
+      return {
+        reply_text: scanResult.reply_text,
+        reply_markup: getPartQuestionKeyboard(scanResult.match.id),
+      };
+    }
+    return {
+      reply_text: scanResult.reply_text || "Nie udało się przygotować podglądu części.",
+      reply_markup: getScanMenuKeyboard(),
+    };
+  }
+
+  // --- SESJA PODGLĄDU CZĘŚCI ---
+  const scanPartPreviewSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_preview");
+  if (scanPartPreviewSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (message.text || message.file_id) {
+      return {
+        reply_text: "Użyj przycisków pod wynikiem, aby dodać część do bazy albo poprawić rozpoznane oznaczenie.",
+        reply_markup: getScanPartPreviewKeyboard(),
+      };
+    }
+  }
+
+  // --- SESJA EDYCJI PODGLĄDU CZĘŚCI ---
+  const scanPartEditSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_edit");
+  if (scanPartEditSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.text) {
+      return {
+        reply_text: "Podaj poprawione oznaczenie części. Możesz wpisać samo oznaczenie albo format `Nazwa | Oznaczenie`.",
+        reply_markup: withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_part_edit" }]]),
+      };
+    }
+
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na sensowne oznaczenie części. Spróbuj ponownie albo anuluj edycję." };
+    }
+
+    const payload = readScanPartPayload(scanPartEditSession.active_device_name);
+    const parts = String(message.text || "").split("|").map((item) => item.trim()).filter(Boolean);
+    const nextPayload = {
+      ...payload,
+      part_name: parts.length > 1 ? parts[0] : (payload.part_name || "Część urządzenia"),
+      part_number: parts.length > 1 ? parts.slice(1).join(" | ") : String(message.text || "").trim(),
+    };
+    await closeUserSession(env, message.chat_id, message.user_id, "scan_part_edit");
+    await upsertUserSession(env, message.chat_id, message.user_id, "scan_part_preview", null, createScanPartPayload(nextPayload));
+    return {
+      reply_text: [
+        "✏️ Zaktualizowałem podgląd części.",
+        "",
+        `Nazwa: ${nextPayload.part_name}`,
+        nextPayload.part_number ? `Oznaczenie: \`${nextPayload.part_number}\`` : "",
+      ].filter(Boolean).join("\n"),
+      reply_markup: getScanPartPreviewKeyboard(),
+    };
+  }
+
+  // --- SESJA OCZEKIWANIA NA MODEL DLA POJEDYNCZEJ CZĘŚCI ---
+  const scanPartWaitModelSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_wait_model");
+  if (scanPartWaitModelSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (message.file_id && message.mime_type === "application/pdf") {
+      return {
+        reply_text: "Na tym etapie potrzebuję modelu elektrośmiecia źródłowego jako tekst albo zdjęcie etykiety. Jeśli go nie masz, kliknij *Nie mam modelu*.",
+        reply_markup: getScanPartModelKeyboard(),
+      };
+    }
+    const payload = readScanPartPayload(scanPartWaitModelSession.active_device_name);
+
+    if (message.file_id) {
+      await sendTelegramReply(env, message, "Otrzymałem zdjęcie modelu. Rozpoznaję oznaczenie elektrośmiecia...");
+      const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+      if (!base64) {
+        return { reply_text: "Nie udało się pobrać zdjęcia modelu do analizy." };
+      }
+      const modelResult = await recognizeDeviceForScanFlow(env, message, base64, { source: "single_part_model_photo" });
+      if (modelResult.type === "preview" && modelResult.payload) {
+        await closeUserSession(env, message.chat_id, message.user_id, "scan_part_wait_model");
+        await upsertUserSession(
+          env,
+          message.chat_id,
+          message.user_id,
+          "scan_part_model_preview",
+          null,
+          createScanPartPayload({ ...payload, donor_device_model: modelResult.payload.device_model })
+        );
+        return {
+          reply_text: modelResult.reply_text,
+          reply_markup: getScanPartModelPreviewKeyboard(),
+        };
+      }
+      return {
+        reply_text: modelResult.reply_text || "Nie udało się rozpoznać modelu ze zdjęcia.",
+        reply_markup: getScanPartModelKeyboard(),
+      };
+    }
+
+    if (!message.text) {
+      return {
+        reply_text: "Podaj model elektrośmiecia źródłowego tekstem, wyślij zdjęcie etykiety albo kliknij *Nie mam modelu*.",
+        reply_markup: getScanPartModelKeyboard(),
+      };
+    }
+
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na poprawny model urządzenia. Spróbuj ponownie albo użyj przycisku *Nie mam modelu*." };
+    }
+
+    await closeScanPartFlowSessions(env, message.chat_id, message.user_id);
+    const saveResult = await saveScanFlowPart(env, message, payload, { donor_device_model: message.text });
+    return saveResult.reply;
+  }
+
+  // --- SESJA PODGLĄDU MODELU DLA POJEDYNCZEJ CZĘŚCI ---
+  const scanPartModelPreviewSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_model_preview");
+  if (scanPartModelPreviewSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (message.text || message.file_id) {
+      return {
+        reply_text: "Użyj przycisków pod wynikiem, aby potwierdzić model albo poprawić rozpoznane oznaczenie.",
+        reply_markup: getScanPartModelPreviewKeyboard(),
+      };
+    }
+  }
+
+  // --- SESJA EDYCJI MODELU DLA POJEDYNCZEJ CZĘŚCI ---
+  const scanPartModelEditSession = await getUserSession(env, message.chat_id, message.user_id, "scan_part_model_edit");
+  if (scanPartModelEditSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.text) {
+      return {
+        reply_text: "Podaj poprawione oznaczenie modelu elektrośmiecia źródłowego.",
+        reply_markup: withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_part_model_edit" }]]),
+      };
+    }
+
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na poprawny model urządzenia. Spróbuj ponownie." };
+    }
+
+    const payload = readScanPartPayload(scanPartModelEditSession.active_device_name);
+    await closeScanPartFlowSessions(env, message.chat_id, message.user_id);
+    const saveResult = await saveScanFlowPart(env, message, payload, { donor_device_model: message.text });
+    return saveResult.reply;
+  }
+
+  // --- SESJA PYTAŃ O CZĘŚĆ Z BAZY ---
+  const partQuestionSession = await getUserSession(env, message.chat_id, message.user_id, "part_lookup_question");
+  if (partQuestionSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.text) {
+      return {
+        reply_text: "💬 Wpisz pytanie tekstem o tę część, a odpowiem na podstawie lokalnej bazy i znanych donorów.",
+        reply_markup: getMainMenuKeyboard(),
+      };
+    }
+    return await answerPartLookupQuestion(env, partQuestionSession, message.text);
+  }
+
+  // --- SESJA WYBORU MODELU BATCH: TEKST ---
+  const batchWaitModelTextSession = await getUserSession(env, message.chat_id, message.user_id, "scan_batch_wait_model_text");
+  if (batchWaitModelTextSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.text) {
+      return {
+        reply_text: "Wpisz model elektrośmiecia ręcznie, najlepiej dokładne oznaczenie z etykiety.",
+        reply_markup: getBatchChoiceKeyboard(),
+      };
+    }
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na poprawny model. Spróbuj ponownie lub wróć do wyboru sposobu wprowadzenia modelu." };
+    }
+    await activateBatchCollectSession(env, message.chat_id, message.user_id, {
+      device_model: message.text.trim(),
+      source: "manual_text",
+    });
+    return buildBatchCollectReply(message.text.trim());
+  }
+
+  // --- SESJA WYBORU MODELU BATCH: ZDJĘCIE ---
+  const batchWaitModelPhotoSession = await getUserSession(env, message.chat_id, message.user_id, "scan_batch_wait_model_photo");
+  if (batchWaitModelPhotoSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.file_id || message.mime_type === "application/pdf") {
+      return {
+        reply_text: "Dodaj zdjęcie etykiety lub obudowy urządzenia. Jeśli wolisz, możesz też wrócić do wpisania modelu ręcznie.",
+        reply_markup: getBatchChoiceKeyboard(),
+      };
+    }
+    await sendTelegramReply(env, message, "Otrzymałem zdjęcie modelu. Analizuję oznaczenie elektrośmiecia...");
+    const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+    if (!base64) {
+      return { reply_text: "Nie udało się pobrać zdjęcia modelu do analizy." };
+    }
+
+    const modelResult = await recognizeDeviceForScanFlow(env, message, base64, { source: "batch_model_photo" });
+    if (modelResult.type === "preview" && modelResult.payload) {
+      await closeUserSession(env, message.chat_id, message.user_id, "scan_batch_wait_model_photo");
+      await upsertUserSession(env, message.chat_id, message.user_id, "scan_batch_model_preview", null, createBatchScanPayload(modelResult.payload));
+      return {
+        reply_text: modelResult.reply_text,
+        reply_markup: getBatchModelPreviewKeyboard(),
+      };
+    }
+    return {
+      reply_text: modelResult.reply_text || "Nie udało się rozpoznać modelu ze zdjęcia.",
+      reply_markup: getBatchChoiceKeyboard(),
+    };
+  }
+
+  // --- SESJA PODGLĄDU MODELU BATCH ---
+  const batchModelPreviewSession = await getUserSession(env, message.chat_id, message.user_id, "scan_batch_model_preview");
+  if (batchModelPreviewSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (message.text || message.file_id) {
+      return {
+        reply_text: "Użyj przycisków pod wynikiem, aby potwierdzić model albo go poprawić.",
+        reply_markup: getBatchModelPreviewKeyboard(),
+      };
+    }
+  }
+
+  // --- SESJA EDYCJI MODELU BATCH ---
+  const batchModelEditSession = await getUserSession(env, message.chat_id, message.user_id, "scan_batch_model_edit");
+  if (batchModelEditSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    if (!message.text) {
+      return {
+        reply_text: "Podaj poprawione oznaczenie modelu elektrośmiecia źródłowego.",
+        reply_markup: withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_batch_model_edit" }]]),
+      };
+    }
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na poprawny model. Spróbuj ponownie." };
+    }
+    await activateBatchCollectSession(env, message.chat_id, message.user_id, {
+      device_model: message.text.trim(),
+      source: "manual_edit",
+    });
+    return buildBatchCollectReply(message.text.trim());
+  }
+
+  // --- SESJA DODAWANIA WIELU CZĘŚCI ---
+  const batchCollectSession = await getUserSession(env, message.chat_id, message.user_id, "scan_batch_collect_parts");
+  if (batchCollectSession) {
+    if (message.text && message.text.startsWith("/")) {
+      return null;
+    }
+    const batchPayload = readBatchScanPayload(batchCollectSession.active_device_name);
+
+    if (message.file_id && message.mime_type !== "application/pdf") {
+      await sendTelegramReply(env, message, "Otrzymałem zdjęcie części. Przygotowuję podgląd przed zapisem do bazy...");
+      const base64 = await fetchTelegramFileAsBase64(env, message.file_id);
+      if (!base64) {
+        return { reply_text: "Nie udało się pobrać zdjęcia części do analizy." };
+      }
+      const scanResult = await recognizePartForScanFlow(env, message, base64, {
+        source: "batch_part_scan",
+        batch_mode: true,
+        donor_device_model: batchPayload.device_model,
+      });
+      if (scanResult.type === "preview" && scanResult.payload) {
+        await upsertUserSession(
+          env,
+          message.chat_id,
+          message.user_id,
+          "scan_part_preview",
+          null,
+          createScanPartPayload({
+            ...scanResult.payload,
+            donor_device_model: batchPayload.device_model,
+            batch_mode: true,
+          })
+        );
+        return {
+          reply_text: scanResult.reply_text,
+          reply_markup: getScanPartPreviewKeyboard(),
+        };
+      }
+      if (scanResult.type === "existing_part" && scanResult.match?.id) {
+        return {
+          reply_text: scanResult.reply_text,
+          reply_markup: getPartQuestionKeyboard(scanResult.match.id),
+        };
+      }
+      return {
+        reply_text: scanResult.reply_text || "Nie udało się przygotować podglądu części.",
+        reply_markup: getBatchCollectKeyboard(),
+      };
+    }
+
+    if (message.file_id && message.mime_type === "application/pdf") {
+      return {
+        reply_text: "W trybie dodawania wielu części przyjmuję zdjęcia części albo wpisane oznaczenia tekstem. PDF analizuj przez *Analiza Datasheet* z menu głównego.",
+        reply_markup: getBatchCollectKeyboard(),
+      };
+    }
+
+    if (!message.text) {
+      return {
+        reply_text: "Wpisz oznaczenie części w formacie `Nazwa | Oznaczenie` albo wyślij zdjęcie części.",
+        reply_markup: getBatchCollectKeyboard(),
+      };
+    }
+
+    const isValid = await validateManualEntry(env, message.text);
+    if (!isValid) {
+      return { reply_text: "🚫 To nie wygląda na sensowne oznaczenie części. Spróbuj ponownie." };
+    }
+
+    const manualPart = parseManualPartEntry(message.text);
+    const saveResult = await saveScanFlowPart(env, message, {
+      ...manualPart,
+      description: "",
+      category: "",
+      keywords: [manualPart.part_name, manualPart.part_number],
+      parameters: {},
+      source: "batch_manual_text",
+      batch_mode: true,
+    }, {
+      donor_device_model: batchPayload.device_model,
+    });
+    return buildBatchPartSavedReply(saveResult.part_record, batchPayload.device_model, saveResult.pdf_url);
+  }
+
   // --- SESJA PYTAŃ O URZĄDZENIE Z BAZY ---
   const deviceQuestionSession = await getUserSession(env, message.chat_id, message.user_id, "device_lookup_question");
   if (deviceQuestionSession) {
@@ -948,22 +1497,19 @@ const CALLBACK_HANDLERS = {
     }
     const device = await getDeviceById(env, deviceId);
     const deviceName = device ? `${device.brand || ""} ${device.model || ""}`.trim() : null;
-    await upsertUserSession(env, chat_id, user_id, "recycled_parts", deviceId, deviceName);
-    await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName || "urządzenia"}. Każde kolejne zdjęcie zostanie przypisane do tego modelu.`, {
-      inline_keyboard: [[{ text: "❌ Anuluj dodawanie", callback_data: "cancel_session:recycled_parts" }]]
-    });
+    const reply = await startBatchWithModel(env, chat_id, user_id, deviceName || "urządzenia", "known_device");
+    await answerCallbackQuery(env, id, "Tryb dodawania wielu części aktywny.");
+    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, reply.reply_text, reply.reply_markup);
   },
   "recycled_add_parts_unknown": async (env, id, chat_id, user_id, message, data) => {
     const deviceName = data.substring("recycled_add_parts_unknown:".length);
-    await upsertUserSession(env, chat_id, user_id, "recycled_parts", null, deviceName);
-    await answerCallbackQuery(env, id, "Tryb dodawania części aktywny!");
-    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, `✅ Tryb dodawania części AKTYWNY dla: ${deviceName}. Każde kolejne zdjęcie zostanie przypisane do tego urządzenia.`, {
-      inline_keyboard: [[{ text: "❌ Anuluj dodawanie", callback_data: "cancel_session:recycled_parts" }]]
-    });
+    const reply = await startBatchWithModel(env, chat_id, user_id, deviceName, "recognized_unknown_device");
+    await answerCallbackQuery(env, id, "Tryb dodawania wielu części aktywny.");
+    await sendTelegramReply(env, { chat_id, message_id: message.message_id }, reply.reply_text, reply.reply_markup);
   },
   "recycled_cancel": async (env, id, chat_id, user_id, message) => {
     await closeUserSession(env, chat_id, user_id, "recycled_parts");
+    await closeBatchFlowSessions(env, chat_id, user_id);
     await answerCallbackQuery(env, id, "Anulowano.");
     await sendTelegramReply(env, { chat_id, message_id: message.message_id }, "Przerwałem proces dodawania części. Wybierz, co chcesz zrobić dalej:", getMainMenuKeyboard());
   },
@@ -1002,7 +1548,191 @@ const CALLBACK_HANDLERS = {
   "menu_scan": async (env, id, chat_id, user_id, message, data) => {
     await closeAllUserSessions(env, chat_id, user_id);
     await answerCallbackQuery(env, id, "Instrukcja skanowania.");
-    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Prześlij mi zdjęcie płyty głównej (PCB) lub pojedynczego układu / rezystora. Rozpoznam komponenty, a w razie potrzeby poproszę o założenie nowej bazy urządzenia.", getMainMenuKeyboard());
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Prześlij mi zdjęcie elementu elektronicznego (procesora) lub pojedynczego układu. Rozpoznam komponenty, omówię je, a w razie potrzeby poproszę o założenie nowej bazy urządzenia.",
+      getScanMenuKeyboard()
+    );
+  },
+  "scan_part_start": async (env, id, chat_id, user_id, message) => {
+    await closeAllUserSessions(env, chat_id, user_id);
+    await upsertUserSession(env, chat_id, user_id, "scan_part_wait_photo");
+    await answerCallbackQuery(env, id, "Czekam na zdjęcie części.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Dodaj zdjęcie części.", getScanMenuKeyboard());
+  },
+  "scan_part_edit": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_part_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu części.");
+      return;
+    }
+    await closeUserSession(env, chat_id, user_id, "scan_part_preview");
+    await upsertUserSession(env, chat_id, user_id, "scan_part_edit", null, session.active_device_name);
+    await answerCallbackQuery(env, id, "Edytuj oznaczenie części.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Podaj poprawione oznaczenie części. Możesz wpisać samo oznaczenie albo format `Nazwa | Oznaczenie`.",
+      withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_part_edit" }]])
+    );
+  },
+  "scan_part_add": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_part_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu części.");
+      return;
+    }
+    const payload = readScanPartPayload(session.active_device_name);
+    await closeUserSession(env, chat_id, user_id, "scan_part_preview");
+
+    if (payload.batch_mode && payload.donor_device_model) {
+      const saveResult = await saveScanFlowPart(env, { chat_id, user_id, message_id: message?.message_id }, payload, {
+        donor_device_model: payload.donor_device_model,
+      });
+      const reply = buildBatchPartSavedReply(saveResult.part_record, payload.donor_device_model, saveResult.pdf_url);
+      await answerCallbackQuery(env, id, "Część zapisana.");
+      await sendTelegramReply(
+        env,
+        { chat_id, message_id: message?.message_id },
+        reply.reply_text,
+        reply.reply_markup
+      );
+      return;
+    }
+
+    await upsertUserSession(env, chat_id, user_id, "scan_part_wait_model", null, createScanPartPayload(payload));
+    await answerCallbackQuery(env, id, "Podaj model źródłowy.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Podaj model elektrośmiecia źródłowego tekstem, wyślij zdjęcie modelu/etykiety albo kliknij *Nie mam modelu*.",
+      getScanPartModelKeyboard()
+    );
+  },
+  "scan_part_no_model": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_part_wait_model");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnej sesji dodawania części.");
+      return;
+    }
+    const payload = readScanPartPayload(session.active_device_name);
+    await closeScanPartFlowSessions(env, chat_id, user_id);
+    const saveResult = await saveScanFlowPart(env, { chat_id, user_id, message_id: message?.message_id }, payload, {
+      donor_device_model: "bez urządzenia źródłowego",
+    });
+    await answerCallbackQuery(env, id, "Zapisuję bez urządzenia źródłowego.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, saveResult.reply.reply_text, saveResult.reply.reply_markup);
+  },
+  "scan_part_model_use": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_part_model_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu modelu.");
+      return;
+    }
+    const payload = readScanPartPayload(session.active_device_name);
+    await closeScanPartFlowSessions(env, chat_id, user_id);
+    const saveResult = await saveScanFlowPart(env, { chat_id, user_id, message_id: message?.message_id }, payload, {
+      donor_device_model: payload.donor_device_model,
+    });
+    await answerCallbackQuery(env, id, "Część zapisana.");
+    if (payload.batch_mode && payload.donor_device_model) {
+      const reply = buildBatchPartSavedReply(saveResult.part_record, payload.donor_device_model, saveResult.pdf_url);
+      await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, reply.reply_text, reply.reply_markup);
+      return;
+    }
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, saveResult.reply.reply_text, saveResult.reply.reply_markup);
+  },
+  "scan_part_model_edit": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_part_model_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu modelu.");
+      return;
+    }
+    await closeUserSession(env, chat_id, user_id, "scan_part_model_preview");
+    await upsertUserSession(env, chat_id, user_id, "scan_part_model_edit", null, session.active_device_name);
+    await answerCallbackQuery(env, id, "Edytuj model elektrośmiecia.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Podaj poprawione oznaczenie modelu elektrośmiecia źródłowego.",
+      withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_part_model_edit" }]])
+    );
+  },
+  "part_question_start": async (env, id, chat_id, user_id, message, data) => {
+    const partId = Number.parseInt(data.split(":")[1] || "", 10);
+    if (!Number.isFinite(partId)) {
+      await answerCallbackQuery(env, id, "Błędny identyfikator części.");
+      return;
+    }
+    await upsertUserSession(env, chat_id, user_id, "part_lookup_question", partId, JSON.stringify({ version: 1, part_id: partId }));
+    await answerCallbackQuery(env, id, "Zadaj pytanie o część.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "💬 Wpisz pytanie o tę część, a odpowiem na podstawie lokalnej bazy i znanych donorów.", getMainMenuKeyboard());
+  },
+  "scan_batch_start": async (env, id, chat_id, user_id, message) => {
+    await closeAllUserSessions(env, chat_id, user_id);
+    await answerCallbackQuery(env, id, "Tryb dodawania wielu części.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Ten tryb służy do przypisywania wielu części do jednego modelu elektrośmiecia. Najpierw podaj model urządzenia źródłowego ręcznie albo rozpoznaj go ze zdjęcia.",
+      getBatchChoiceKeyboard()
+    );
+  },
+  "scan_batch_enter_model": async (env, id, chat_id, user_id, message) => {
+    await closeBatchFlowSessions(env, chat_id, user_id);
+    await upsertUserSession(env, chat_id, user_id, "scan_batch_wait_model_text");
+    await answerCallbackQuery(env, id, "Wpisz model ręcznie.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Wpisz dokładny model elektrośmiecia źródłowego ręcznie.", getBatchChoiceKeyboard());
+  },
+  "scan_batch_photo_model": async (env, id, chat_id, user_id, message) => {
+    await closeBatchFlowSessions(env, chat_id, user_id);
+    await upsertUserSession(env, chat_id, user_id, "scan_batch_wait_model_photo");
+    await answerCallbackQuery(env, id, "Wyślij zdjęcie modelu.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Dodaj zdjęcie etykiety albo obudowy urządzenia, a rozpoznam model.", getBatchChoiceKeyboard());
+  },
+  "scan_batch_model_use": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_batch_model_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu modelu.");
+      return;
+    }
+    const payload = readBatchScanPayload(session.active_device_name);
+    const reply = await startBatchWithModel(env, chat_id, user_id, payload.device_model, payload.source || "image_confirmed");
+    await answerCallbackQuery(env, id, "Model zaakceptowany.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, reply.reply_text, reply.reply_markup);
+  },
+  "scan_batch_model_edit": async (env, id, chat_id, user_id, message) => {
+    const session = await getUserSession(env, chat_id, user_id, "scan_batch_model_preview");
+    if (!session) {
+      await answerCallbackQuery(env, id, "Brak aktywnego podglądu modelu.");
+      return;
+    }
+    await closeUserSession(env, chat_id, user_id, "scan_batch_model_preview");
+    await upsertUserSession(env, chat_id, user_id, "scan_batch_model_edit", null, session.active_device_name);
+    await answerCallbackQuery(env, id, "Edytuj model.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Podaj poprawione oznaczenie modelu elektrośmiecia źródłowego.",
+      withMenuRow([[{ text: "❌ Anuluj", callback_data: "cancel_session:scan_batch_model_edit" }]])
+    );
+  },
+  "scan_batch_change_model": async (env, id, chat_id, user_id, message) => {
+    await closeBatchFlowSessions(env, chat_id, user_id);
+    await answerCallbackQuery(env, id, "Zmieniam model źródłowy.");
+    await sendTelegramReply(
+      env,
+      { chat_id, message_id: message?.message_id },
+      "Podaj nowy model elektrośmiecia źródłowego ręcznie albo rozpoznaj go ze zdjęcia.",
+      getBatchChoiceKeyboard()
+    );
+  },
+  "scan_batch_finish": async (env, id, chat_id, user_id, message) => {
+    await closeBatchFlowSessions(env, chat_id, user_id);
+    await closeScanPartFlowSessions(env, chat_id, user_id);
+    await answerCallbackQuery(env, id, "Zakończono dodawanie.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, "Zakończyłem tryb dodawania wielu części. Wybierz, co chcesz zrobić dalej:", getMainMenuKeyboard());
   },
   "menu_datasheet": async (env, id, chat_id, user_id, message, data) => {
     await closeAllUserSessions(env, chat_id, user_id);
