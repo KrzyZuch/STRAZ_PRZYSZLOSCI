@@ -27,6 +27,7 @@ run -> wygenerowanie artefaktow -> push brancha do forka -> PR do upstream
 - `REVIEW_CHECKLIST.md`: checklista review artefaktow
 - `scripts/create_execution_records.py`: generator kanonicznych rekordow `Run` i `Artifact` po faktycznym uruchomieniu packa
 - `scripts/finalize_execution_pack_run.py`: orkiestrator konca runu packa, ktory robi rebuild, summary, `Run` record i git push do forka
+- `scripts/attach_pr_artifact_record.py`: helper, ktory po otwarciu PR dopina `Artifact` do istniejacego `Run`
 - `scripts/dry_run_execution_pack.py`: lokalny dry-run packa bez prawdziwego Kaggle runu
 
 ## Najwazniejsze zasady
@@ -54,3 +55,9 @@ Jesli chcesz rozwijac ten pack dalej, zacznij od:
 2. `manifest.json`
 3. `REVIEW_CHECKLIST.md`
 4. notebooka `youtube-databaseparts.ipynb`
+
+Jesli chcesz rozwijac caly lancuch, a nie tylko ten jeden pack, przeczytaj tez:
+
+5. `../CHAIN_MAP.md`
+6. `../pack-project13-kaggle-verification-01/manifest.json`
+7. `../pack-project13-catalog-export-01/manifest.json`

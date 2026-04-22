@@ -10,6 +10,10 @@ Ten dokument zamienia plan rozwoju organizacji agentowej na **kanoniczny model e
 - execution packi dla wolontariuszy,
 - review i approval maintainera.
 
+Robocza mapa tych encji do realnych tabel znajduje sie tutaj:
+
+- [docs/MAPOWANIE_ENCJI_ORGANIZACJI_DO_D1_I_SQLITE.md](MAPOWANIE_ENCJI_ORGANIZACJI_DO_D1_I_SQLITE.md)
+
 Kanoniczny schemat tych bytow znajduje sie tutaj:
 
 - [schemas/organization_agent_v1.yaml](../schemas/organization_agent_v1.yaml)

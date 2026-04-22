@@ -1,0 +1,72 @@
+{
+  "schema_version": "v1",
+  "pack_id": "pack-project13-kaggle-verification-01",
+  "title": "Project 13 Kaggle verification pack dla OCR i frame check",
+  "linked_subject": {
+    "entity_kind": "experiment",
+    "entity_id": "experiment-kaggle-review-ready-pack-01"
+  },
+  "execution_mode": "kaggle_notebook",
+  "scope": "verification -> OCR -> frame check -> disagreement scoring -> reviewer-ready candidates",
+  "objective": "Zweryfikowac niepewne kandydaty czesci z discovery i enrichment przez jawny frame check, OCR oraz raport rozbieznosci, bez bezposredniej promocji do downstream exportow.",
+  "instructions_summary": "Wolontariusz albo lokalny agent uruchamia pack verification na kandydackim snapshotcie z poprzedniego etapu. Wynik ma pokazac, ktore rekordy sa potwierdzone, ktore sa sporne i co wymaga dalszej kuracji.",
+  "human_actions": [
+    "Wybrac kandydacki snapshot po etapie enrichment.",
+    "Uruchomic verification workflow na koncie Kaggle albo jego przyszlym wydzielonym notebooku.",
+    "Otworzyc PR z verification report i jawnie opisac rozbieznosci."
+  ],
+  "required_resources": [
+    {
+      "entity_kind": "resource_record",
+      "entity_id": "resource-kaggle-volunteers-01"
+    }
+  ],
+  "rag_sources": [
+    "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+    "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+    "PROJEKTY/13_baza_czesci_recykling/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+    "PROJEKTY/13_baza_czesci_recykling/execution_packs/CHAIN_MAP.md"
+  ],
+  "runbook_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-verification-01/RUNBOOK.md",
+  "required_secrets": [
+    {
+      "name": "GEMINI_API_KEY",
+      "purpose": "OCR i analiza multimodalna stopklatek dla kandydatow z etapu verification."
+    }
+  ],
+  "resource_cost_hint": "Pack verification powinien byc lzejszy niz discovery, ale nadal moze zuzyc runtime Kaggle i tokeny OCR dla trudniejszych przypadkow.",
+  "fork_target": "fork://<github-login>/STRAZ_PRZYSZLOSCI",
+  "pr_template_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-verification-01/PR_TEMPLATE.md",
+  "output_paths": [
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/test_db_verified.jsonl",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/verification_report.md",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/verification_disagreements.jsonl"
+  ],
+  "expected_artifacts": [
+    "snapshot verified candidates",
+    "jawny verification report z counts i provenance",
+    "disagreement log dla rekordow spornych",
+    "pull request do review"
+  ],
+  "acceptance_criteria": [
+    "Pack nie miesza verification z downstream exportem do ecoEDA, InvenTree albo D1.",
+    "Wynik zawiera jawne provenance do snapshotu wejsciowego i uruchomionego packa.",
+    "Powstaje osobny raport rozbieznosci dla rekordow niepotwierdzonych albo spornych.",
+    "PR daje reviewerowi mozliwosc odroznienia potwierdzonych kandydatow od kandydatow wymagajacych dalszej kuracji."
+  ],
+  "safety_notes": [
+    "Verification nie powinien automatycznie promowac spornych rekordow do downstream exportow.",
+    "Sekrety pozostaja tylko po stronie wolontariusza albo operatora Kaggle.",
+    "Wynik ma wracac przez fork i PR, a nie przez bezposredni push do upstream."
+  ],
+  "misuse_risks": [
+    "Mieszanie verification z automatyczna promocja moze ukryc falszywe trafienia.",
+    "Brak disagreement log utrudnia review i sprzyja cichej akceptacji slabych rekordow.",
+    "Niejawne nadpisanie wyniku enrichment bez sladu provenance moze zacierac odpowiedzialnosc za decyzje."
+  ],
+  "target_output_kind": "report",
+  "status": "draft",
+  "created_at": "2026-04-22T23:40:00Z",
+  "updated_at": "2026-04-22T23:40:00Z"
+}

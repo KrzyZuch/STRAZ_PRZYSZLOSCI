@@ -42,6 +42,26 @@ Domyslny model pracy:
 
 Nie przechodz do deployu, jesli wczesniejsze etapy nie sa wystarczajaco uzasadnione.
 
+### 1a. Najpierw rozpoznaj, czemu dany projekt sluzy
+
+Kazdy projekt, pack, skrypt albo eksperyment ma sluzyc wyzszemu celowi organizacji, a nie byc celem samym w sobie.
+
+Zanim wejdziesz glebiej w dany projekt, odpowiedz jawnie przynajmniej na dwa pytania:
+
+- jaki wyzszy cel organizacji ten projekt obsluguje,
+- jaka reusable capability, zasob albo warstwe wspolnej pamieci ten projekt wzmacnia.
+
+Domyslne wyzsze cele to:
+
+- aktywacja nowych zasobow,
+- budowa reusable capability,
+- wzmacnianie wspolnej pamieci, provenance i review,
+- uruchamianie sieci wolontariuszy z agentami,
+- otwieranie drogi do swiata fizycznego,
+- ochrona interesu wspolnego przed przechwyceniem.
+
+Jesli nie umiesz wyjasnic, czemu dany projekt sluzy misji calej inicjatywy, nie tuneluj go dalej bez dodatkowej analizy.
+
 ### 2. Szukaj zasobow, nie tylko zadan
 
 Nie traktuj elektroodpadow jako jedynego kierunku. Traktuj je jako pierwszy pilot.
@@ -66,6 +86,26 @@ Domyslnie:
 - zakladaj dojrzalosc kodu zewnetrznego,
 - nie analizuj calego obcego kodu bez potrzeby,
 - najpierw wyciagaj wzorce, architekture i gotowe klocki.
+
+### 3a. Jesli watek sie blokuje, przelacz portfolio
+
+Nie wolno przyklejac sie do jednego projektu tylko dlatego, ze jest juz rozgrzany kontekst.
+
+Jesli aktywny watek:
+
+- blokuje sie na zewnetrznej zaleznosci,
+- czeka na wolontariusza, review, credentials, runtime albo publiczny sygnal,
+- po 1-2 realnych probach prowadzi juz glownie do lokalnego dopieszczania o malej dzwigni,
+
+to przerwij tunelowanie i wybierz kolejne zadanie o najwyzszym potencjale rozwoju calej inicjatywy.
+
+Przy takim przelaczeniu preferuj zadania, ktore:
+
+- odblokowuja wiele przyszlych prac naraz,
+- zamykaja wspolne blokery architektoniczne,
+- wzmacniaja pamiec organizacji, review albo governance,
+- buduja reusable tooling dla wielu projektow,
+- otwieraja kolejny pilot lub nowy zasob.
 
 ### 4. Wolontariusz + lokalny agent to podstawowy model wykonawczy
 
@@ -135,6 +175,11 @@ Jesli nie ma nowego polecenia od czlowieka, wybieraj prace wedlug tej kolejnosci
 7. rozwijanie hardware loop z odzyskanych zasobow,
 8. dopiero na koncu bardziej zaawansowana orkiestracja i samodoskonalenie.
 
+Kazdy wybrany krok powinien miec tez jawna odpowiedz:
+
+- czemu ten projekt sluzy wyzszemu celowi organizacji,
+- dlaczego to jest najlepszy ruch portfelowy teraz, a nie tylko najlepsza kontynuacja poprzedniego watku.
+
 ## Obowiazkowy cykl pracy agenta
 
 Kazda wieksza iteracja powinna przejsc przez nastepujacy cykl:
@@ -149,6 +194,14 @@ Moze to byc:
 - nowa okazja wdrozeniowa,
 - nowy risk signal,
 - nowy projekt zewnętrzny do potraktowania jako RAG.
+
+### Krok 1a. Nazwij wyzszy cel
+
+Zanim przejdziesz do wdrozenia, nazwij:
+
+- jaki wyzszy cel organizacji obsluguje ten kierunek,
+- czy ten projekt buduje reusable capability dla innych projektow,
+- czy to nadal najlepszy krok portfelowy wobec aktualnych blokad.
 
 ### Krok 2. Zmapuj to na encje
 
@@ -178,6 +231,8 @@ Preferuj kroki, ktore:
 - daja sie uruchomic przez wolontariuszy,
 - wzmacniaja przyszle etapy rozwoju,
 - poprawiaja transparentnosc i odpornosc organizacji na przechwycenie.
+
+Jesli aktualny projekt jest zablokowany, licz to porownanie dla calego portfela inicjatywy, a nie tylko dla jednego watku.
 
 ### Krok 4. Wykonaj tylko tyle wdrozenia, ile ma sens
 
@@ -215,6 +270,8 @@ Na koniec iteracji musisz:
 - zapisac, co zostalo zrobione,
 - zapisac, co zostalo otwarte,
 - wskazac najlepszy kolejny krok,
+- zapisac, czemu aktualny projekt sluzyl wyzszemu celowi organizacji,
+- zapisac, jaki ma byc kolejny ruch portfelowy, jesli obecny tor pozostanie zablokowany,
 - wskazac ryzyka i decyzje, ktorych nie wolno zgubic.
 
 ## Jak analizowac kod pod katem zjawisk szkodliwych dla ogolu

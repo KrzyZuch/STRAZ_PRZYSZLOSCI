@@ -19,9 +19,11 @@ BASE_DIR = PROJECT_DIR / "autonomous_test"
 NOTEBOOK_PATH = PROJECT_DIR / "youtube-databaseparts.ipynb"
 MANIFEST_PATH = PROJECT_DIR / "execution_packs" / PACK_ID / "manifest.json"
 SUMMARY_OUTPUT = BASE_DIR / "reports" / "last_run_summary.md"
+RUN_CONTEXT_OUTPUT = BASE_DIR / "reports" / "last_pack_run_context.json"
 REBUILD_SCRIPT = PROJECT_DIR / "scripts" / "rebuild_autonomous_outputs.py"
 SUMMARY_SCRIPT = PROJECT_DIR / "scripts" / "summarize_kaggle_run.py"
 RECORDS_SCRIPT = PROJECT_DIR / "scripts" / "create_execution_records.py"
+ATTACH_ARTIFACT_SCRIPT = PROJECT_DIR / "scripts" / "attach_pr_artifact_record.py"
 
 
 def utc_now() -> datetime:
@@ -45,6 +47,11 @@ def count_csv_rows(path: Path) -> int:
 
 def relative_to_repo(path: Path) -> str:
     return str(path.resolve().relative_to(REPO_ROOT))
+
+
+def write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def run_json_command(command: list[str], *, cwd: Path) -> dict[str, Any]:
@@ -111,6 +118,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-dir", type=Path, default=REPO_ROOT)
     parser.add_argument("--base-dir", type=Path, default=BASE_DIR)
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
+    parser.add_argument("--run-context-output", type=Path, default=RUN_CONTEXT_OUTPUT)
     parser.add_argument("--timestamp-slug", help="Kanoniczny znacznik czasu, np. 20260422T185605Z.")
     parser.add_argument("--branch-name")
     parser.add_argument("--run-ref")
@@ -143,6 +151,7 @@ def main() -> int:
     repo_dir = args.repo_dir.resolve()
     base_dir = args.base_dir.resolve()
     summary_output = args.summary_output.resolve()
+    run_context_output = args.run_context_output.resolve()
     started_at = utc_now().replace(microsecond=0).isoformat()
 
     timestamp_slug = args.timestamp_slug or utc_now().strftime("%Y%m%dT%H%M%SZ")
@@ -231,7 +240,35 @@ def main() -> int:
     run_record_payload = json.loads(run_record_path.read_text(encoding="utf-8"))
     run_id = run_record_payload["run_id"]
 
+    artifact_follow_up_command = None
+    if not args.artifact_storage_ref:
+        artifact_follow_up_command = (
+            f"python3 {relative_to_repo(ATTACH_ARTIFACT_SCRIPT)} "
+            f"--run-context {relative_to_repo(run_context_output)} "
+            "--pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>"
+        )
+
+    run_context_payload = {
+        "schema_version": "v1",
+        "pack_id": args.pack_id,
+        "task_id": args.task_id,
+        "fork_owner": args.fork_owner,
+        "branch_name": branch_name,
+        "branch_ref": branch_ref,
+        "run_id": run_id,
+        "run_ref": run_ref,
+        "run_status": args.run_status,
+        "summary_ref": relative_to_repo(summary_output),
+        "run_record_ref": relative_to_repo(run_record_path),
+        "artifact_record_ref": relative_to_repo(artifact_record_path) if artifact_record_path else None,
+        "artifact_follow_up_command": artifact_follow_up_command,
+        "generated_at": ended_at,
+        "output_info": output_info,
+    }
+    write_json(run_context_output, run_context_payload)
+
     staged_paths = list(manifest["output_paths"])
+    staged_paths.append(relative_to_repo(run_context_output))
     staged_paths.append(relative_to_repo(run_record_path))
     if artifact_record_path is not None:
         staged_paths.append(relative_to_repo(artifact_record_path))
@@ -252,16 +289,6 @@ def main() -> int:
             subprocess.run(["git", "-C", str(repo_dir), "push", "--set-upstream", "origin", branch_name], check=True)
             pushed = True
 
-    artifact_follow_up_command = None
-    if not args.artifact_storage_ref:
-        artifact_follow_up_command = (
-            "python3 PROJEKTY/13_baza_czesci_recykling/scripts/create_execution_records.py "
-            f"--fork-owner {args.fork_owner} "
-            f"--existing-run-id {run_id} "
-            f"--timestamp-slug {timestamp_slug} "
-            "--artifact-storage-ref https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>"
-        )
-
     result = {
         "status": "ok",
         "pack_id": args.pack_id,
@@ -270,6 +297,7 @@ def main() -> int:
         "run_ref": run_ref,
         "run_id": run_id,
         "summary_ref": relative_to_repo(summary_output),
+        "run_context_ref": relative_to_repo(run_context_output),
         "run_record_ref": relative_to_repo(run_record_path),
         "artifact_record_ref": relative_to_repo(artifact_record_path) if artifact_record_path else None,
         "git_mode": args.git_mode,

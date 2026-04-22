@@ -5,6 +5,7 @@
 - Glowny cel obecnej iteracji:
 - Dlaczego ten cel byl priorytetowy:
 - Jaki efekt udalo sie uzyskac:
+- Jaki wyzszy cel organizacji obslugiwal ten projekt lub ten zestaw prac:
 
 ## 2. Zmiany wykonane
 
@@ -63,11 +64,13 @@
 - Brakujace dane:
 - Brakujace execution packi:
 - Brakujace review lub integrity review:
+- Jesli glowny tor pozostanie zablokowany, jaki jest nastepny ruch portfelowy o najwyzszej dzwigni:
 
 ## 6. Najlepszy kolejny krok
 
 - Jeden najwyzszy priorytet:
 - Dlaczego wlasnie ten:
+- Czemu ten krok sluzy wyzszemu celowi organizacji:
 - Co trzeba przeczytac najpierw:
 - Jakie pliki najprawdopodobniej beda dotkniete:
 
@@ -83,3 +86,4 @@
 - Czego nie wolno zgubic:
 - Co okazalo sie szczegolnie wartosciowe:
 - Co bylo falszywym tropem:
+- Kiedy trzeba przerwac tunelowanie jednego projektu i przelaczyc sie na lepszy ruch portfelowy:

@@ -1,0 +1,57 @@
+{
+  "schema_version": "v1",
+  "pack_id": "pack-project13-catalog-export-01",
+  "title": "Project 13 catalog export pack dla downstream artifacts",
+  "linked_subject": {
+    "entity_kind": "capability_gap",
+    "entity_id": "gap-project13-review-ready-artifacts-01"
+  },
+  "execution_mode": "local_agent",
+  "scope": "reviewed catalog -> export-all -> downstream artifacts -> review-ready diff",
+  "objective": "Przebudowac downstream artefakty z kanonicznego katalogu GitHub-first po review danych zrodlowych, bez mieszania exportu z discovery albo verification.",
+  "instructions_summary": "Lokalny agent albo maintainer uruchamia export na reviewowanym katalogu, waliduje wynik i otwiera PR tylko z downstream artefaktami oraz jawna informacja o zrodle zmian.",
+  "human_actions": [
+    "Upewnic sie, ze dane zrodlowe sa juz po review i znajduja sie w kanonicznym katalogu.",
+    "Uruchomic export-all i sprawdzic diff wygenerowanych artefaktow.",
+    "Otworzyc PR z podsumowaniem zmian downstream."
+  ],
+  "required_resources": [],
+  "rag_sources": [
+    "PROJEKTY/13_baza_czesci_recykling/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/execution_packs/CHAIN_MAP.md"
+  ],
+  "runbook_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-catalog-export-01/RUNBOOK.md",
+  "resource_cost_hint": "To jest pack lokalny i powinien byc wyraznie lzejszy od notatnikow Kaggle. Koszt to glownie czas local compute i review diffu.",
+  "pr_template_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-catalog-export-01/PR_TEMPLATE.md",
+  "output_paths": [
+    "PROJEKTY/13_baza_czesci_recykling/data/inventory.csv",
+    "PROJEKTY/13_baza_czesci_recykling/data/recycled_parts_seed.sql",
+    "PROJEKTY/13_baza_czesci_recykling/data/mcp_reuse_catalog.json",
+    "PROJEKTY/13_baza_czesci_recykling/data/inventree_import.jsonl"
+  ],
+  "expected_artifacts": [
+    "downstream export diff",
+    "lokalny log walidacyjny exportu",
+    "pull request z przegladem zmian downstream"
+  ],
+  "acceptance_criteria": [
+    "Pack przebudowuje artefakty tylko z kanonicznego katalogu GitHub-first.",
+    "Wynik nie zalezy od recznej edycji wygenerowanych plikow exportowych.",
+    "Walidacja katalogu przechodzi przed otwarciem PR.",
+    "PR wyjasnia, z jakiego reviewowanego stanu katalogu wynikaja zmiany downstream."
+  ],
+  "safety_notes": [
+    "Export nie powinien byc uruchamiany na surowych wynikach Kaggle bez review katalogu.",
+    "Wygenerowane artefakty sa pochodna katalogu GitHub-first, a nie prywatnej bazy danych.",
+    "PR ma byc jawnie reviewowalny i odtwarzalny z lokalnego polecenia."
+  ],
+  "misuse_risks": [
+    "Uruchomienie exportu na niesprawdzonym katalogu moze promowac slabe dane do downstream narzedzi.",
+    "Reczna edycja wygenerowanych plikow zaciera provenance i utrudnia audit.",
+    "Mieszanie exportu z discovery ukrywa, skad naprawde wziely sie zmiany w downstream."
+  ],
+  "target_output_kind": "pull_request",
+  "status": "ready",
+  "created_at": "2026-04-22T23:40:00Z",
+  "updated_at": "2026-04-22T23:40:00Z"
+}

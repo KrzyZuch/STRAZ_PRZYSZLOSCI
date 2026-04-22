@@ -119,6 +119,18 @@ Ten pack ustawia praktyczny standard:
 
 Docelowo powinny z niego wynikac mniejsze, bardziej wyspecjalizowane notebooki dla osobnych etapow lancucha.
 
+Aktualna mapa packow znajduje sie tutaj:
+
+- `../execution_packs/CHAIN_MAP.md`
+
+Poza pierwszym packiem `enrichment` istnieje juz tez szkiel:
+
+- `../execution_packs/pack-project13-kaggle-verification-01/manifest.json`
+
+Etap `export chain` zostal z kolei wydzielony do osobnego packa lokalnego:
+
+- `../execution_packs/pack-project13-catalog-export-01/manifest.json`
+
 ## Co notebook powinien robic z wynikami
 
 Notebook nie powinien w ciemno promowac danych do glownego repozytorium.

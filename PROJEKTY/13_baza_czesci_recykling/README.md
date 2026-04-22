@@ -123,6 +123,14 @@ python3 PROJEKTY/13_baza_czesci_recykling/scripts/finalize_execution_pack_run.py
 
 Skrypt wykonuje `rebuild`, generuje `last_run_summary.md`, zapisuje kanoniczny rekord `Run` i przygotowuje follow-up do dopiecia `Artifact` po otwarciu PR.
 
+Helper do dopiecia `Artifact` po utworzeniu PR:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py --run-id <run-id> --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
+
+Jesli nie podasz `--run-id`, helper sprobuje znalezc najnowszy realny `Run` typu `kaggle/hybrid_team`.
+
 Deterministyczna odbudowa `inventree_import.jsonl` i `ecoEDA_inventory.csv` z `autonomous_test/results/test_db.jsonl`:
 
 ```bash
@@ -208,6 +216,10 @@ Docelowo te zadania powinny byc grupowane w osobne lancuchy:
 - `curation chain`,
 - `export chain`.
 
+Mapa tych packow i ich handoff points jest utrzymywana tutaj:
+
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/CHAIN_MAP.md`
+
 ## Pierwszy realny execution pack
 
 Pierwszy realny `KaggleNotebookPack` dla `Project 13` jest utrzymywany tutaj:
@@ -226,6 +238,18 @@ Ten pack spina:
 - raport rebuild i log odrzuconych rekordow dla outputow review-ready,
 - automatyczne zapisanie kanonicznego `Run` record przy finalizacji notebooka,
 - review-ready PR do glownego repozytorium.
+
+## Kolejne packi w tym samym lancuchu
+
+Poza pierwszym packiem `enrichment` projekt ma juz dwa kolejne szkielety:
+
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-verification-01/manifest.json`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-catalog-export-01/manifest.json`
+
+Ich role sa rozdzielone celowo:
+
+- `verification` ma obnizac ryzyko falszywych trafien i zostawiac disagreement log,
+- `export` ma przebudowywac downstream artefakty dopiero z reviewowanego katalogu GitHub-first.
 
 ## Zasady bezpieczenstwa dla notatnikow Kaggle
 

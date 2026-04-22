@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "gate_id": "gate-pack-ready-project13-catalog-export-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-catalog-export-01"
+  },
+  "gate_kind": "pack_ready",
+  "status": "pass",
+  "notes": "Pack ma juz realne execution surface przez build_catalog_artifacts.py oraz jawny kontrakt review downstream exportow.",
+  "checked_at": "2026-04-22T23:40:00Z"
+}

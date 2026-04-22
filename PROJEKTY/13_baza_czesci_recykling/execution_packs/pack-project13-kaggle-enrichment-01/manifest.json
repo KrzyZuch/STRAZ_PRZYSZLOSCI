@@ -9,7 +9,7 @@
   "execution_mode": "kaggle_notebook",
   "scope": "discovery -> verification -> enrichment -> review-ready artifacts dla notebooka youtube-databaseparts.ipynb",
   "objective": "Uruchomic notebook Kaggle dla Project 13 tak, aby wolontariusz mogl na swoim koncie wygenerowac review-ready artefakty, zapisac je na branchu we wlasnym forku i otworzyc PR do upstream.",
-  "instructions_summary": "Wolontariusz przygotowuje fork, ustawia sekrety Kaggle, importuje notebook, uruchamia go, a notebook finalizuje pack przez rebuild outputow review-ready, raport runu, kanoniczny Run record i push brancha do forka. Ostateczny wynik wraca do upstream przez PR zgodny z szablonem packa.",
+  "instructions_summary": "Wolontariusz przygotowuje fork, ustawia sekrety Kaggle, importuje notebook, uruchamia go, a notebook finalizuje pack przez rebuild outputow review-ready, raport runu, kanoniczny Run record i push brancha do forka. Po otwarciu PR lokalny agent dopina Artifact record helperem packa.",
   "human_actions": [
     "Utworzyc albo zaktualizowac swoj fork repozytorium STRAZ_PRZYSZLOSCI.",
     "Ustawic wymagane Kaggle Secrets i parametry forka w notebooku.",
@@ -63,6 +63,7 @@
     "log rekordow odrzuconych przy rebuildzie outputow review-ready",
     "raport runu z counts, provenance i known issues",
     "kanoniczny rekord Run zapisany w execution_packs/.../records/",
+    "mozliwosc prostego dopiecia Artifact po URL-u PR bez rekonstrukcji provenance z logow",
     "branch na forku wolontariusza gotowy do PR",
     "pull request do upstream z opisem przebiegu"
   ],
@@ -72,6 +73,7 @@
     "Rebuild report i skipped log jawnie opisuja, ile rekordow weszlo do outputow review-ready i co zostalo odrzucone.",
     "Run summary zawiera provenance do packa, notebooka i brancha.",
     "Finalize step zapisuje kanoniczny Run record w execution_packs/pack-project13-kaggle-enrichment-01/records/.",
+    "Po otwarciu PR Artifact da sie dopiac helperem packa przy uzyciu run_id albo autodiscovery.",
     "PR opisuje ograniczenia, zuzyte sekrety w sensie funkcji, a nie same wartosci, oraz jawny zakres review."
   ],
   "safety_notes": [
@@ -87,5 +89,5 @@
   "target_output_kind": "pull_request",
   "status": "active",
   "created_at": "2026-04-22T20:00:00Z",
-  "updated_at": "2026-04-22T21:30:00Z"
+  "updated_at": "2026-04-22T22:10:00Z"
 }

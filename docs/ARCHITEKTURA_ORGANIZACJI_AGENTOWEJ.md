@@ -287,6 +287,19 @@ Te byty nie muszą od razu mieć rozbudowanego UI. Wystarczy, żeby miały stabi
 
 Najbardziej realistyczny pierwszy klin nie powinien być wybrany przypadkowo.
 
+Kazdy projekt w repo powinien byc rozumiany jako narzedzie sluzace wyzszemu celowi organizacji.
+Nie rozwijamy projektu tylko dlatego, ze juz istnieje lub ma aktywny kontekst.
+Rozwijamy go wtedy, gdy:
+
+- aktywuje nowy zasob,
+- buduje reusable capability,
+- wzmacnia wspolna pamiec i provenance,
+- uruchamia wolontariacka warstwe wykonawcza,
+- przybliza organizacje do realnego dzialania w swiecie fizycznym,
+- poprawia governance i odpornosc na przechwycenie.
+
+Jesli projekt przestaje spelniac te role albo blokuje sie na zewnetrznych zaleznosciach, organizacja powinna umiec przelaczyc energie na kolejny ruch portfelowy o wiekszej dzwigni.
+
 Na obecnym etapie repo najmocniej wspiera dwa kierunki:
 
 - **analizę potencjału i organizację pracy**, bo ma już onboarding, bundle wiedzy, bota, API i strukturę dokumentacyjną,

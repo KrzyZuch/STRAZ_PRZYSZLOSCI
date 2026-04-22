@@ -120,16 +120,23 @@ Upstream nie powinien byc celem pushu z poziomu notebooka.
 
 Notebook powinien juz automatycznie zapisac `Run record`.
 
-Po otwarciu PR dopnij odpowiadajacy mu `Artifact`:
+Po otwarciu PR dopnij odpowiadajacy mu `Artifact` najprosciej helperem:
 
 ```bash
-python3 PROJEKTY/13_baza_czesci_recykling/scripts/create_execution_records.py \
-  --fork-owner <twoj-login-github> \
-  --existing-run-id <run-id-z-logu-notebooka> \
-  --artifact-storage-ref https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
+  --run-id <run-id-z-logu-notebooka> \
+  --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
 ```
 
-Skrypt zapisze rekord `Artifact` w katalogu:
+Jesli nie masz pod reka `run_id`, helper moze tez sprobowac znalezc najnowszy realny run `kaggle/hybrid_team`:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
+  --fork-owner <twoj-login-github> \
+  --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
+
+Helper zapisze rekord `Artifact` w katalogu:
 
 - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/records/`
 

@@ -32,6 +32,28 @@ Najważniejsza zasada planu brzmi:
 
 **najpierw analiza potencjału i projektowanie drogi, potem mały pilot, potem dopiero skalowanie.**
 
+Rowniez kazdy projekt ma byc traktowany jako srodek do wyzszego celu organizacji, a nie jako osobny swiat do dopieszczania dla niego samego.
+
+## Projekty sa sluzebne wobec misji
+
+Kazdy projekt powinien miec jawna odpowiedz na pytanie:
+
+- czemu sluzy w calej inicjatywie,
+- jaka zdolnosc organizacji buduje,
+- jakie kolejne kierunki odblokowuje,
+- jak chroni lub wzmacnia interes wspolny.
+
+Projekt jest wart rozwijania wtedy, gdy buduje co najmniej jedna z tych warstw:
+
+- aktywacje nowych zasobow,
+- reusable capability,
+- wspolna pamiec i provenance,
+- siec wolontariuszy z agentami,
+- wyjscie do swiata fizycznego,
+- governance i transparentnosc review.
+
+Jesli projekt nie ma juz takiej dzwigni, trzeba ograniczyc jego dopieszczanie i przesunac energie na lepszy ruch portfelowy.
+
 ## Zasady optymalizacji
 
 Każda decyzja rozwojowa powinna być oceniana według poniższych zasad.
@@ -114,6 +136,30 @@ Praktyczny model rankingowy powinien dawać premię tym kierunkom, które jednoc
 - tworzą trwałą warstwę wiedzy,
 - pozwalają aktywować zasoby społeczne,
 - otwierają drogę do kolejnych automatyzacji.
+
+### Przelaczenie portfelowe przy blokadzie
+
+Jesli najwyzej oceniony aktualnie watek:
+
+- blokuje sie na zewnetrznej zaleznosci,
+- czeka na review, wolontariusza, runtime albo dostep,
+- daje juz glownie lokalne poprawki o malej dzwigni,
+
+to organizacja nie powinna tkwic w tym samym miejscu.
+
+W takiej sytuacji agent ma:
+
+1. nazwac blocker,
+2. ponownie przeliczyc, ktore zadanie ma najwiekszy potencjal dla calej inicjatywy,
+3. wybrac nastepny ruch portfelowy, nawet jesli oznacza to zmiane projektu.
+
+Domyslnie wyzszy priorytet maja wtedy:
+
+- wspolne blokery architektoniczne,
+- warstwa pamieci i provenance,
+- reusable tooling dla wielu projektow,
+- resource scouting,
+- kolejny pilot o wysokiej dzwigni.
 
 ## Kanoniczny cykl pracy organizacji
 

@@ -1,0 +1,28 @@
+{
+  "schema_version": "v1",
+  "assessment_id": "integrity-pack-project13-catalog-export-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-catalog-export-01"
+  },
+  "assessment_scope": "workflow_design",
+  "risk_signals": [
+    "private_capture",
+    "opaque_approval_path",
+    "provenance_tampering"
+  ],
+  "risk_level": "low",
+  "findings": [
+    "Pack wymusza budowe exportow z kanonicznego katalogu GitHub-first zamiast z prywatnej bazy.",
+    "Review dotyczy czystego diffu downstream artefaktow, a nie ukrytych lokalnych krokow.",
+    "Export zostaje odseparowany od discovery, co ulatwia audit provenance."
+  ],
+  "mitigations_required": [
+    "Nie uruchamiac exportu na surowych wynikach Kaggle bez review katalogu.",
+    "Nie edytowac recznie wygenerowanych plikow downstream po eksporcie.",
+    "Zostawic jawny slad walidacji przy otwieraniu PR."
+  ],
+  "reviewer_role": "public_interest_reviewer",
+  "status": "pass",
+  "assessed_at": "2026-04-22T23:40:00Z"
+}
