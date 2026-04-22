@@ -39,7 +39,7 @@ Jeśli chcemy konstruktywnie i mądrze wykorzystać tę potężną siłę, autom
 
 **Nasza szansa historyczna:** Potencjał generatywnej sztucznej inteligencji sam z siebie jest potężny, ale połączony ze zjednoczonym ludzkim intelektem tworzy siłę bez precedensu. Obecnie w globalnym wyścigu inne państwa i kraje skupiają się głównie na budowaniu coraz potężniejszych modeli (LLM) lub wyścigu o moc obliczeniową (hardware). **Polska może osiągnąć pozycję globalnego lidera nie przez budowę modelu, ale przez jego *inteligentne i celowe wykorzystanie***. Jeśli skonsolidujemy nasz zasób – intelekt polskich specjalistów – do wspólnego, zoptymalizowanego projektowania i produkcji dóbr (skalowalnej automatyzacji), mamy szansę odnieść gigantyczny sukces gospodarczy w nowej erze.
 
-Warto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży w *koncepcji zastosowania*, a nie w samym narzędziu.
+Warto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży in *koncepcji zastosowania*, a nie w samym narzędziu.
 
 ## Osiągnięcia Straży Przyszłości (Realne wdrożenia)
 
@@ -77,6 +77,10 @@ Docelowa automatyzacja analizy potencjału projektów oraz tworzenie procesów a
 *   **[GEPA](https://github.com/gepa-ai/gepa):** Optymalizacja "Genetic-Pareto" bazująca na Actionable Side Information (ASI). Metoda ta pozwala na precyzyjne diagnozowanie wąskich gardeł w procesach AI i ich automatyczną eliminację na podstawie pełnych logów egzekucji.
 
 System będzie dążył do autonomicznego odkrywania najwydajniejszych ścieżek przetwarzania dostępnych zasobów (np. elektrośmieci) w wysokowartościowe dobra, optymalizując procesy bez ingerencji człowieka.
+
+### Inspiracje Strategiczne i Źródła Kontekstu
+Dla projektowania suwerennej i odpornej na brak łączności automatyzacji, jako kluczowe źródło kontekstu wykorzystujemy:
+*   **[Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad):** Samowystarczalny, offline-first system wiedzy i narzędzi AI. Służy jako wzorzec dla budowy lokalnych "Centrów Dowodzenia" Straży Przyszłości, integrujących bazy wiedzy (Wikipedia, Kiwix), narzędzia analityczne (CyberChef) oraz lokalne modele LLM bez polegania na zewnętrznych chmurach. Zobacz: [Prezentacja Video](https://www.youtube.com/watch?v=P_wt-2P-WBk).
 
 # Strategia Marketingowa i Budowa Społeczności
 
@@ -156,7 +160,7 @@ Jeżeli wchodzisz do inicjatywy po raz pierwszy jako Strażnik Przyszłości, za
 
 ## Dokumentacja integracyjna
 
-Rozwijamy publiczną warstwę integracyjną dla projektów Straży Przyszłości, w której partnerzy zewnętrzni i społeczność mogą dostarczać dane do wspólnego schematu API oraz odbierać wyniki analityczne służące budowie bazy wiedzy. Szczegóły znajdują się w dokumentach:
+Rozwijamy publiczną warstwę integracyjną dla projektów Straży Przyszłości, w której partnerzy zewnętrzni i społeczność mogą dostarczać dane do wspólnego schematu API oraz odbierać wyniki analityczne słuzące budowie bazy wiedzy. Szczegóły znajdują się w dokumentach:
 
 * **[Strategia Integracji](docs/STRATEGIA_INTEGRACJI.md)**
 * **[Polityka Partnerska](docs/POLITYKA_PARTNERSKA.md)**
