@@ -359,6 +359,8 @@ types:
           - repo_patch
           - field_run
           - hardware_build
+      scope:
+        type: string
       objective:
         type: string
       instructions_summary:
@@ -372,6 +374,34 @@ types:
         items:
           $ref: "#/types/EntityReference"
       rag_sources:
+        type: array
+        items:
+          type: string
+      notebook_path:
+        type: string
+      runbook_path:
+        type: string
+      required_secrets:
+        type: array
+        items:
+          type: object
+          required:
+            - name
+            - purpose
+          properties:
+            name:
+              type: string
+            purpose:
+              type: string
+            optional:
+              type: boolean
+      resource_cost_hint:
+        type: string
+      fork_target:
+        type: string
+      pr_template_path:
+        type: string
+      output_paths:
         type: array
         items:
           type: string

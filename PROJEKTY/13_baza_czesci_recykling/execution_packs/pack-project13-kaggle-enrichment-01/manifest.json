@@ -1,0 +1,84 @@
+{
+  "schema_version": "v1",
+  "pack_id": "pack-project13-kaggle-enrichment-01",
+  "title": "Project 13 Kaggle enrichment pack dla wolontariusza i lokalnego agenta",
+  "linked_subject": {
+    "entity_kind": "experiment",
+    "entity_id": "experiment-kaggle-review-ready-pack-01"
+  },
+  "execution_mode": "kaggle_notebook",
+  "scope": "discovery -> verification -> enrichment -> review-ready artifacts dla notebooka youtube-databaseparts.ipynb",
+  "objective": "Uruchomic notebook Kaggle dla Project 13 tak, aby wolontariusz mogl na swoim koncie wygenerowac review-ready artefakty, zapisac je na branchu we wlasnym forku i otworzyc PR do upstream.",
+  "instructions_summary": "Wolontariusz przygotowuje fork, ustawia sekrety Kaggle, importuje notebook, uruchamia go, generuje raport runu i pushuje branch do forka. Ostateczny wynik wraca do upstream przez PR zgodny z szablonem packa.",
+  "human_actions": [
+    "Utworzyc albo zaktualizowac swoj fork repozytorium STRAZ_PRZYSZLOSCI.",
+    "Ustawic wymagane Kaggle Secrets i parametry forka w notebooku.",
+    "Uruchomic notebook, przejrzec wygenerowane artefakty i otworzyc PR do upstream."
+  ],
+  "required_resources": [
+    {
+      "entity_kind": "resource_record",
+      "entity_id": "resource-kaggle-volunteers-01"
+    }
+  ],
+  "rag_sources": [
+    "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+    "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+    "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+    "PROJEKTY/13_baza_czesci_recykling/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+    "PROJEKTY/13_baza_czesci_recykling/docs/SCRAPING_PIPELINE.md"
+  ],
+  "notebook_path": "PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb",
+  "runbook_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+  "required_secrets": [
+    {
+      "name": "GITHUB_PAT",
+      "purpose": "Push brancha do forka wolontariusza i publikacja zmian na GitHubie."
+    },
+    {
+      "name": "YOUTUBE_API_KEY",
+      "purpose": "Wyszukiwanie kandydatow filmow YouTube dla discovery chain."
+    },
+    {
+      "name": "GEMINI_API_KEY",
+      "purpose": "Analiza multimodalna, OCR klatek i enrichment wynikow."
+    }
+  ],
+  "resource_cost_hint": "Typowy przebieg zuzywa darmowy runtime Kaggle, transfer kilku plikow wideo i limity API Gemini/YouTube po stronie wolontariusza. Najbezpieczniej zakladac 30-90 minut na jedno uruchomienie.",
+  "fork_target": "fork://<github-login>/STRAZ_PRZYSZLOSCI",
+  "pr_template_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md",
+  "output_paths": [
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/processed_videos.json",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/test_db.jsonl",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/inventree_import.jsonl",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/ecoEDA_inventory.csv",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_run_summary.md"
+  ],
+  "expected_artifacts": [
+    "snapshot kandydatow czesci do review",
+    "raport runu z counts, provenance i known issues",
+    "branch na forku wolontariusza gotowy do PR",
+    "pull request do upstream z opisem przebiegu"
+  ],
+  "acceptance_criteria": [
+    "Wynik trafia na branch we forku wolontariusza, a nie bezposrednio do upstream.",
+    "Artefakty obejmuja processed_videos.json, test_db.jsonl, inventree_import.jsonl i ecoEDA_inventory.csv albo jawny opis brakow.",
+    "Run summary zawiera provenance do packa, notebooka i brancha.",
+    "PR opisuje ograniczenia, zuzyte sekrety w sensie funkcji, a nie same wartosci, oraz jawny zakres review."
+  ],
+  "safety_notes": [
+    "Pack jest opt-in i korzysta tylko z sekretow ustawionych swiadomie przez wolontariusza.",
+    "Notebook powinien konfigurowac tozsamosc commita na dane wolontariusza albo adres noreply, nigdy na twardo wpisany prywatny email maintainera.",
+    "Wynik ma przejsc przez fork -> branch -> PR -> review."
+  ],
+  "misuse_risks": [
+    "Bez forka i brancha wynik moze trafic bezposrednio do upstream albo zostac ukryty poza wspolnym review.",
+    "Brak jawnego raportu runu utrudnia provenance i sprzyja zawlaszczeniu pracy wolontariusza.",
+    "Hard-coded tozsamosc commita albo operatora moze mylnie przypisywac autorstwo."
+  ],
+  "target_output_kind": "pull_request",
+  "status": "active",
+  "created_at": "2026-04-22T20:00:00Z",
+  "updated_at": "2026-04-22T20:00:00Z"
+}

@@ -34,11 +34,13 @@
         "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
         "docs/PRZYKLADY_GOTOWEGO_KODU.md",
         "PROJEKTY/13_baza_czesci_recykling/README.md",
+        "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+        "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
         "docs/ARCHITEKTURA_EDGE_SMARTFONY_CLOUD.md",
         "data/onboarding/straznik_rekomendator_v1.json"
       ],
       "first_tasks": ["issue:aq-12", "issue:aq-14", "issue:aq-29", "issue:aq-31"],
-      "next_step": "Zacznij od wyboru jednego execution packa lub obszaru researchowego. Jezeli masz konto Kaggle albo Colab, mozesz uruchamiac autonomiczne notebooki na swoich darmowych zasobach, zapisywac wynik do forka i przekazywac go dalej przez PR."
+      "next_step": "Najkrotsza sciezka startu to pack `pack-project13-kaggle-enrichment-01` w Project 13. Jezeli masz konto Kaggle, otworz runbook, uruchom notebook na swoim forku i oddaj wynik przez PR."
     },
     {
       "route_id": "aquaculture_water_monitoring",

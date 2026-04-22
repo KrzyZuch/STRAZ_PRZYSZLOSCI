@@ -103,6 +103,24 @@ Tylko eksport `ecoEDA`:
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-ecoeda
 ```
 
+Raport markdown po runie Kaggle:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/summarize_kaggle_run.py
+```
+
+Generator kanonicznych rekordow `Run` i `Artifact` po wykonaniu packa:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/create_execution_records.py --help
+```
+
+Lokalny dry-run execution packa bez odpalania prawdziwego Kaggle runu:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/dry_run_execution_pack.py
+```
+
 Tylko seed do D1:
 
 ```bash
@@ -173,6 +191,23 @@ Docelowo te zadania powinny byc grupowane w osobne lancuchy:
 - `enrichment chain`,
 - `curation chain`,
 - `export chain`.
+
+## Pierwszy realny execution pack
+
+Pierwszy realny `KaggleNotebookPack` dla `Project 13` jest utrzymywany tutaj:
+
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/REVIEW_CHECKLIST.md`
+
+Ten pack spina:
+
+- realny notebook `youtube-databaseparts.ipynb`,
+- wymagane sekrety i zasady bezpieczenstwa,
+- branch na forku wolontariusza zamiast pushu do upstream,
+- raport runu `autonomous_test/reports/last_run_summary.md`,
+- review-ready PR do glownego repozytorium.
 
 ## Zasady bezpieczenstwa dla notatnikow Kaggle
 

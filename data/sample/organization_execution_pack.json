@@ -7,6 +7,7 @@
     "entity_id": "experiment-kaggle-review-ready-pack-01"
   },
   "execution_mode": "kaggle_notebook",
+  "scope": "discovery -> verification -> enrichment -> review-ready artifacts dla notebooka youtube-databaseparts.ipynb",
   "objective": "Uruchomic autonomiczny notebook Kaggle, ktory zbierze kandydatow czesci z materialow YouTube i zapisze wynik do forka wolontariusza w formacie gotowym do review.",
   "instructions_summary": "Wolontariusz pobiera notebook, ustawia sekrety na swoim koncie Kaggle, uruchamia przebieg, commit'uje wynik do forka i otwiera pull request zgodnie z szablonem packa.",
   "human_actions": [
@@ -25,6 +26,32 @@
     "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
     "PROJEKTY/13_baza_czesci_recykling/README.md",
     "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md"
+  ],
+  "notebook_path": "PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb",
+  "runbook_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+  "required_secrets": [
+    {
+      "name": "GITHUB_PAT",
+      "purpose": "Push brancha do forka wolontariusza oraz otwarcie PR."
+    },
+    {
+      "name": "YOUTUBE_API_KEY",
+      "purpose": "Wyszukiwanie kandydatow filmow do analizy multimodalnej."
+    },
+    {
+      "name": "GEMINI_API_KEY",
+      "purpose": "Analiza wideo, OCR klatek i enrichment czesci."
+    }
+  ],
+  "resource_cost_hint": "Około 30-90 minut runtime, transfer wideo i zuzycie limitow Kaggle/Gemini po stronie wolontariusza.",
+  "fork_target": "fork://<github-login>/STRAZ_PRZYSZLOSCI",
+  "pr_template_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md",
+  "output_paths": [
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/processed_videos.json",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/test_db.jsonl",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/inventree_import.jsonl",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/ecoEDA_inventory.csv",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_run_summary.md"
   ],
   "expected_artifacts": [
     "data snapshot z kandydatami czesci",

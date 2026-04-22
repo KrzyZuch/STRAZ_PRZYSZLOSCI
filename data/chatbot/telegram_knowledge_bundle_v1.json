@@ -1,10 +1,14 @@
 {
   "schema_version": "v1",
-  "generated_at": "2026-04-17T23:37:05.148357+00:00",
+  "generated_at": "2026-04-22T18:33:44.027189+00:00",
   "allowlist": [
     "README.md",
     "MARKETING.md",
+    "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
     "docs/ARCHITEKTURA_ONBOARDINGU.md",
+    "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+    "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+    "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
     "docs/STRATEGIA_INTEGRACJI.md",
     "docs/PRZYKLADY_GOTOWEGO_KODU.md",
     "docs/JAK_ZOSTAC_DOSTAWCA_DANYCH.md",
@@ -23,6 +27,9 @@
     "PROJEKTY/11_autonomiczne_systemy_rd.md",
     "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
     "PROJEKTY/13_baza_czesci_recykling/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+    "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
     "PROJEKTY/14_autonomiczne_projektowanie_3d_cad.md",
     ".github/ISSUE_TEMPLATE/nowy_straznik.md",
     ".github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md",
@@ -41,8 +48,28 @@
       "category": "document"
     },
     {
+      "path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Architektura Organizacji Agentowej",
+      "category": "document"
+    },
+    {
       "path": "docs/ARCHITEKTURA_ONBOARDINGU.md",
       "title": "Architektura Onboardingu",
+      "category": "document"
+    },
+    {
+      "path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Plan Rozwoju Organizacji Agentowej",
+      "category": "document"
+    },
+    {
+      "path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Encje i Workflowy Organizacji Agentowej",
+      "category": "document"
+    },
+    {
+      "path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Instrukcja Rozwojowa Dla Agenta",
       "category": "document"
     },
     {
@@ -136,6 +163,21 @@
       "category": "document"
     },
     {
+      "path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Model Wolontariackich Notebookow Kaggle",
+      "category": "document"
+    },
+    {
+      "path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Pack Project13 Kaggle Enrichment 01",
+      "category": "document"
+    },
+    {
+      "path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Runbook Wolontariusza Dla Pack Project13 Kaggle Enrichment 01",
+      "category": "document"
+    },
+    {
       "path": "PROJEKTY/14_autonomiczne_projektowanie_3d_cad.md",
       "title": "14. Autonomiczne Projektowanie 3D i CAD (MCP)",
       "category": "document"
@@ -173,8 +215,8 @@
     "Inspiracje:* [Smartfony jako Sterowniki Edge Computing](PROJEKTY/06_smartfony_jako_sterowniki.md), [Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md), [Analiza Social Media dla Recyklingu](PROJEKTY/15_analiza_social_media_recykling.md).",
     "Finanse (Fundusze):** Pozyskiwanie środków strategicznych, inteligentny wybór programów grantowych i inwestycji dla nowo powstających projektów.",
     "Inspiracje:* [Geoportal i Google Maps dla Potencjału Rozwoju](PROJEKTY/16_geoportal_potencjal_rozwoju.md).",
-    "Zgromadzenie twórców** – najpierw skupiamy się na zebraniu wielu ludzi gotowych do zaangażowania intelektualnego.",
-    "Burza mózgów, analiza, planowanie oraz praca twórcza** – repozytorium służy jako przestrzeń do zgłaszania i szerokiej analizy pomysłów i możliwości."
+    "Rozpoznawanie komponentów:** Precyzyjna identyfikacja części (kondensatory, rezystory, układy scalone) na podstawie klatek wideo.",
+    "Automatyczne budowanie bazy:** Dane o częściach i ich urządzeniach-dawcach trafiają bezpośrednio do globalnego katalogu."
   ],
   "sections": [
     {
@@ -203,52 +245,59 @@
       "source_path": "README.md",
       "title": "Dlaczego powstał ten projekt? (Nasza motywacja)",
       "category": "document",
-      "content": "Głównym powodem powstania **NARODOWYCH SIŁ INTELEKTUALNYCH** jest zagrożenie wynikające z rozproszenia i czysto komercyjnego wykorzystania sztucznej inteligencji. \n\nJeżeli każdy inteligentny i przedsiębiorczy człowiek zacznie indywidualnie i na własną rękę budować małe, prywatne biznesy wspierane przez AI, to za niedługi czas internet stanie się jednym wielkim chaosem. Powstaną miliony instancji sztucznej inteligencji, z których każda będzie działać w zamknięciu, na rzecz indywidualnego zysku swojej jednostki. Zamiast rozwiązywać wielkie bolączki ludzkości i państwa, ogromny potencjał AI oraz gigantyczne ilości energii będą **marnotrawione wyłącznie na wzajemną, bezcelową konkurencję**.\n\nJeśli chcemy konstruktywnie i mądrze wykorzystać tę potężną siłę, automatyzację i sztuczną inteligencję, musimy **wspólnie zaplanować i wdrożyć procesy, które zadziałają z korzyścią dla ogółu społeczeństwa**. Właśnie po to gromadzimy się w jednej inicjatywie – by nie rozpraszać potencjału na rywalizację rynkową maszyn, lecz połączyć siły i wygospodarować realne zasoby na WSPÓLNE DOBRO.\n\n**Nasza szansa historyczna:** Potencjał generatywnej sztucznej inteligencji sam z siebie jest potężny, ale połączony ze zjednoczonym ludzkim intelektem tworzy siłę bez precedensu. Obecnie w globalnym wyścigu inne państwa i kraje skupiają się głównie na budowaniu coraz potężniejszych modeli (LLM) lub wyścigu o moc obliczeniową (hardware). **Polska może osiągnąć pozycję globalnego lidera nie przez budowę modelu, ale przez jego *inteligentne i celowe wykorzystanie***. Jeśli skonsolidujemy nasz zasób – intelekt polskich specjalistów – do wspólnego, zoptymalizowanego projektowania i produkcji dóbr (skalowalnej automatyzacji), mamy szansę odnieść gigantyczny sukces gospodarczy w nowej erze.\n\nWarto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży w *koncepcji zastosowania*, a nie w samym narzędziu.\n\n# Strategia Marketingowa i Budowa Społeczności"
+      "content": "Głównym powodem powstania **NARODOWYCH SIŁ INTELEKTUALNYCH** jest zagrożenie wynikające z rozproszenia i czysto komercyjnego wykorzystania sztucznej inteligencji. \n\nJeżeli każdy inteligentny i przedsiębiorczy człowiek zacznie indywidualnie i na własną rękę budować małe, prywatne biznesy wspierane przez AI, to za niedługi czas internet stanie się jednym wielkim chaosem. Powstaną miliony instancji sztucznej inteligencji, z których każda będzie działać w zamknięciu, na rzecz indywidualnego zysku swojej jednostki. Zamiast rozwiązywać wielkie bolączki ludzkości i państwa, ogromny potencjał AI oraz gigantyczne ilości energii będą **marnotrawione wyłącznie na wzajemną, bezcelową konkurencję**.\n\nJeśli chcemy konstruktywnie i mądrze wykorzystać tę potężną siłę, automatyzację i sztuczną inteligencję, musimy **wspólnie zaplanować i wdrożyć procesy, które zadziałają z korzyścią dla ogółu społeczeństwa**. Właśnie po to gromadzimy się w jednej inicjatywie – by nie rozpraszać potencjału na rywalizację rynkową maszyn, lecz połączyć siły i wygospodarować realne zasoby na WSPÓLNE DOBRO.\n\n**Nasza szansa historyczna:** Potencjał generatywnej sztucznej inteligencji sam z siebie jest potężny, ale połączony ze zjednoczonym ludzkim intelektem tworzy siłę bez precedensu. Obecnie w globalnym wyścigu inne państwa i kraje skupiają się głównie na budowaniu coraz potężniejszych modeli (LLM) lub wyścigu o moc obliczeniową (hardware). **Polska może osiągnąć pozycję globalnego lidera nie przez budowę modelu, ale przez jego *inteligentne i celowe wykorzystanie***. Jeśli skonsolidujemy nasz zasób – intelekt polskich specjalistów – do wspólnego, zoptymalizowanego projektowania i produkcji dóbr (skalowalnej automatyzacji), mamy szansę odnieść gigantyczny sukces gospodarczy w nowej erze.\n\nWarto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży in *koncepcji zastosowania*, a nie w samym narzędziu."
     },
     {
-      "id": "readme-md-4-intelekt-wyprzedza-kapita",
+      "id": "readme-md-4-osi-gni-cia-stra-y-przysz-o-ci-realne-wdro-enia",
+      "source_path": "README.md",
+      "title": "Osiągnięcia Straży Przyszłości (Realne wdrożenia)",
+      "category": "document",
+      "content": "Nasze działania to nie tylko wizja, ale realnie działające narzędzia AI, które budują fundament pod suwerenną produkcję dóbr. Każdy skatalogowany element to krok w stronę autonomicznego przetwarzania elektrośmieci w zaawansowane urządzenia automatyzacji, które docelowo będą generować **Dochód Gwarantowany (UBI)**.\n\n### 1. Autonomiczny Łowca Części (Kaggle Cloud)\nNasz system pracujący w chmurze Kaggle automatycznie przeszukuje i analizuje tysiące godzin filmów z napraw elektroniki na YouTube.\n*   **Rozpoznawanie komponentów:** Precyzyjna identyfikacja części (kondensatory, rezystory, układy scalone) na podstawie klatek wideo.\n*   **Automatyczne budowanie bazy:** Dane o częściach i ich urządzeniach-dawcach trafiają bezpośrednio do globalnego katalogu.\n\n![Kaggle Hunter](docs/assets/kaggle_hunter.png)\n\n### 2. Bot Telegram - Twój Mobilny Inżynier AI\nZintegrowany z bazą danych bot `@straz_przyszlosci_bot` oferuje zaawansowane funkcje analityczne dostępne bezpośrednio z poziomu smartfona:\n\n*   **Algorytmiczne Odczytywanie Rezystorów:** Wystarczy zdjęcie, aby AI precyzyjnie odczytało kod paskowy THT, podając wartość i tolerancję wraz z obliczeniami.\n*   **Analiza Datasheetów PDF:** Wyślij botowi dokumentację techniczną układu i zadaj dowolne pytanie. AI przeanalizuje parametry (np. napięcia zasilania) i poda precyzyjną odpowiedź na podstawie przesłanego dokumentu.\n\n<p align=\"center\">\n  <img src=\"docs/assets/analiza_rezystora.png\" width=\"45%\" />\n  <img src=\"docs/assets/analiza_datasheet.png\" width=\"45%\" />\n</p>\n\n### 3. W Przygotowaniu: Masowe Przetwarzanie Datasheetów PDF\nPracujemy nad kolejnym modułem autonomicznego pobierania i strukturyzowania danych technicznych z tysięcy dokumentów PDF (datasheetów) jednocześnie. \n*   **Cel:** Automatyczne zasilenie bazy danych wszystkimi kluczowymi parametrami IC (napięcia, prądy, funkcje pinów) w celu umożliwienia AI samodzielnego projektowania nowych urządzeń z części odzyskanych z recyklingu.\n*   **Technologia:** Wykorzystujemy zaawansowane skrypty (np. `supplement_ic_database.py`) integrujące logikę scrapowania dystrybutorów z multimodalną analizą dokumentów przez Gemini.\n\n### 4. W Przygotowaniu: Autonomiczna Optymalizacja, Analiza Potencjału i Resource Scouting\nDocelowa automatyzacja analizy potencjału projektów oraz tworzenie procesów automatyzacji z dostępnych zasobów będzie korzystała z metod optymalizacji zainspirowanych najnowszymi badaniami nad ewolucyjnymi i refleksyjnymi systemami AI, takimi jak:\n\n*   **[Abstral](https://github.com/ws2694/abstral_paper):** Wykorzystanie metadanych i śladów wykonania do samodoskonalenia architektury agentowej (Abstracting and Extracting Structural Information). Metoda ta pozwala systemowi na automatyczną korektę własnych instrukcji (Skills) poprzez analizę przyczynową sukcesów i porażek.\n*   **[LangGraph](https://github.com/langchain-ai/langgraph):** Zaawansowana orkiestracja wieloagentowa umożliwiająca tworzenie stateful procesów z pętlami decyzyjnymi. Zapewnia trwałą pamięć i kontrolę nad złożonymi, wieloetapowymi procesami automatyzacji.\n*   **[OpenEvolve](https://github.com/algorithmicsuperintelligence/openevolve):** Algorytmiczna ewolucja kodu i promptów wykorzystująca mechanizmy Quality-Diversity (MAP-Elites). System autonomicznie \"hoduje\" najskuteczniejsze algorytmy przetwarzania danych.\n*   **[GEPA](https://github.com/gepa-ai/gepa):** Optymalizacja \"Genetic-Pareto\" bazująca na Actionable Side Information (ASI). Metoda ta pozwala na precyzyjne diagnozowanie wąskich gardeł w procesach AI i ich automatyczną eliminację na podstawie pełnych logów egzekucji.\n\nSystem będzie dążył do autonomicznego odkrywania najwydajniejszych ścieżek przetwarzania dostępnych zasobów w wysokowartościowe dobra, optymalizując procesy bez ingerencji człowieka. Elektrośmieci są tutaj pierwszym strategicznym zasobem rozpoznanym ręcznie, ale docelowo automatyzacja ma sama wykrywać, klasyfikować i porównywać także inne zasoby: sprzęt, moc obliczeniową, dane, energię, materiały i wolne moce wykonawcze społeczności.\n\n### Inspiracje Strategiczne i Źródła Kontekstu\nDla projektowania suwerennej i odpornej na brak łączności automatyzacji, jako kluczowe źródło kontekstu wykorzystujemy:\n*   **[Project N.O.M.A.D.](https://github.com/Crosstalk-Solutions/project-nomad):** Samowystarczalny, offline-first system wiedzy i narzędzi AI. Służy jako wzorzec dla budowy lokalnych \"Centrów Dowodzenia\" Straży Przyszłości, integrujących bazy wiedzy (Wikipedia, Kiwix), narzędzia analityczne (CyberChef) oraz lokalne modele LLM bez polegania na zewnętrznych chmurach. Zobacz: [Prezentacja Video](https://www.youtube.com/watch?v=P_wt-2P-WBk).\n\n# Strategia Marketingowa i Budowa Społeczności"
+    },
+    {
+      "id": "readme-md-5-intelekt-wyprzedza-kapita",
       "source_path": "README.md",
       "title": "**Intelekt wyprzedza Kapitał!**",
       "category": "document",
-      "content": "1. **Zgromadzenie twórców** – najpierw skupiamy się na zebraniu wielu ludzi gotowych do zaangażowania intelektualnego.\n\n2. **Burza mózgów, analiza, planowanie oraz praca twórcza** – repozytorium służy jako przestrzeń do zgłaszania i szerokiej analizy pomysłów i możliwości. \n\n3. **Krystalizacja genialnych idei oraz pozyskiwanie zasobów** – cały proces opiera się o bezwarunkowy intelekt i pracę merytoryczną. Wyszukiwanie, katalogowanie i opisywanie zaawansowanych repozytoriów (jak np. sterowanie sensoryczne platformami drona) to kluczowy wkład intelektualny, który pozwala AI na błyskawiczne wdrażanie nowych funkcjonalności bez pisania kodu od zera. Eksperci tworzą i dostarczają niezwykle precyzyjne zasoby technologiczne, będące fundamentem pod dalszą realizację.\n\n4. **Kapitał w służbie idei i samonapędzająca się gospodarka** – przy minimalnych nakładach uruchamiana jest produkcja maksymalnie autonomiczna, sterowana przez AI i zasilana z odnawialnych źródeł energii (OZE). Wygenerowany produkt i zysk wracają do systemu, napędzając dalszy rozwój i skalowanie projektów. Docelowym punktem tego modelu jest stworzenie samowystarczalnej gospodarki technologicznej, która pozwoli na finansowanie **Dochodu Gwarantowanego (UBI)**. *Przykład finansowania:* [Upcykling LED TV na Solarne Okna](PROJEKTY/04_lampa_z_recyklingu_tv.md).\n\n5. **Opiekunowie Projektu (Nobilitacja)** – w miarę rozwoju inicjatywy, do jej struktury będą wybierani opiekunowie poszczególnych składowych lub całych wyodrębnionych projektów. Będą oni wyłaniani wyłącznie spośród najbardziej zaangażowanych twórców, którzy mogą wykazać się największą pracą i realnymi dokonaniami na rzecz repozytorium. Zarówno wybór na tę funkcję, jak i samo jej pełnienie, będzie dla powierzonych osób najwyższym wyrazem uznania i nobilitacją. Wspólnie tworzymy przestrzeń, w której liczą się wyłącznie dokonania, kompetencje i idea, a bycie liderem to zaszczyt."
+      "content": "1. **Zgromadzenie twórców** – najpierw skupiamy się na zebraniu wielu ludzi gotowych do zaangażowania intelektualnego.\n\n2. **Burza mózgów, analiza, planowanie oraz praca twórcza** – repozytorium służy jako przestrzeń do zgłaszania i szerokiej analizy pomysłów i możliwości. \n\n3. **Krystalizacja genialnych idei oraz pozyskiwanie zasobów** – cały proces opiera się o bezwarunkowy intelekt i pracę merytoryczną. Wyszukiwanie, katalogowanie i opisywanie zaawansowanych repozytoriów (jak np. sterowanie sensoryczne platformami drona) to kluczowy wkład intelektualny, który pozwala AI na błyskawiczne wdrażanie nowych funkcjonalności bez pisania kodu od zera. Eksperci tworzą i dostarczają niezwykle precyzyjne zasoby technologiczne, będące fundamentem pod dalszą realizację. Docelowo sama automatyzacja ma również prowadzić `resource scouting`, czyli aktywnie szukać nowych klas zasobów, które warto zagospodarować dla dobra wspólnego.\n\n4. **Kapitał w służbie idei i samonapędzająca się gospodarka** – przy minimalnych nakładach uruchamiana jest produkcja maksymalnie autonomiczna, sterowana przez AI i zasilana z odnawialnych źródeł energii (OZE). Wygenerowany produkt i zysk wracają do systemu, napędzając dalszy rozwój i skalowanie projektów. Docelowym punktem tego modelu jest stworzenie samowystarczalnej gospodarki technologicznej, która pozwoli na finansowanie **Dochodu Gwarantowanego (UBI)**. *Przykład finansowania:* [Upcykling LED TV na Solarne Okna](PROJEKTY/04_lampa_z_recyklingu_tv.md).\n\n5. **Opiekunowie Projektu (Nobilitacja)** – w miarę rozwoju inicjatywy, do jej struktury będą wybierani opiekunowie poszczególnych składowych lub całych wyodrębnionych projektów. Będą oni wyłaniani wyłącznie spośród najbardziej zaangażowanych twórców, którzy mogą wykazać się największą pracą i realnymi dokonaniami na rzecz repozytorium. Zarówno wybór na tę funkcję, jak i samo jej pełnienie, będzie dla powierzonych osób najwyższym wyrazem uznania i nobilitacją. Wspólnie tworzymy przestrzeń, w której liczą się wyłącznie dokonania, kompetencje i idea, a bycie liderem to zaszczyt."
     },
     {
-      "id": "readme-md-5-projekty-pilota-owe-i-inspiracje",
+      "id": "readme-md-6-projekty-pilota-owe-i-inspiracje",
       "source_path": "README.md",
       "title": "Projekty Pilotażowe i Inspiracje",
       "category": "document",
-      "content": "W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiązań, które mogą zostać wdrożone w modelu Open-Source przez Narodowe Siły Intelektualne:\n\n*   **[01. Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md)** – Autonomiczne węzły produkcji ryb oparte na IoT i AI.\n*   **[02. Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md)** – Cyfrowy wypas zwierząt bez fizycznej infrastruktury.\n*   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.\n*   **[04. Solarne Okna z Recyklingu TV](PROJEKTY/04_lampa_z_recyklingu_tv.md)** – Upcykling elektrośmieci jako źródło darmowego światła i kapitału.\n*   **[05. Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md)** – Zaawansowany odzysk ogniw krzemowych przy użyciu technologii CNC.\n*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing). Zobacz również: [08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md).\n*   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.\n*   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.\n*   **[09. Monitoring IoT i Akcelerometria](PROJEKTY/09_monitoring_iot_livestock.md)** – Inteligentna obroża AI (Smart Health Tracker) z wykorzystaniem czujników smartfona.\n*   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.\n*   **[11. Autonomiczne Systemy R+D](PROJEKTY/11_autonomiczne_systemy_rd.md)** – Omijanie paradygmatu \"czystych\" technologii na rzecz brudnej, śmiałej automatyzacji.\n*   **[12. Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md)** – Połączenie Ai i recyklingu e-odpadów w celu budowy suwerennej elektroniki bez kapitału.\n*   **[13. GitHub-first baza części z recyklingu](PROJEKTY/13_baza_czesci_recykling/README.md)** – Kanoniczny katalog urządzeń-dawców i części (JSONL) + generatory artefaktów dla ecoEDA, seed dla Cloudflare D1 oraz zasób pod przyszły lookup MCP.\n*   **[14. Autonomiczne Projektowanie 3D i CAD (MCP)](PROJEKTY/14_autonomiczne_projektowanie_3d_cad.md)** – Kolejny łańcuch automatyzacji R+D: wykorzystanie AI oraz protokołu MCP do iteracyjnego projektowania brył 3D we FreeCAD i docelowej generacji G-code.\n*   **[15. Analiza Social Media dla Recyklingu](PROJEKTY/15_analiza_social_media_recykling.md)** – AI skanujące polskie grupy i portale aukcyjne w celu łączenia darmowych ofert z zapotrzebowaniem użytkowników.\n*   **[16. Geoportal i Potencjał Rozwoju](PROJEKTY/16_geoportal_potencjal_rozwoju.md)** – Analiza danych geoprzestrzennych dla nowoczesnego planowania automatyzacji AI.\n\n**Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**"
+      "content": "W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiązań, które mogą zostać wdrożone w modelu Open-Source przez Narodowe Siły Intelektualne:\n\n*   **[01. Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md)** – Autonomiczne węzły produkcji ryb oparte na IoT i AI.\n*   **[02. Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md)** – Cyfrowy wypas zwierząt bez fizycznej infrastruktury.\n*   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.\n*   **[04. Solarne Okna z Recyklingu TV](PROJEKTY/04_lampa_z_recyklingu_tv.md)** – Upcykling elektrośmieci jako źródło darmowego światła i kapitału.\n*   **[05. Laserowy Recykling Paneli PV](PROJEKTY/05_recykling_pv_laserem.md)** – Zaawansowany odzysk ogniw krzemowych przy użyciu technologii CNC.\n*   **[06. Smartfony jako Sterowniki](PROJEKTY/06_smartfony_jako_sterowniki.md)** – Wykorzystanie starej elektroniki jako potężnych węzłów sterujących (Edge Computing). Zobacz również: [08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md).\n*   **[07. Uniwersalna Platforma Sterowania](PROJEKTY/07_uniwersalna_platforma_sterowania.md)** – Przykład pozyskiwania zaawansowanego kodu (PhoneUAV) jako strategicznego zasobu intelektualnego NSI.\n*   **[08. Autonomiczne Maszyny Rolnicze (OpenBot)](PROJEKTY/08_openbot_autonomiczne_maszyny_rolnicze.md)** – Smartfon jako mózg robota AI: nawigacja w czasie rzeczywistym i autonomia maszyn.\n*   **[09. Monitoring IoT i Akcelerometria](PROJEKTY/09_monitoring_iot_livestock.md)** – Inteligentna obroża AI (Smart Health Tracker) z wykorzystaniem czujników smartfona.\n*   **[10. Łączność Mesh i LoRa](PROJEKTY/10_lacznosc_mesh_lora.md)** – Suwerenna sieć komunikacyjna Mesh (Meshtastic, Reticulum) do monitorowania zasobów gospodarczych.\n*   **[11. Autonomiczne Systemy R+D](PROJEKTY/11_autonomiczne_systemy_rd.md)** – Omijanie paradygmatu \"czystych\" technologii na rzecz brudnej, śmiałej automatyzacji.\n*   **[12. Autonomiczne PCB ze śmieci](PROJEKTY/12_autonomiczne_pcb_ze_smieci.md)** – Połączenie Ai i recyklingu e-odpadów w celu budowy suwerennej elektroniki bez kapitału.\n*   **[13. GitHub-first baza części z recyklingu](PROJEKTY/13_baza_czesci_recykling/README.md)** – Kanoniczny katalog urządzeń-dawców i części (JSONL). Projekt wykorzystuje autonomicznego \"Łowcę Części\" AI (**[Notatnik Kaggle](PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb)**), który codziennie analizuje filmy z napraw elektroniki, budując testową baza komponentów w pliku **[test_db.jsonl](PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/test_db.jsonl)**. Docelowo system będzie tworzył otwarty zasób wiedzy dostępny dla każdego. Funkcja budowania i przeszukiwania bazy jest już zintegrowana z naszym botem na Telegramie.\n*   **[14. Autonomiczne Projektowanie 3D i CAD (MCP)](PROJEKTY/14_autonomiczne_projektowanie_3d_cad.md)** – Kolejny łańcuch automatyzacji R+D: wykorzystanie AI oraz protokołu MCP do iteracyjnego projektowania brył 3D we FreeCAD i docelowej generacji G-code.\n*   **[15. Analiza Social Media dla Recyklingu](PROJEKTY/15_analiza_social_media_recykling.md)** – AI skanujące polskie grupy i portale aukcyjne w celu łączenia darmowych ofert z zapotrzebowaniem użytkowników.\n*   **[16. Geoportal i Potencjał Rozwoju](PROJEKTY/16_geoportal_potencjal_rozwoju.md)** – Analiza danych geoprzestrzennych dla nowoczesnego planowania automatyzacji AI.\n*   **[17. Autonomiczne Przetwarzanie Elektrośmieci na Hardware Automatyzacji](PROJEKTY/17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md)** – Zamiana elektrośmieci w sterowniki, węzły edge, urządzenia pomiarowe i sprzęt obliczeniowy potrzebny do dalszych automatyzacji.\n\n**Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**"
     },
     {
-      "id": "readme-md-6-zapotrzebowanie-marketingowe-i-promocyjne",
+      "id": "readme-md-7-zapotrzebowanie-marketingowe-i-promocyjne",
       "source_path": "README.md",
       "title": "Zapotrzebowanie marketingowe i promocyjne",
       "category": "document",
       "content": "Szukamy specjalistów z zakresu marketingu, PR i budowania społeczności, którzy na zasadach odpowiedzialności za wybrany obszar pomogą promować naszą inicjatywę. Sprawdź plik [MARKETING.md](MARKETING.md), aby poznać podstawowy zakres działań do obsadzenia."
     },
     {
-      "id": "readme-md-7-jak-do-czy-i-pomaga-instrukcja-dla-tw-rc-w-i-wsp-pracownik-w",
+      "id": "readme-md-8-jak-do-czy-i-pomaga-instrukcja-dla-tw-rc-w-i-wsp-pracownik-w",
       "source_path": "README.md",
       "title": "Jak dołączyć i pomagać (Instrukcja dla twórców i współpracowników)",
       "category": "document",
-      "content": "Niezależnie od tego, jakie posiadasz kompetencje – techniczne, analityczne czy organizacyjne – wsparcie każdego z Was jest kluczowe. \n\n> [!NOTE]\n> **System błyskawicznego onboardingu jest w przygotowaniu.** Docelowo będzie on dostępny na zewnętrznej platformie, która na podstawie Twoich pasji i zasobów skieruje Cię precyzyjnie do odpowiednich obszarów tego repozytorium.\n\nW projekcie rozdzielamy dwa osobne onboardingi:\n\n* onboarding Strażnika, czyli pierwsze wejście nowej osoby do inicjatywy przez ankietę i rekomendator zadań na stronie zewnętrznej,\n* onboarding providera danych, czyli techniczną ścieżkę dla węzłów pomiarowych, smartfonów edge, gospodarstw i partnerów, którzy chcą zasilać API danymi.\n\n> [!IMPORTANT]\n> **Masz pomysł? Pytanie? Chcesz dołączyć?** Nie szukaj maila – wejdź prosto w **[ZAKŁADKĘ ISSUES](https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/issues)**. Chcemy, żeby tam roiło się jak w ulu! Każda myśl, analiza czy pytanie to cenny wkład w Narodowe Siły Intelektualne.\n\n> [!TIP]\n> **Działa już publiczny bot Telegram `Straż Przyszłości`: [`@straz_przyszlosci_bot`](https://t.me/straz_przyszlosci_bot).** W Telegramie wystarczy wysłać:\n> `Pomysl: ...`\n> albo\n> `Uwaga: ...`\n> a wiadomość trafi do publicznego repozytorium jako `GitHub Issue`.\n\nJeśli chcesz już teraz otrzymać zadanie dopasowane do Twoich pasji, wypełnij naszą **[Ankietę Kompetencyjną (REKRUTACJA_ANKIETA.md)](REKRUTACJA_ANKIETA.md)**. Przygotowaliśmy również **[Zasady współpracy i instrukcję obsługi Git (CONTRIBUTING.md)](CONTRIBUTING.md)**, w której znajdziesz przystępny poradnik m.in. jak zgłaszać swoje pomysły.\n\nJeżeli wchodzisz do inicjatywy po raz pierwszy jako Strażnik Przyszłości, zacznij od:\n\n* **[Architektura Onboardingu](docs/ARCHITEKTURA_ONBOARDINGU.md)**\n* **[Przykłady Gotowego Kodu i Otwartych Wzorców](docs/PRZYKLADY_GOTOWEGO_KODU.md)**\n* **[Nowy Strażnik / pierwsze zaangażowanie](.github/ISSUE_TEMPLATE/nowy_straznik.md)**\n* **[Pomysł / propozycja rozwiązania](.github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md)**\n* **[Zastrzeżenie / uwaga / ryzyko](.github/ISSUE_TEMPLATE/zastrzezenie_uwaga.md)**\n* **[Katalog rekomendatora zadań Strażnika](data/onboarding/straznik_rekomendator_v1.json)**"
+      "content": "Niezależnie od tego, jakie posiadasz kompetencje – techniczne, analityczne czy organizacyjne – wsparcie każdego z Was jest kluczowe. \n\n> [!NOTE]\n> **System błyskawicznego onboardingu jest w przygotowaniu.** Docelowo będzie on dostępny na zewnętrznej platformie, która na podstawie Twoich pasji i zasobów skieruje Cię precyzyjnie do odpowiednich obszarów tego repozytorium.\n\nW projekcie rozdzielamy dwa osobne onboardingi:\n\n* onboarding Strażnika, czyli pierwsze wejście nowej osoby do inicjatywy przez ankietę i rekomendator zadań na stronie zewnętrznej,\n* onboarding providera danych, czyli techniczną ścieżkę dla węzłów pomiarowych, smartfonów edge, gospodarstw i partnerów, którzy chcą zasilać API danymi.\n\n> [!IMPORTANT]\n> **Masz pomysł? Pytanie? Chcesz dołączyć?** Nie szukaj maila – wejdź prosto w **[ZAKŁADKĘ ISSUES](https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/issues)**. Chcemy, żeby tam roiło się jak w ulu! Każda myśl, analiza czy pytanie to cenny wkład w Narodowe Siły Intelektualne.\n\n> [!TIP]\n> **Działa już publiczny bot Telegram `Straż Przyszłości`: [`@straz_przyszlosci_bot`](https://t.me/straz_przyszlosci_bot).** W Telegramie wystarczy wysłać:\n> `Pomysl: ...`\n> albo\n> `Uwaga: ...`\n> a wiadomość trafi do publicznego repozytorium jako `GitHub Issue`.\n\nJeśli chcesz już teraz otrzymać zadanie dopasowane do Twoich pasji, wypełnij naszą **[Ankietę Kompetencyjną (REKRUTACJA_ANKIETA.md)](REKRUTACJA_ANKIETA.md)**. Przygotowaliśmy również **[Zasady współpracy i instrukcję obsługi Git (CONTRIBUTING.md)](CONTRIBUTING.md)**, w której znajdziesz przystępny poradnik m.in. jak zgłaszać swoje pomysły.\n\nJeżeli wchodzisz do inicjatywy po raz pierwszy jako Strażnik Przyszłości, zacznij od:\n\n* **[Architektura Onboardingu](docs/ARCHITEKTURA_ONBOARDINGU.md)**\n* **[Architektura Organizacji Agentowej](docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Plan Rozwoju Organizacji Agentowej](docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Encje i Workflowy Organizacji Agentowej](docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Instrukcja Rozwojowa Dla Agenta](docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md)**\n* **[Przykłady Gotowego Kodu i Otwartych Wzorców](docs/PRZYKLADY_GOTOWEGO_KODU.md)**\n* **[Nowy Strażnik / pierwsze zaangażowanie](.github/ISSUE_TEMPLATE/nowy_straznik.md)**\n* **[Pomysł / propozycja rozwiązania](.github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md)**\n* **[Zastrzeżenie / uwaga / ryzyko](.github/ISSUE_TEMPLATE/zastrzezenie_uwaga.md)**\n* **[Katalog rekomendatora zadań Strażnika](data/onboarding/straznik_rekomendator_v1.json)**"
     },
     {
-      "id": "readme-md-8-dokumentacja-integracyjna",
+      "id": "readme-md-9-dokumentacja-integracyjna",
       "source_path": "README.md",
       "title": "Dokumentacja integracyjna",
       "category": "document",
-      "content": "Rozwijamy publiczną warstwę integracyjną dla projektów Straży Przyszłości, w której partnerzy zewnętrzni i społeczność mogą dostarczać dane do wspólnego schematu API oraz odbierać wyniki analityczne służące budowie bazy wiedzy. Szczegóły znajdują się w dokumentach:\n\n* **[Strategia Integracji](docs/STRATEGIA_INTEGRACJI.md)**\n* **[Polityka Partnerska](docs/POLITYKA_PARTNERSKA.md)**\n* **[Model: Otwarte Standardy, Zamknięte Wdrożenia](docs/MODEL_OTWARTE_STANDARDY_ZAMKNIETE_WDROZENIA.md)**\n* **[Zasady Nazwy i Marki](docs/ZASADY_NAZWY_I_MARKI.md)**\n* **[Jak Zostać Dostawcą Danych](docs/JAK_ZOSTAC_DOSTAWCA_DANYCH.md)**\n* **[Architektura Onboardingu](docs/ARCHITEKTURA_ONBOARDINGU.md)**\n* **[Architektura Węzłów Pomiarowych](docs/ARCHITEKTURA_WEZLOW_POMIAROWYCH.md)**\n* **[Architektura Edge: Smartfony + Centralne API + Baza Wiedzy](docs/ARCHITEKTURA_EDGE_SMARTFONY_CLOUD.md)**\n* **[Architektura mostu Telegram -> GitHub Issues](docs/ARCHITEKTURA_MOSTU_TELEGRAM_GITHUB_ISSUES.md)**\n* **[Runbook uruchomienia kanału Telegram -> GitHub Issues](docs/RUNBOOK_URUCHOMIENIA_TELEGRAM_ISSUES.md)**\n* **[Architektura mostu WhatsApp -> GitHub Issues](docs/ARCHITEKTURA_MOSTU_WHATSAPP_GITHUB_ISSUES.md)**\n* **[Runbook uruchomienia kanału WhatsApp -> GitHub Issues](docs/RUNBOOK_URUCHOMIENIA_WHATSAPP_ISSUES.md)**\n* **[Przykłady Gotowego Kodu i Otwartych Wzorców](docs/PRZYKLADY_GOTOWEGO_KODU.md)**"
+      "content": "Rozwijamy publiczną warstwę integracyjną dla projektów Straży Przyszłości, w której partnerzy zewnętrzni i społeczność mogą dostarczać dane do wspólnego schematu API oraz odbierać wyniki analityczne słuzące budowie bazy wiedzy. Szczegóły znajdują się w dokumentach:\n\n* **[Strategia Integracji](docs/STRATEGIA_INTEGRACJI.md)**\n* **[Polityka Partnerska](docs/POLITYKA_PARTNERSKA.md)**\n* **[Model: Otwarte Standardy, Zamknięte Wdrożenia](docs/MODEL_OTWARTE_STANDARDY_ZAMKNIETE_WDROZENIA.md)**\n* **[Zasady Nazwy i Marki](docs/ZASADY_NAZWY_I_MARKI.md)**\n* **[Jak Zostać Dostawcą Danych](docs/JAK_ZOSTAC_DOSTAWCA_DANYCH.md)**\n* **[Architektura Onboardingu](docs/ARCHITEKTURA_ONBOARDINGU.md)**\n* **[Architektura Organizacji Agentowej](docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Plan Rozwoju Organizacji Agentowej](docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Encje i Workflowy Organizacji Agentowej](docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)**\n* **[Instrukcja Rozwojowa Dla Agenta](docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md)**\n* **[Architektura Węzłów Pomiarowych](docs/ARCHITEKTURA_WEZLOW_POMIAROWYCH.md)**\n* **[Architektura Edge: Smartfony + Centralne API + Baza Wiedzy](docs/ARCHITEKTURA_EDGE_SMARTFONY_CLOUD.md)**\n* **[Architektura mostu Telegram -> GitHub Issues](docs/ARCHITEKTURA_MOSTU_TELEGRAM_GITHUB_ISSUES.md)**\n* **[Runbook uruchomienia kanału Telegram -> GitHub Issues](docs/RUNBOOK_URUCHOMIENIA_TELEGRAM_ISSUES.md)**\n* **[Architektura mostu WhatsApp -> GitHub Issues](docs/ARCHITEKTURA_MOSTU_WHATSAPP_GITHUB_ISSUES.md)**\n* **[Runbook uruchomienia kanału WhatsApp -> GitHub Issues](docs/RUNBOOK_URUCHOMIENIA_WHATSAPP_ISSUES.md)**\n* **[Przykłady Gotowego Kodu i Otwartych Wzorców](docs/PRZYKLADY_GOTOWEGO_KODU.md)**"
     },
     {
-      "id": "readme-md-9-publiczny-bot-telegram",
+      "id": "readme-md-10-publiczny-bot-telegram",
       "source_path": "README.md",
       "title": "Publiczny Bot Telegram",
       "category": "document",
       "content": "Publiczny bot inicjatywy nazywa się **Straż Przyszłości** i działa pod adresem:\n\n* **[`@straz_przyszlosci_bot`](https://t.me/straz_przyszlosci_bot)**\n\n<img src=\"docs/assets/telegram_bot_qr.jpg\" alt=\"QR do bota Telegram Straż Przyszłości\" width=\"160\">\n\nTo jest najprostszy mobilny kanał wejścia dla osób, które chcą szybko zapisać myśl do repozytorium bez otwierania formularzy GitHub.\n\nJak się połączyć:\n\n1. Otwórz Telegram.\n2. Wyszukaj `@straz_przyszlosci_bot` albo wejdź przez link `https://t.me/straz_przyszlosci_bot`.\n3. Otwórz czat z botem `Straż Przyszłości`.\n4. Wyślij wiadomość zaczynającą się od:\n   `Pomysl: ...`\n   albo\n   `Uwaga: ...`\n\nCo robi bot:\n\n* zamienia wiadomość Telegram w `GitHub Issue` w publicznym repo Straży Przyszłości,\n* pozwala szybko zgłosić pomysł, zastrzeżenie albo ryzyko z telefonu,\n* odsyła krótką informację zwrotną, czy zgłoszenie zostało przyjęte albo zatrzymane przez filtr antyspamowy,\n* nie służy do przesyłania danych providerskich ani do sterowania urządzeniami.\n\nJeżeli chcesz wejść do systemu jako provider danych lub węzeł pomiarowy, użyj szablonu zgłoszenia:\n\n* **[Nowy provider danych / węzeł pomiarowy](.github/ISSUE_TEMPLATE/provider_danych.md)**\n\n**Dołącz, jeśli chcesz współtworzyć przyszłość Polskiej Gospodarki!**\n\n**Strona internetowa inicjatywy:** [https://www.strazprzyszlosci.pl](https://www.strazprzyszlosci.pl)"
     },
     {
-      "id": "readme-md-10-media-spo-eczno-ciowe",
+      "id": "readme-md-11-media-spo-eczno-ciowe",
       "source_path": "README.md",
       "title": "Media Społecznościowe",
       "category": "document",
@@ -297,6 +346,97 @@
       "content": "* **Budowanie relacji partnerskich:** Wytypowanie uczelni wyższych, organizacji pozarządowych i innych podmiotów mogących wesprzeć projekt zasięgowo.\n\n---\n*Intelekt wyprzedza kapitał!*\n**Jak dołączyć?**\nJeśli posiadasz kompetencje w jednym z powyższych obszarów i chcesz wziąć na siebie jego realizację, otwórz na GitHubie odpowiednie [Issues / Pull Request] lub dołącz do bieżącej dyskusji, wskazując, w jakiej dziedzinie widziałbyś/abyś siebie."
     },
     {
+      "id": "docs-architektura-organizacji-agentowej-md-intro",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Architektura Organizacji Agentowej"
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-1-cel-dokumentu",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Cel dokumentu",
+      "category": "document",
+      "content": "Ten dokument opisuje docelowy kierunek rozwoju Straży Przyszłości jako **oddolnej organizacji agentowej AI**, której głównym motorem nie jest przypadkowe wdrażanie pojedynczych automatyzacji, lecz **analiza potencjału**, budowa kolejnych stopni prowadzących do celu i uruchamianie tylko tych procesów, które mają najlepszy stosunek efektu do wysiłku.\n\nUzupełnieniem tego dokumentu jest:\n\n- [Plan Rozwoju Organizacji Agentowej](PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md)\n- [Encje i Workflowy Organizacji Agentowej](ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)\n- [Instrukcja Rozwojowa Dla Agenta](INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md)\n\nTo nie jest wizja jednego bota ani jednego pipeline'u. Chodzi o budowę zorganizowanego ekosystemu:\n\n- analizującego potencjał wielu obszarów,\n- samodzielnie wykrywającego bariery dalszego rozwoju,\n- tworzącego podcele, procesy i artefakty potrzebne do ich pokonania,\n- angażującego ludzi i ich lokalnych agentów jako rozproszoną siatkę wykonawczą,\n- utrzymującego ciągłą ocenę jakości, kosztu i skuteczności własnych działań."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-2-za-o-enie-nadrz-dne",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Założenie nadrzędne",
+      "category": "document",
+      "content": "Najpierw analizujemy potencjał, potem projektujemy drogę wdrożenia, a dopiero na końcu uruchamiamy automatyzację.\n\nW praktyce oznacza to, że:\n\n- około 90% pracy systemu powinno dotyczyć gromadzenia danych, RAG, analiz porównawczych, planowania, projektowania i optymalizacji,\n- około 10% pracy powinno przechodzić do właściwego wdrożenia i uruchomienia procesów wykonawczych,\n- system nie może rozszerzać się chaotycznie przez dokładanie kolejnych \"fajnych agentów\",\n- każdy nowy kierunek musi najpierw przejść przez bramkę oceny potencjału.\n\nWażna zasada dodatkowa:\n\n- automatyzacja nie może ograniczać się do zasobów wskazanych ręcznie z góry,\n- system ma samodzielnie **szukać, rozpoznawać i klasyfikować zasoby**, które można przekształcić w kolejne zdolności działania.\n- system musi również wykrywać **zjawiska niekorzystne dla ogółu**, takie jak nepotyzm, korupcja, zawłaszczenie wspólnych efektów pracy, omijanie jawnego review i niejawna centralizacja kontroli."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-3-zewn-trzne-repozytoria-jako-warstwa-rag",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Zewnętrzne repozytoria jako warstwa RAG",
+      "category": "document",
+      "content": "Zewnętrzne repozytoria linkowane z tego repozytorium należy traktować jako **otwartą warstwę RAG wzorców, architektur i gotowych klocków**.\n\nNa etapie strategicznym źródłem kontekstu są przede wszystkim ich `README`, dokumentacja i publiczny opis działania. Ta warstwa służy do:\n\n- rozpoznawania, jakie klasy problemów zostały już rozwiązane,\n- identyfikowania gotowych modułów do adaptacji,\n- porównywania alternatywnych ścieżek wdrożeniowych,\n- tworzenia dossier potencjału dla nowych kierunków,\n- zasilania agentów planujących, badawczych i onboardingowych wspólną bazą odniesień.\n\nTa warstwa nie jest automatycznie źródłem prawdy dla wdrożeń. Najpierw służy jako **RAG otwartych wzorców**, a dopiero później może przejść do etapu adaptacji kodu we własnym standardzie Straży Przyszłości.\n\nNajważniejsze klastry tej warstwy to:\n\n- orkiestracja i samodoskonalenie agentów: `LangGraph`, `ABSTRAL`, `GEPA`, `OpenEvolve`,\n- terenowe i offline node'y wiedzy: `Project N.O.M.A.D.`,\n- reuse elektroniki i CAD: `ecoEDA`, `Ki-nTree`, `KiCAD-MCP-Server`, `HydroTek`,\n- sensoryka i produkcja żywności: `KnowFlow_AWM`, `IoT-WQMS`, `IoT-Water-Quality-Monitoring`, `atlas_scientific`, `Renke_DissolvedOxygen_Sensor`, `M5StickC_PH_sensor`,\n- edge/mobile/mesh: `OpenBot`, `selfphone`, `mqtt-sensor-android`, `Sideband`, `MeshCore`, `Meshtastic`,\n- przyszłe pola \"dirty automation\": `MushR`, `Polyformer`, `DetectAnimalsInRoads`, `Poultry_Bot`, `smart-waste-segregator`."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-4-pi-warstw-organizacji-agentowej",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Pięć warstw organizacji agentowej",
+      "category": "document",
+      "content": "### 1. Warstwa Analizy Potencjału\n\nTo jest rdzeń całego systemu.\n\nJej zadaniem jest tworzenie `PotentialDossier` dla każdego kierunku rozwoju. Takie dossier powinno odpowiadać na pytania:\n\n- jaki problem społeczny lub gospodarczy dany kierunek rozwiązuje,\n- jaki jest potencjał wpływu społecznego,\n- jaki jest koszt wejścia i koszt utrzymania,\n- jak łatwo zdobyć dane, sprzęt i kompetencje,\n- czy istnieją już gotowe wzorce w zewnętrznych repozytoriach,\n- jaki jest czas do pierwszego użytecznego rezultatu,\n- czy kierunek nadaje się do pracy wolontariuszy z lokalnymi agentami.\n\nWarstwa ta porównuje kierunki między sobą i utrzymuje ranking priorytetów rozwojowych.\n\nTa warstwa powinna również utrzymywać **resource scouting**, czyli aktywne wyszukiwanie zasobów możliwych do użycia przez inicjatywę.\n\nZasobem może być:\n\n- elektrośmieć lub donor hardware,\n- darmowa moc obliczeniowa,\n- notebook Kaggle lub Colab możliwy do uruchomienia przez wolontariusza,\n- gotowy kod open-source i jego README jako zasób intelektualny,\n- dane terenowe, raporty i dokumentacja,\n- wolne urządzenia, odpady produkcyjne i nadwyżki magazynowe,\n- lokalna infrastruktura, energia, przestrzeń robocza i logistyka.\n\nDlatego `PotentialDossier` powinno być powiązane nie tylko z problemem, ale też z klasami zasobów, które system sam wykrywa i ocenia.\n\n### 2. Warstwa Drabiny Kompetencji\n\nSystem nie powinien próbować przeskakiwać od wizji do pełnej autonomii jednym ruchem.\n\nMusi budować sobie kolejne stopnie prowadzące do celu:\n\n- wykrywać główne bariery,\n- przekształcać bariery w podcele,\n- rozpoznawać, jakich danych, umiejętności i narzędzi brakuje,\n- tworzyć eksperymenty prowadzące do zmniejszenia niepewności,\n- wybierać następny najrozsądniejszy krok zamiast największego kroku.\n\nTa warstwa odpowiada za byty takie jak:\n\n- `CapabilityGap`,\n- `Hypothesis`,\n- `Experiment`,\n- `ReadinessGate`.\n\n### 3. Warstwa Wykonawcza Wolontariuszy i Agentów\n\nNa obecnym etapie najrealistyczniejszym modelem nie jest \"pełna autonomia chmurowa\", tylko **rozproszona sieć ludzi nadzorujących lokalnych agentów AI**.\n\nTo powinno działać podobnie do modelu SETI lub rozproszonego open source:\n\n- repozytorium publikuje dobrze opisane pakiety pracy,\n- wolontariusz klonuje repozytorium,\n- lokalny agent dostaje kontekst i wykonuje wycinek zadania,\n- człowiek nadzoruje, uruchamia notebook lub skrypt, ocenia wynik i otwiera PR albo raport,\n- wynik wraca do wspólnego systemu wiedzy.\n\nKażdy `ExecutionPack` powinien zawierać:\n\n- cel zadania,\n- wejściowy kontekst i źródła RAG,\n- sugerowany prompt dla agenta,\n- oczekiwany artefakt,\n- kryteria odbioru,\n- docelowe miejsce publikacji: `Issue`, `PR`, raport, snapshot, notebook, eksport danych.\n\nJednym z najważniejszych typów `ExecutionPack` na obecnym etapie powinien być `KaggleNotebookPack`.\n\nTo pakiet pracy, w którym:\n\n- repozytorium dostarcza gotowy notatnik lub szkielet notatnika do uruchomienia w `Kaggle`,\n- lokalny agent wolontariusza instruuje go krok po kroku, jak pobrać notebook, ustawić sekrety i uruchomić zadanie,\n- notebook korzysta z własnych darmowych zasobów obliczeniowych wolontariusza,\n- wyniki są zapisywane do forka wolontariusza, a następnie trafiają do upstream przez `Pull Request`.\n\nTen model jest ważny, bo pozwala przekształcić rozproszoną społeczność w sieć realnych węzłów wykonawczych bez konieczności centralnego finansowania GPU lub chmury.\n\nW praktyce `Kaggle` może być traktowane jako **darmowy dostawca zasobów obliczeniowych aktywowanych przez wolontariuszy**. To znaczy, że inicjatywa nie posiada tych zasobów centralnie, ale potrafi je uruchamiać przez dobrze przygotowane notebooki i execution packi dostarczane ludziom przez agentów."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-5-model-wolontariackich-notatnik-w-kaggle",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Model wolontariackich notatników Kaggle",
+      "category": "document",
+      "content": "W projektach badawczych i data-heavy Straż Przyszłości powinna świadomie wykorzystywać model:\n\n```text\nrepo -> execution pack -> notebook Kaggle -> fork wolontariusza -> commit -> PR -> review -> merge\n```\n\nW tym modelu:\n\n- agent repozytoryjny wybiera sensowny notebook do uruchomienia,\n- przygotowuje instrukcję dla wolontariusza,\n- wolontariusz uruchamia notebook na własnym koncie `Kaggle`,\n- notebook pracuje na kluczach i darmowych limitach przypisanych do tego konta,\n- wynik nie trafia bezpośrednio do głównego repozytorium, tylko najpierw do forka wolontariusza,\n- upstream otrzymuje dopiero uporządkowany `PR` z artefaktami, logami i opisem przebiegu.\n\nTo jest praktyczny sposób, w jaki inicjatywa może korzystać z rozproszonej darmowej mocy obliczeniowej wolontariuszy bez budowy własnej kosztownej infrastruktury centralnej.\n\nNajważniejsze zastosowania tego modelu to:\n\n- autonomiczne notatniki discovery i enrichment dla `Project 13`,\n- masowe przetwarzanie danych PDF, OCR i materiałów wideo,\n- eksperymenty porównawcze dla analiz potencjału,\n- batchowe generowanie snapshotów wiedzy i raportów porównawczych,\n- przygotowywanie datasetów i artefaktów do kolejnych etapów review.\n\nDocelowo należy myśleć nie o pojedynczych notebookach, lecz o **łańcuchach automatyzacji uruchamianych przez notebooki Kaggle**. Każdy etap łańcucha może być osobnym `ExecutionPack`, a rozproszeni wolontariusze mogą uruchamiać różne etapy na własnych darmowych zasobach."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-6-zasady-bezpiecze-stwa-dla-notatnik-w-kaggle",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Zasady bezpieczeństwa dla notatników Kaggle",
+      "category": "document",
+      "content": "Ten model musi być jawnie **opt-in** i bezpieczny dla wolontariusza.\n\nDlatego obowiązują następujące zasady:\n\n- wolontariusz sam decyduje, czy chce zużyć własny darmowy przydział `Kaggle`,\n- notebook korzysta wyłącznie z sekretów ustawionych świadomie przez wolontariusza na jego koncie,\n- repozytorium nie przechowuje ani nie publikuje prywatnych kluczy wolontariusza,\n- preferowany jest zapis do własnego forka wolontariusza, a nie bezpośredni push do upstream,\n- każdy `KaggleNotebookPack` powinien jasno mówić, jakie sekrety są potrzebne i do czego służą,\n- notebook nie powinien wykonywać działań poza zadeklarowanym zakresem bez wiedzy wolontariusza,\n- wynik obliczeń powinien być możliwy do zreviewowania przed otwarciem `PR`.\n\n### 4. Warstwa Wdrożeniowa\n\nDopiero po przejściu przez analizę i review system powinien przechodzić do tworzenia procesów wykonawczych.\n\nNa start najlepszym polem wdrożeniowym są istniejące klocki repo:\n\n- `cloudflare/` jako warstwa wejścia, operator-assistant i ingress workflow,\n- `PROJEKTY/13_baza_czesci_recykling/` jako pierwszy pełny loop `discovery -> queue -> catalog -> export -> PR`,\n- `api/`, `schemas/`, `openapi/`, `adapters/` jako fundament dla rozproszonych providerów danych,\n- `reports/` i snapshoty wiedzy jako warstwa pamięci uporządkowanej.\n\nWarstwa wdrożeniowa nie może jednak kończyć się na software i dokumentach. Musi mieć również **wyjście do warstwy sprzętowej**:\n\n- odzyskane smartfony, routery i moduły obliczeniowe jako edge compute,\n- odzyskane części i podzespoły jako baza do budowy nowych urządzeń,\n- urządzenia automatyzacji budowane z elektrośmieci jako narzędzia dalszego rozwoju systemu.\n\nTo oznacza, że docelowym wynikiem organizacji agentowej mogą być nie tylko raporty, katalogi i PR-y, ale również:\n\n- sterowniki,\n- węzły pomiarowe,\n- bramki danych,\n- stanowiska testowe,\n- lekkie komputery robocze,\n- urządzenia potrzebne do kolejnych procesów automatyzacji.\n\nNajpełniej opisuje to kierunek:\n\n- [17. Autonomiczne Przetwarzanie Elektrośmieci na Hardware Automatyzacji](../PROJEKTY/17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md)\n\nWdrożenie musi pozostawać stopniowalne:\n\n- `research`: tworzenie kandydatów i hipotez,\n- `assist`: przygotowanie draftów, raportów, PR-ów i planów,\n- `deploy`: tylko po przejściu bramek jakości i zatwierdzeniu człowieka.\n\n### 5. Warstwa Samodoskonalenia\n\nDopiero po zbudowaniu stabilnych logów, benchmarków i metryk jakości można sensownie włączyć automatyczną optymalizację.\n\nRola frameworków zewnętrznych powinna być rozdzielona:\n\n- `LangGraph` jako warstwa stanowej orkiestracji workflowów,\n- `ABSTRAL` jako inspiracja do przeszukiwania topologii agentów i zestawów skilli,\n- `GEPA` jako narzędzie do poprawy promptów, decyzji i policy routing,\n- `OpenEvolve` jako narzędzie do ewolucji kodu, procedur i evaluatorów.\n\nTe mechanizmy nie powinny sterować rdzeniem od pierwszego dnia. Najpierw system musi mieć:\n\n- pełne logi przebiegów,\n- ocenę artefaktów,\n- jawne kryteria sukcesu,\n- benchmarki i testy powtarzalności."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-7-kanoniczny-przebieg-pracy",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Kanoniczny przebieg pracy",
+      "category": "document",
+      "content": "Docelowy przebieg organizacji agentowej powinien wyglądać tak:\n\n```text\nsygnal -> dossier potencjalu -> ranking -> bariera -> podcel -> execution pack ->\npraca wolontariusza + lokalnego agenta -> artefakt -> review -> approval ->\npromocja do wspolnej bazy wiedzy / PR / deployment -> ewaluacja -> poprawa procesu\n```\n\nSygnałem może być:\n\n- nowe repo zewnętrzne,\n- nowy problem społeczny,\n- nowa obserwacja terenowa,\n- nowy zasób sprzętowy,\n- nowy donor parts w katalogu,\n- nowa możliwość uruchomienia darmowych zasobów obliczeniowych.\n\nDocelowo system powinien nie tylko reagować na takie sygnały, ale również sam ich aktywnie szukać:\n\n- skanować klasy odpadów, nadwyżek i wolnych urządzeń,\n- rozpoznawać źródła darmowych lub tanich zasobów obliczeniowych,\n- identyfikować gotowe otwarte narzędzia i architektury do adaptacji,\n- porównywać, które zasoby najlepiej nadają się do budowy kolejnych zdolności automatyzacji."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-8-minimalne-byty-kt-re-trzeba-doda-do-systemu",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Minimalne byty, które trzeba dodać do systemu",
+      "category": "document",
+      "content": "Aby przejść od zbioru automatów do organizacji agentowej, potrzebny jest wspólny model danych i przebiegów:\n\n- `PotentialDossier`\n- `CapabilityGap`\n- `Task`\n- `Run`\n- `Artifact`\n- `Approval`\n- `ExecutionPack`\n- `ExperimentLog`\n- `ResourceOffer`\n- `DeploymentPlan`\n\nTe byty nie muszą od razu mieć rozbudowanego UI. Wystarczy, żeby miały stabilną reprezentację w `D1`, `JSON`, `Markdown` lub `Issue/PR metadata`."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-9-priorytet-pierwszego-wdro-enia",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Priorytet pierwszego wdrożenia",
+      "category": "document",
+      "content": "Najbardziej realistyczny pierwszy klin nie powinien być wybrany przypadkowo.\n\nNa obecnym etapie repo najmocniej wspiera dwa kierunki:\n\n- **analizę potencjału i organizację pracy**, bo ma już onboarding, bundle wiedzy, bota, API i strukturę dokumentacyjną,\n- **recykling i reuse elektroniki**, bo ma już działający zalążek pełnego łańcucha `discovery -> queue -> catalog -> export -> PR`.\n\nDlatego pierwszy etap powinien brzmieć:\n\n1. zbudować `Straż OS`, czyli wspólny system pracy agentów,\n2. użyć `Project 13` jako pierwszego poligonu produkcyjnego,\n3. użyć toru providerów danych jako drugiego pilota dla świata fizycznego,\n4. rozszerzyć katalog i reuse workflow na warstwę sprzętową i obliczeniową z elektrośmieci,\n5. dopiero później uruchamiać cięższą warstwę CAD, robotyki i optymalizacji ewolucyjnej."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-10-rola-cz-owieka",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Rola człowieka",
+      "category": "document",
+      "content": "W najbliższych etapach obowiązuje model **human-in-the-loop**.\n\nOznacza to, że AI może samodzielnie:\n\n- zbierać dane i README,\n- tworzyć dossier potencjału,\n- porównywać kierunki,\n- budować execution packi,\n- przygotowywać drafty PR, raportów i notebooków,\n- proponować przebudowę procesów.\n\nAle nie powinno samodzielnie bez zatwierdzenia człowieka:\n\n- publikować finalnych decyzji strategicznych,\n- sterować światem fizycznym,\n- wykonywać działań kosztowych,\n- promować niezweryfikowanych danych do kanonicznej bazy wiedzy,\n- scalać krytycznych zmian infrastrukturalnych."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-11-roadmapa",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Roadmapa",
+      "category": "document",
+      "content": "### Etap 1. Straż OS\n\nNajpierw trzeba zbudować wspólny model pracy agentów:\n\n- `task/run/artifact/approval`,\n- provenance,\n- review gates,\n- separacja `research`, `assist`, `deploy`,\n- porządek między ingress, pamięcią i orkiestracją.\n\n### Etap 2. Silnik analizy potencjału\n\nNastępnie trzeba uruchomić ranking kierunków rozwoju:\n\n- dossier potencjału,\n- scoring,\n- porównanie koszt/efekt,\n- rekomendacja kolejnych pilotów.\n\n### Etap 3. Sieć wolontariuszy z agentami\n\nRepozytorium powinno zacząć publikować gotowe paczki pracy:\n\n- notebooki do Kaggle/Colab,\n- runbooki uruchomień,\n- pakiety researchowe,\n- pakiety kuracji danych,\n- pakiety integracyjne do PR.\n\nSzczególnie ważne powinny być tutaj:\n\n- autonomiczne notebooki `Kaggle` do uruchomienia na kontach wolontariuszy,\n- instrukcje dla lokalnych agentów, jak prowadzić wolontariusza przez uruchomienie,\n- standard `fork -> commit -> PR`, który zamienia darmowe zasoby obliczeniowe społeczności w uporządkowany wkład do inicjatywy.\n\n### Etap 4. Pierwszy pełny loop produkcyjny\n\n`Project 13` powinien zostać doprowadzony do formy:\n\n- kandydat,\n- review-ready,\n- katalog,\n- eksport do downstream,\n- draft PR,\n- akceptacja,\n- promocja do wspólnej bazy wiedzy.\n\n### Etap 5. Drugi pilot świata fizycznego\n\nPo ustabilizowaniu pierwszego loopa należy rozwinąć kierunek providerów danych i produkcji żywności:\n\n- sensoryka,\n- smartfon edge,\n- centralne API,\n- snapshoty wiedzy,\n- rekomendacje dla procesów terenowych.\n\n### Etap 6. Warstwa Hardware z Elektrośmieci\n\nPo zbudowaniu stabilnego loopa danych i pierwszego pilota świata fizycznego trzeba rozszerzyć system o sprzęt budowany z odzysku:\n\n- katalog modułów obliczeniowych i wykonawczych,\n- kwalifikację odzyskanych urządzeń do dalszego użycia,\n- projektowanie urządzeń reuse z części i modułów,\n- budowę hardware potrzebnego do dalszych procesów automatyzacji.\n\nTu celem nie jest tylko \"recykling\", ale zamiana elektrośmieci w:\n\n- edge compute,\n- sterowniki,\n- urządzenia pomiarowe,\n- stanowiska testowe,\n- sprzęt dla kolejnych łańcuchów automatyzacji.\n\n### Etap 7. Samodoskonalenie\n\nDopiero wtedy należy włączyć pełniejszą optymalizację promptów, kodu i architektury agentów."
+    },
+    {
+      "id": "docs-architektura-organizacji-agentowej-md-12-kryteria-sukcesu",
+      "source_path": "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Kryteria sukcesu",
+      "category": "document",
+      "content": "Organizacja agentowa działa poprawnie, gdy:\n\n- analiza potencjału faktycznie steruje kolejnością prac,\n- wolontariusz z lokalnym agentem może dostać gotowy execution pack i dowieźć użyteczny artefakt,\n- artefakty mają ślad pochodzenia i przechodzą przez review,\n- system potrafi zamieniać wyniki pracy w trwałe elementy wspólnej bazy wiedzy,\n- kolejne procesy są uruchamiane dlatego, że przeszły ranking potencjału, a nie dlatego, że były najgłośniejszym pomysłem,\n- optymalizacja dotyczy całych ścieżek działania, a nie tylko pojedynczych promptów.\n\nNajważniejszym wynikiem nie jest liczba agentów, lecz zdolność organizacji do **systematycznego budowania kolejnych stopni prowadzących do realnych wdrożeń dla dobra wspólnego**."
+    },
+    {
       "id": "docs-architektura-onboardingu-md-intro",
       "source_path": "docs/ARCHITEKTURA_ONBOARDINGU.md",
       "title": "Wprowadzenie",
@@ -322,7 +462,7 @@
       "source_path": "docs/ARCHITEKTURA_ONBOARDINGU.md",
       "title": "Onboarding Strażnika",
       "category": "document",
-      "content": "Onboarding Strażnika powinien być realizowany na **zewnętrznej stronie inicjatywy** jako ankieta i rekomendator zadań.\n\nTa ścieżka musi być zaprojektowana w sposób merytokratyczny również wobec osób, które nie mają klasycznej pozycji zawodowej, ale potrafią skutecznie pracować z pomocą nowoczesnych narzędzi agentowych i generatywnych, takich jak `Codex`. Jeżeli ktoś umie osiągać realne cele, łączyć zasoby, adaptować kod i dowozić efekty, powinien być traktowany jako pełnoprawny współtwórca sieci intelektualnej, a nie jako uczestnik drugiej kategorii.\n\nJego rola:\n\n- przyjąć zgłoszenie osoby, która chce włączyć się do inicjatywy po raz pierwszy,\n- rozpoznać obszar pasji i typ wkładu, jaki dana osoba chce wnieść,\n- skierować tę osobę do właściwej sekcji tego repozytorium,\n- zaproponować pierwsze dokumenty, pierwsze projekty i pierwsze Issues.\n\nMinimalne dane wejściowe dla rekomendatora:\n\n- pasje i obszary zainteresowań,\n- kompetencje techniczne lub organizacyjne,\n- sposób pracy i używane narzędzia, także narzędzia AI-native,\n- dostępny czas,\n- dostępne zasoby, na przykład stary smartfon, ESP32, czujniki, kamera, wiedza domenowa,\n- preferowany rodzaj wkładu: kod, hardware, dokumentacja, analiza, marketing, badania, provider danych.\n\nWarto przy tym jasno komunikować, że brak własnego urządzenia pomiarowego nie wyklucza realnego wejścia do projektu. Jeżeli dane są dostarczane przez providerów i społeczność przez wspólne API, nowy Strażnik może od początku wejść w architekturę danych, adaptery, analizę, dokumentację i budowę bazy wiedzy. Przykład takiego modelu opisuje dokument:\n\n- [Przykłady Gotowego Kodu i Otwartych Wzorców](PRZYKLADY_GOTOWEGO_KODU.md)\n\nMinimalne dane wyjściowe rekomendatora:\n\n- rekomendowana ścieżka wejścia,\n- lista dokumentów startowych,\n- lista projektów do przeczytania,\n- lista pierwszych zadań lub Issues,\n- wskazanie, czy dana osoba powinna przejść dalej do onboardingu providera."
+      "content": "Onboarding Strażnika powinien być realizowany na **zewnętrznej stronie inicjatywy** jako ankieta i rekomendator zadań.\n\nTa ścieżka musi być zaprojektowana w sposób merytokratyczny również wobec osób, które nie mają klasycznej pozycji zawodowej, ale potrafią skutecznie pracować z pomocą nowoczesnych narzędzi agentowych i generatywnych, takich jak `Codex`. Jeżeli ktoś umie osiągać realne cele, łączyć zasoby, adaptować kod i dowozić efekty, powinien być traktowany jako pełnoprawny współtwórca sieci intelektualnej, a nie jako uczestnik drugiej kategorii.\n\nJego rola:\n\n- przyjąć zgłoszenie osoby, która chce włączyć się do inicjatywy po raz pierwszy,\n- rozpoznać obszar pasji i typ wkładu, jaki dana osoba chce wnieść,\n- skierować tę osobę do właściwej sekcji tego repozytorium,\n- zaproponować pierwsze dokumenty, pierwsze projekty i pierwsze Issues.\n\nMinimalne dane wejściowe dla rekomendatora:\n\n- pasje i obszary zainteresowań,\n- kompetencje techniczne lub organizacyjne,\n- sposób pracy i używane narzędzia, także narzędzia AI-native,\n- dostępny czas,\n- dostępne zasoby, na przykład stary smartfon, ESP32, czujniki, kamera, wiedza domenowa,\n- dostępne zasoby obliczeniowe, na przykład konto `Kaggle`, `Colab`, lokalny GPU albo możliwość uruchamiania notebooków,\n- preferowany rodzaj wkładu: kod, hardware, dokumentacja, analiza, marketing, badania, provider danych.\n\nWarto przy tym jasno komunikować, że brak własnego urządzenia pomiarowego nie wyklucza realnego wejścia do projektu. Jeżeli dane są dostarczane przez providerów i społeczność przez wspólne API, nowy Strażnik może od początku wejść w architekturę danych, adaptery, analizę, dokumentację i budowę bazy wiedzy. Przykład takiego modelu opisuje dokument:\n\n- [Przykłady Gotowego Kodu i Otwartych Wzorców](PRZYKLADY_GOTOWEGO_KODU.md)\n\nMinimalne dane wyjściowe rekomendatora:\n\n- rekomendowana ścieżka wejścia,\n- lista dokumentów startowych,\n- lista projektów do przeczytania,\n- lista pierwszych zadań lub Issues,\n- wskazanie, czy dana osoba nadaje się do uruchamiania autonomicznych notebooków badawczych na własnych zasobach,\n- wskazanie, czy dana osoba nadaje się do zadań `resource scoutingu`, czyli rozpoznawania nowych klas zasobów możliwych do uruchomienia przez inicjatywę,\n- wskazanie, czy dana osoba powinna przejść dalej do onboardingu providera.\n\nWażny wariant tej ścieżki to **wolontariusz z agentami AI i kontem Kaggle/Colab**. Taka osoba może nie mieć własnego hardware terenowego, a mimo to wnosić bardzo realny wkład:\n\n- uruchamiać autonomiczne notebooki przygotowane przez inicjatywę,\n- zużywać własne darmowe tokeny i limity obliczeniowe na rzecz wspólnego celu,\n- zapisywać wyniki do własnego forka,\n- przekazywać je do głównego repozytorium przez `Pull Request`,\n- działać jako rozproszony węzeł wykonawczy dla zadań discovery, enrichment i research.\n\nTo powinno być komunikowane wprost jako pełnoprawna ścieżka wejścia do inicjatywy.\n\nRównolegle warto przewidzieć wariant **wolontariusza-resource scouta**. Taka osoba może wnosić wkład przez:\n\n- wskazywanie nowych klas zasobów, które AI powinno analizować,\n- rozpoznawanie lokalnych źródeł sprzętu, danych, energii albo mocy obliczeniowej,\n- testowanie, czy dany zasób da się włączyć do kolejnych łańcuchów automatyzacji,\n- dokumentowanie ograniczeń, kosztów wejścia i potencjału rozwojowego."
     },
     {
       "id": "docs-architektura-onboardingu-md-4-onboarding-providera-danych",
@@ -365,6 +505,272 @@
       "title": "Kryteria sukcesu",
       "category": "document",
       "content": "Onboarding jest zaprojektowany poprawnie, gdy:\n\n- nowa osoba nie trafia od razu do technicznej dokumentacji API bez kontekstu,\n- strona zewnętrzna potrafi skierować Strażnika do konkretnego projektu i pierwszego zadania,\n- provider danych ma osobną, czytelną ścieżkę techniczną,\n- oba procesy są ze sobą kompatybilne, ale nie są mylone,\n- repozytorium pozostaje źródłem prawdy dla zadań, dokumentów i standardów."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-intro",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Plan Rozwoju Organizacji Agentowej"
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-1-cel-dokumentu",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Cel dokumentu",
+      "category": "document",
+      "content": "Ten dokument opisuje **ogólny plan rozwoju Straży Przyszłości jako organizacji automatyzacji AI działającej na rzecz społeczeństwa**.\n\nJego celem nie jest opisanie pojedynczego projektu, lecz ustalenie:\n\n- jak wybierać najważniejsze kierunki,\n- w jakiej kolejności budować zdolności organizacji,\n- jak minimalizować chaos i marnowanie energii,\n- jak uzyskać największy efekt społeczny przy najmniejszym koszcie wejścia,\n- jak przechodzić od analizy potencjału do realnych wdrożeń.\n\nDokument uzupełnia:\n\n- [Architektura Organizacji Agentowej](ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md)\n- [Encje i Workflowy Organizacji Agentowej](ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)\n- [Instrukcja Rozwojowa Dla Agenta](INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md)"
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-2-za-o-enie-nadrz-dne",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Założenie nadrzędne",
+      "category": "document",
+      "content": "Najbardziej perspektywiczny model nie polega na budowie jednego wielkiego \"superagenta\". Polega na stworzeniu organizacji, która:\n\n- analizuje potencjał wielu możliwych kierunków,\n- sama szuka zasobów i okazji do ich uruchomienia,\n- wybiera tylko te kroki, które zwiększają zdolność dalszego działania,\n- buduje kolejne stopnie prowadzące do coraz większej autonomii,\n- zamienia wiedzę, dane, sprzęt i pracę wolontariuszy w trwałe procesy wspólnego dobra.\n\nNajważniejsza zasada planu brzmi:\n\n**najpierw analiza potencjału i projektowanie drogi, potem mały pilot, potem dopiero skalowanie.**"
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-3-zasady-optymalizacji",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Zasady optymalizacji",
+      "category": "document",
+      "content": "Każda decyzja rozwojowa powinna być oceniana według poniższych zasad.\n\n### 1. Maksymalizacja efektu społecznego\n\nPriorytet dostają te kierunki, które:\n\n- rozwiązują realny problem społeczny lub gospodarczy,\n- dają powtarzalny efekt,\n- mogą być później replikowane w wielu miejscach,\n- zwiększają odporność społeczną, produkcyjną albo logistyczną.\n\n### 2. Maksymalizacja sprawności względem wysiłku\n\nPriorytet dostają te działania, które:\n\n- mają niski koszt wejścia,\n- wykorzystują dostępne już zasoby,\n- pozwalają osiągnąć pierwszy użyteczny rezultat szybko,\n- nie wymagają dużego finansowania centralnego na starcie.\n\n### 3. Maksymalizacja efektu skumulowanego\n\nNajcenniejsze są takie kroki, które po wykonaniu:\n\n- ułatwiają kolejne kroki,\n- zwiększają liczbę przyszłych możliwości,\n- tworzą reusable data, reusable tools albo reusable hardware,\n- wzmacniają zdolność organizacji do dalszego uczenia się i działania.\n\n### 4. Maksymalizacja jakości decyzji\n\nOrganizacja nie może rozwijać się przez przypadkowe entuzjazmy. Każdy większy kierunek powinien przejść przez:\n\n- dossier potencjału,\n- porównanie z alternatywami,\n- bramkę gotowości,\n- test pilotażowy,\n- ewaluację po wdrożeniu.\n\n### 5. Ochrona przed przedwczesną złożonością\n\nNie należy zbyt wcześnie:\n\n- budować ciężkiej orkiestracji dla procesów, które nie mają jeszcze stabilnego sensu,\n- uruchamiać kosztownych automatyzacji bez pełnych logów i benchmarków,\n- wdrażać warstwy samodoskonalenia przed ustabilizowaniem workflowów bazowych,\n- rozwijać zbyt wielu kierunków naraz.\n\n### 6. Ochrona przed przejęciem organizacji przez zjawiska niekorzystne\n\nKazdy wiekszy kierunek i kazda istotna zmiana w kodzie, workflowie albo deploymentcie powinny byc analizowane pod katem:\n\n- nepotyzmu,\n- korupcji,\n- zawlaszczenia wspolnych zasobow,\n- niejawnego uprzywilejowania wybranych osob,\n- prywatyzacji efektow wolontariatu,\n- omijania review i audytu,\n- niejawnej centralizacji kontroli."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-4-mechanizm-priorytetyzacji-kierunk-w",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Mechanizm priorytetyzacji kierunków",
+      "category": "document",
+      "content": "Każdy kierunek rozwoju powinien przechodzić przez `PotentialDossier` i zostać oceniony co najmniej w tych wymiarach:\n\n- wpływ społeczny,\n- czas do pierwszego użytecznego rezultatu,\n- koszt wejścia,\n- dostępność danych,\n- dostępność zasobów sprzętowych lub obliczeniowych,\n- zgodność z modelem pracy wolontariuszy z agentami,\n- możliwość budowy reusable capability,\n- możliwość wyjścia do świata fizycznego,\n- możliwość późniejszej optymalizacji i skalowania.\n\nPraktyczny model rankingowy powinien dawać premię tym kierunkom, które jednocześnie:\n\n- szybko dają działający pilot,\n- tworzą trwałą warstwę wiedzy,\n- pozwalają aktywować zasoby społeczne,\n- otwierają drogę do kolejnych automatyzacji."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-5-kanoniczny-cykl-pracy-organizacji",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Kanoniczny cykl pracy organizacji",
+      "category": "document",
+      "content": "Docelowy cykl powinien wyglądać tak:\n\n```text\nsygnał -> resource scouting -> PotentialDossier -> ranking -> CapabilityGap ->\nexperiment -> ExecutionPack -> run -> artifact -> review -> approval ->\ndeployment -> evaluation -> optimization\n```\n\nW praktyce oznacza to:\n\n1. system wykrywa problem, zasób albo okazję,\n2. tworzy dossier potencjału,\n3. porównuje kierunek z innymi kandydatami,\n4. rozbija go na bariery i podcele,\n5. publikuje execution pack dla człowieka i lokalnego agenta,\n6. odbiera artefakt przez `PR`, raport albo snapshot,\n7. przeprowadza review i promocję,\n8. dopiero potem przechodzi do wdrożenia albo kolejnego etapu drabiny kompetencji."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-6-roadmapa-rozwoju",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Roadmapa rozwoju",
+      "category": "document",
+      "content": "### Etap 0. Ustalenie systemu operacyjnego organizacji\n\nNajpierw trzeba zbudować wspólną logikę działania, czyli `Straż OS`.\n\nZakres:\n\n- wspólny model `task / run / artifact / approval`,\n- jawny podział `research / assist / deploy`,\n- provenance i ślad pochodzenia danych,\n- standardy review,\n- wspólny model execution packów,\n- wspólny sposób raportowania wyników.\n\nDlaczego to jest pierwsze:\n\n- bez tego organizacja będzie produkować rozproszone artefakty bez pamięci i bez porównywalności,\n- bez tego nie da się później sensownie mierzyć jakości i optymalizować procesów.\n\nBramka wyjścia:\n\n- każdy ważny proces w repo da się opisać jako `task -> run -> artifact -> review -> approval`.\n\n### Etap 1. Uruchomienie silnika analizy potencjału i resource scoutingu\n\nTo jest właściwy rdzeń organizacji.\n\nZakres:\n\n- tworzenie `PotentialDossier` dla problemów, zasobów i kierunków,\n- budowa rankingu priorytetów,\n- aktywne wyszukiwanie zasobów materialnych, obliczeniowych, informacyjnych i logistycznych,\n- porównywanie, które zasoby najlepiej nadają się do budowy kolejnych zdolności działania.\n\nNajważniejsza zasada:\n\n- elektrośmieci są pilotem, ale system nie może ograniczać się tylko do nich.\n\nBramka wyjścia:\n\n- organizacja potrafi uzasadnić, dlaczego rozwija dany kierunek teraz, a nie inny.\n\n### Etap 2. Budowa wspólnej warstwy wiedzy i RAG otwartych wzorców\n\nZanim powstanie więcej automatyzacji, trzeba zbudować porządną warstwę wspólnego kontekstu.\n\nZakres:\n\n- traktowanie zewnętrznych repozytoriów jako warstwy RAG,\n- porządkowanie README, notatek, snapshotów i porównań,\n- mapowanie wzorców do konkretnych problemów i projektów,\n- zasilanie agentów planujących, onboardingowych i badawczych wspólną bazą odniesień.\n\nNajważniejszy efekt:\n\n- organizacja nie zaczyna od zera przy każdym nowym problemie.\n\nBramka wyjścia:\n\n- każdy wybrany kierunek ma przypisane wzorce zewnętrzne, zasoby i argumentację wdrożeniową.\n\n### Etap 3. Zbudowanie drabiny kompetencji i systemu eksperymentów\n\nPo wyborze kierunków trzeba umieć rozbijać je na realistyczne stopnie.\n\nZakres:\n\n- model `CapabilityGap`,\n- model `Hypothesis` i `Experiment`,\n- gotowość etapowa przez `ReadinessGate`,\n- redukcja niepewności przez małe testy zamiast wielkich skoków.\n\nTo jest etap, w którym organizacja zaczyna działać jak system uczący się, a nie tylko jak zbiór pomysłów.\n\nBramka wyjścia:\n\n- dla każdego priorytetowego kierunku istnieje lista barier, eksperymentów i kryteriów przejścia.\n\n### Etap 4. Rozproszona sieć wolontariuszy z lokalnymi agentami\n\nNa obecnym etapie to jest najrealistyczniejsza warstwa wykonawcza.\n\nZakres:\n\n- execution packi dla ludzi i ich agentów,\n- gotowe runbooki, notebooki, prompty i kryteria odbioru,\n- `fork -> commit -> PR` jako podstawowy kanał wkładu,\n- wykorzystanie `Kaggle`, `Colab` i lokalnych maszyn jako rozproszonych zasobów obliczeniowych,\n- onboarding wolontariuszy wykonawczych i wolontariuszy-resource scoutów.\n\nNajważniejszy efekt:\n\n- organizacja zamienia społeczność w rozproszoną siatkę realnych węzłów pracy.\n\nBramka wyjścia:\n\n- nowy wolontariusz z agentem potrafi przejść od instruction packa do użytecznego artefaktu bez ręcznego prowadzenia przez maintainera.\n\n### Etap 5. Pierwszy pełny loop produkcyjny\n\nNajpierw trzeba domknąć jeden kierunek od sygnału do trwałego artefaktu.\n\nNajbardziej naturalny pierwszy poligon:\n\n- [PROJEKTY/13_baza_czesci_recykling/README.md](../PROJEKTY/13_baza_czesci_recykling/README.md)\n\nDlaczego ten kierunek jest strategiczny:\n\n- ma niski koszt wejścia,\n- dobrze pasuje do modelu Kaggle i pracy wolontariuszy,\n- tworzy trwałą bazę wiedzy,\n- łączy świat danych, reuse elektroniki i przyszły hardware loop.\n\nDocelowy wynik etapu:\n\n- `discovery -> queue -> review -> catalog -> export -> PR -> promotion`.\n\nBramka wyjścia:\n\n- organizacja umie systematycznie produkować review-ready artefakty i promować je do kanonicznej bazy wiedzy.\n\n### Etap 6. Drugi pilot świata fizycznego\n\nPo ustabilizowaniu pierwszego loopa należy wejść w drugi tor, który dotyka rzeczywistego środowiska.\n\nNajbardziej perspektywiczne typy pilotów:\n\n- żywność i woda,\n- sensoryka terenowa,\n- smartfon jako edge node,\n- otwarta infrastruktura pomiarowa.\n\nDlaczego ten etap jest ważny:\n\n- pokazuje, że organizacja nie kończy się na analizie internetu,\n- buduje most między warstwą cyfrową a realnym światem.\n\nBramka wyjścia:\n\n- istnieje działający loop `provider danych -> wspólne API -> analiza -> rekomendacja -> użytek terenowy`.\n\n### Etap 7. Wyjście do warstwy sprzętowej i produkcji narzędzi\n\nTo etap, w którym organizacja zaczyna budować własne środki działania.\n\nNajważniejszy kierunek początkowy:\n\n- [17. Autonomiczne Przetwarzanie Elektrośmieci na Hardware Automatyzacji](../PROJEKTY/17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md)\n\nZakres:\n\n- kwalifikacja odzyskanego sprzętu,\n- katalog donor hardware i modułów obliczeniowych,\n- projektowanie urządzeń z odzyskanych zasobów,\n- budowa edge nodes, sterowników, bramek danych i stanowisk testowych,\n- tworzenie sprzętu potrzebnego do kolejnych łańcuchów automatyzacji.\n\nNajważniejsza zasada:\n\n- celem nie jest sam recykling, lecz budowa narzędzi zwiększających przyszłą autonomię organizacji.\n\nBramka wyjścia:\n\n- z odzyskanych zasobów powstaje urządzenie, które realnie wspiera kolejny proces automatyzacji.\n\n### Etap 8. Fabryka wdrożeń\n\nDopiero po ustabilizowaniu kilku pilotów trzeba budować warstwę replikacji.\n\nZakres:\n\n- standardowe deployment packi,\n- checklisty wdrożeniowe,\n- pakiety integracyjne dla partnerów i providerów,\n- wzorce review dla hardware, danych i software,\n- możliwość kopiowania sprawdzonych procesów do kolejnych lokalizacji i domen.\n\nNajważniejszy efekt:\n\n- organizacja przestaje tworzyć pojedyncze sukcesy i zaczyna tworzyć powtarzalne modele wdrożeń.\n\nBramka wyjścia:\n\n- przynajmniej dwa różne procesy da się wdrożyć według jednego wspólnego schematu organizacyjnego.\n\n### Etap 9. Samodoskonalenie architektury i procesów\n\nDopiero tutaj warto wejść głębiej w `LangGraph`, `ABSTRAL`, `GEPA` i `OpenEvolve`.\n\nZakres:\n\n- optymalizacja promptów i tras decyzyjnych,\n- poprawa topologii workflowów,\n- ewolucja evaluatorów i procedur,\n- porównywanie wariantów procesów,\n- optymalizacja pełnych ścieżek działania, a nie pojedynczych promptów.\n\nWarunek wejścia:\n\n- pełne logi,\n- benchmarki,\n- metryki jakości,\n- stabilne kryteria sukcesu.\n\nBramka wyjścia:\n\n- system poprawia jakość, koszt albo czas realizacji w sposób mierzalny i powtarzalny."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-7-co-rozwija-najpierw",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Co rozwijać najpierw",
+      "category": "document",
+      "content": "Jeżeli organizacja ma działać optymalnie, najpierw trzeba rozwijać to, co daje najwyższy zwrot z wysiłku:\n\n1. warstwę analizy potencjału i resource scoutingu,\n2. execution packi i onboarding wolontariuszy z agentami,\n3. `Project 13` jako pierwszy pełny loop,\n4. wspólną warstwę danych i providerów dla świata fizycznego,\n5. hardware loop z odzyskanych zasobów,\n6. dopiero potem cięższą orkiestrację i samodoskonalenie.\n\nTo oznacza, że błędem byłoby dziś:\n\n- zaczynać od rozbudowanej robotyki bez stabilnych danych i review,\n- budować drogą centralną infrastrukturę GPU, zanim zostaną wykorzystane zasoby wolontariackie,\n- optymalizować promptami procesy, które nie mają jeszcze ustalonego sensu,\n- mnożyć liczbę kierunków bez silnika rankingowego."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-8-portfel-dzia-a",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Portfel działań",
+      "category": "document",
+      "content": "Aby zachować równowagę między sprawnością a ambitnym rozwojem, organizacja powinna utrzymywać portfel pracy:\n\n- około 60% energii w najwyżej ocenianych kierunkach o szybkim przełożeniu na realne artefakty,\n- około 30% energii w kierunkach budujących nowe zdolności i nową infrastrukturę,\n- około 10% energii w śmiałych eksperymentach wysokiego ryzyka, ale wysokiego potencjału.\n\nTo chroni organizację przed dwoma skrajnościami:\n\n- utknięciem wyłącznie w drobnych zadaniach operacyjnych,\n- odpłynięciem w zbyt futurystyczne koncepcje bez bazy wykonawczej."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-9-zasady-decyzyjne-dla-wdro-e",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Zasady decyzyjne dla wdrożeń",
+      "category": "document",
+      "content": "Każdy proces powinien mieć trzy tryby:\n\n- `research`,\n- `assist`,\n- `deploy`.\n\nW trybie `deploy` muszą pozostać wymagane:\n\n- review człowieka,\n- zgoda na działania kosztowe,\n- zgoda na działania w świecie fizycznym,\n- zgoda na promocję danych do kanonicznej bazy wiedzy."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-10-metryki-sukcesu-organizacji",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Metryki sukcesu organizacji",
+      "category": "document",
+      "content": "Najważniejsze metryki powinny mierzyć nie liczbę agentów, lecz sprawność organizacji:\n\n- czas od sygnału do review-ready artefaktu,\n- koszt na jeden zaakceptowany artefakt,\n- odsetek artefaktów przechodzących review,\n- udział artefaktów, które tworzą reusable capability,\n- liczba aktywowanych zasobów wcześniej niewykorzystanych,\n- liczba execution packów możliwych do uruchomienia przez nowych wolontariuszy,\n- odsetek procesów mających pełny provenance i logi,\n- czas od pilota do pierwszego powtarzalnego wdrożenia.\n\nNajwyższą metryką nie jest liczba procesów, lecz:\n\n**zdolność organizacji do systematycznego zamieniania wiedzy, zasobów i pracy społeczności w coraz skuteczniejsze automatyzacje dla dobra wspólnego.**"
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-11-najbardziej-realistyczna-sekwencja-na-najbli-szy-okres",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Najbardziej realistyczna sekwencja na najbliższy okres",
+      "category": "document",
+      "content": "### 0-3 miesiące\n\n- doprecyzować `Straż OS`,\n- znormalizować execution packi,\n- ustawić wspólny model dossier potencjału,\n- doprowadzić `Project 13` do stabilniejszego loopa,\n- przygotować pierwsze gotowe paczki dla wolontariuszy z Kaggle.\n\n### 3-6 miesięcy\n\n- uruchomić ranking kierunków i resource scouting,\n- włączyć większą liczbę wolontariuszy z agentami,\n- ustabilizować review i promocję artefaktów,\n- przygotować drugi pilot świata fizycznego.\n\n### 6-12 miesięcy\n\n- domknąć przynajmniej dwa pełne loopy,\n- uruchomić pierwsze reusable deployment packi,\n- połączyć warstwę cyfrową, providerów danych i hardware loop,\n- zacząć budować pierwsze urządzenia wspierające dalszą automatyzację.\n\n### 12-24 miesiące\n\n- przejść od pilotów do powtarzalnych modeli,\n- rozwinąć deployment factory,\n- zacząć mierzalną optymalizację architektury procesów,\n- rozszerzać działające wzorce na kolejne obszary społeczne."
+    },
+    {
+      "id": "docs-plan-rozwoju-organizacji-agentowej-md-12-podsumowanie",
+      "source_path": "docs/PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Podsumowanie",
+      "category": "document",
+      "content": "Najbardziej optymalna i perspektywiczna droga dla Straży Przyszłości nie prowadzi przez chaotyczne dokładanie agentów, lecz przez:\n\n1. analizę potencjału,\n2. resource scouting,\n3. budowę kolejnych stopni kompetencji,\n4. rozproszoną pracę wolontariuszy z agentami,\n5. domykanie małych, ale pełnych loopów,\n6. wyjście do świata fizycznego i warstwy sprzętowej,\n7. dopiero potem samodoskonalenie architektury.\n\nTylko taki porządek daje szansę zbudować organizację, która nie będzie tylko ciekawym eksperymentem AI, lecz rzeczywistą, stale rosnącą infrastrukturą działania na rzecz społeczeństwa."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-intro",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Encje i Workflowy Organizacji Agentowej"
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-1-cel-dokumentu",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Cel dokumentu",
+      "category": "document",
+      "content": "Ten dokument zamienia plan rozwoju organizacji agentowej na **kanoniczny model encji i workflowow**, ktory mozna dalej mapowac na:\n\n- pliki w repozytorium,\n- rekordy JSON,\n- przyszle tabele D1 lub SQLite,\n- execution packi dla wolontariuszy,\n- review i approval maintainera.\n\nKanoniczny schemat tych bytow znajduje sie tutaj:\n\n- [schemas/organization_agent_v1.yaml](../schemas/organization_agent_v1.yaml)\n\nPrzykladowe rekordy znajduja sie tutaj:\n\n- [data/sample/organization_resource_record.json](../data/sample/organization_resource_record.json)\n- [data/sample/organization_potential_dossier.json](../data/sample/organization_potential_dossier.json)\n- [data/sample/organization_capability_gap.json](../data/sample/organization_capability_gap.json)\n- [data/sample/organization_experiment.json](../data/sample/organization_experiment.json)\n- [data/sample/organization_execution_pack.json](../data/sample/organization_execution_pack.json)\n- [data/sample/organization_task.json](../data/sample/organization_task.json)\n- [data/sample/organization_run.json](../data/sample/organization_run.json)\n- [data/sample/organization_artifact.json](../data/sample/organization_artifact.json)\n- [data/sample/organization_integrity_risk_assessment.json](../data/sample/organization_integrity_risk_assessment.json)\n- [data/sample/organization_approval.json](../data/sample/organization_approval.json)\n- [data/sample/organization_readiness_gate.json](../data/sample/organization_readiness_gate.json)"
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-2-minimalny-zestaw-encji",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Minimalny zestaw encji",
+      "category": "document",
+      "content": "### `ResourceRecord`\n\nOpisuje zasob wykryty przez organizacje.\n\nTo moze byc:\n\n- elektroodpad,\n- donor hardware,\n- wolontariusz z kontem `Kaggle`,\n- darmowa moc obliczeniowa,\n- zewnetrzne repozytorium traktowane jako wzorzec RAG,\n- lokalna energia, przestrzen albo logistyka,\n- zbior danych lub kanal sygnalow.\n\n### `PotentialDossier`\n\nTo podstawowa encja decyzyjna. Oprocz efektu, kosztu i czasu do rezultatu musi opisywac rowniez:\n\n- ryzyka dla interesu wspolnego,\n- mozliwe punkty przechwycenia zasobow,\n- ryzyko centralizacji kontroli,\n- ryzyko zawlaszczenia efektow pracy wolontariuszy.\n\n### `CapabilityGap`\n\nTo encja opisujaca bariere miedzy obecnym stanem a stanem potrzebnym do kolejnego kroku.\n\nNajczestsze typy:\n\n- brak danych,\n- brak workflowu,\n- brak tooling,\n- brak hardware,\n- brak walidacji,\n- brak gotowosci organizacyjnej.\n\n### `Experiment`\n\nTo najmniejsza jednostka uczenia sie organizacji. Ma zmniejszac niepewnosc, a nie tylko produkowac kolejne artefakty.\n\n### `ExecutionPack`\n\nTo kanoniczny pakiet pracy dla czlowieka i lokalnego agenta.\n\nPoza celem, RAG i acceptance criteria powinien zawierac:\n\n- `safety_notes`,\n- `misuse_risks`,\n- opis tego, jak unikac zawlaszczenia wyniku, ukrytego pushu do prywatnych zasobow albo niejawnej promocji.\n\n### `Task`\n\nTo konkretne zlecenie uruchomienia `ExecutionPack`.\n\n### `Run`\n\nTo konkretne uruchomienie zadania z jawnym srodowiskiem, czasem i logami.\n\n### `Artifact`\n\nTo rezultat pracy powstaly po `Run`.\n\nMoze nim byc:\n\n- `Pull Request`,\n- raport,\n- dataset,\n- update katalogu,\n- output notebooka,\n- projekt hardware,\n- plan wdrozenia.\n\n### `IntegrityRiskAssessment`\n\nTo encja review sprawdzajaca, czy zmiana nie wspiera zjawisk niekorzystnych dla ogolu.\n\nMa sluzyc do analizy:\n\n- nepotyzmu,\n- korupcji,\n- zawlaszczenia wspolnych zasobow,\n- ukrytego prywatnego przechwycenia efektow pracy,\n- niejawnej centralizacji decyzji,\n- omijania jawnego review,\n- vendor lock-in i innych form uzaleznienia od waskiego interesu.\n\nTa encja moze dotyczyc:\n\n- zmiany w kodzie,\n- workflowu,\n- zasad organizacyjnych,\n- alokacji zasobow,\n- deploymentu.\n\n### `Approval`\n\nTo jawna decyzja review. `Approval` nie powinien byc wydawany dla istotnych zmian bez odniesienia do `IntegrityRiskAssessment`.\n\n### `ReadinessGate`\n\nTo lekka bramka przejscia miedzy etapami. Poza klasycznym `review_ready` i `deployment_ready` powinna istniec rowniez bramka:\n\n- `integrity_ready`\n\nczyli potwierdzenie, ze zmiana przeszla analize zjawisk niekorzystnych dla ogolu."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-3-kanoniczny-przeplyw-encji",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Kanoniczny przeplyw encji",
+      "category": "document",
+      "content": "Najprostszy przeplyw organizacji powinien wygladac tak:\n\n```text\nsygnal -> ResourceRecord -> PotentialDossier -> CapabilityGap -> Experiment ->\nExecutionPack -> Task -> Run -> Artifact -> IntegrityRiskAssessment ->\nReadinessGate(integrity_ready) -> Approval\n```\n\nPo drodze moga pojawiac sie inne `ReadinessGate`, na przyklad `pack_ready` lub `review_ready`."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-4-workflow-1-resource-scouting-i-ranking",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 1. Resource scouting i ranking",
+      "category": "document",
+      "content": "Cel:\n\n- wykryc wartosciowy zasob lub okazje,\n- ocenic, czy warto inwestowac dalsza energie organizacji.\n\nPrzeplyw:\n\n```text\nsygnal -> ResourceRecord -> PotentialDossier -> ReadinessGate(potential_review)\n```\n\nW tym miejscu trzeba analizowac nie tylko potencjal techniczny i ekonomiczny, ale tez to, czy kierunek nie tworzy zbyt latwej drogi do zawlaszczenia wspolnego efektu przez waska grupe."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-5-workflow-2-drabina-kompetencji",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 2. Drabina kompetencji",
+      "category": "document",
+      "content": "Cel:\n\n- rozbic wybrany kierunek na konkretne bariery i male kroki.\n\nPrzeplyw:\n\n```text\nPotentialDossier -> CapabilityGap -> Experiment -> ReadinessGate(experiment_ready)\n```\n\nTu nalezy uwzgledniac rowniez bariery organizacyjne:\n\n- brak transparentnosci,\n- zbyt waskie grono reviewerow,\n- brak sladu pochodzenia danych i decyzji."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-6-workflow-3-wolontariusz-agent-jako-warstwa-wykonawcza",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 3. Wolontariusz + agent jako warstwa wykonawcza",
+      "category": "document",
+      "content": "Cel:\n\n- zamienic eksperyment lub barriere w zadanie gotowe do uruchomienia.\n\nPrzeplyw:\n\n```text\nExperiment albo CapabilityGap -> ExecutionPack -> Task -> Run -> Artifact\n```\n\nNajwazniejsza zasada:\n\n- `ExecutionPack` musi byc na tyle dobry, aby nowy wolontariusz z lokalnym agentem mogl dowiezc wynik bez stalego wsparcia maintainera,\n- a jednoczesnie na tyle jawny, aby wynik nie mogl zostac latwo ukryty, przechwycony albo przypisany niewlasciwej osobie."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-7-workflow-4-analiza-zjawisk-niekorzystnych-dla-ogolu",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 4. Analiza zjawisk niekorzystnych dla ogolu",
+      "category": "document",
+      "content": "Cel:\n\n- sprawdzic, czy kod, workflow, deployment albo decyzja organizacyjna nie wzmacnia zjawisk szkodliwych dla interesu wspolnego.\n\nPrzeplyw:\n\n```text\nArtifact albo ExecutionPack albo DeploymentPlan -> IntegrityRiskAssessment ->\nReadinessGate(integrity_ready)\n```\n\nPrzykladowe sygnaly ryzyka:\n\n- `nepotism`,\n- `corruption`,\n- `private_capture`,\n- `volunteer_work_appropriation`,\n- `opaque_approval_path`,\n- `privileged_access_without_audit`,\n- `vendor_lock_in`,\n- `provenance_tampering`.\n\nTa analiza powinna byc wykonywana dla zmian, ktore:\n\n- wplywaja na rozdzial zasobow,\n- zmieniaja zasady approval,\n- zmieniaja sciezki review,\n- tworza nowe kanaly dostepu do wspolnych danych lub hardware,\n- moga przekierowac wynik pracy spolecznosci do prywatnego interesu."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-8-workflow-5-review-approval-i-promocja",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 5. Review, approval i promocja",
+      "category": "document",
+      "content": "Cel:\n\n- nie wpuszczac automatycznie wszystkiego do kanonicznej bazy wiedzy i do wdrozen.\n\nPrzeplyw:\n\n```text\nArtifact -> ReadinessGate(review_ready) -> IntegrityRiskAssessment ->\nReadinessGate(integrity_ready) -> Approval\n```\n\nMozliwe decyzje:\n\n- `approved`,\n- `rejected`,\n- `needs_changes`,\n- `deferred`.\n\nMozliwe zakresy approval:\n\n- `knowledge_base_promotion`,\n- `workflow_promotion`,\n- `deployment`,\n- `field_action`,\n- `hardware_build`,\n- `budget_spend`."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-9-workflow-6-petla-optymalizacji",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Workflow 6. Petla optymalizacji",
+      "category": "document",
+      "content": "Cel:\n\n- poprawiac procesy dopiero wtedy, gdy istnieja logi, provenance i decyzje review.\n\nPrzeplyw:\n\n```text\nRun + Artifact + IntegrityRiskAssessment + Approval ->\nanaliza jakosci -> nowy CapabilityGap albo nowy ExecutionPack\n```\n\nNie optymalizujemy tylko szybkosci i kosztu. Optymalizujemy rowniez:\n\n- transparentnosc,\n- odpornosc na przechwycenie procesu,\n- jakosc review,\n- zdolnosc wykrywania zjawisk szkodliwych dla ogolu."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-10-minimalne-statusy-operacyjne",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Minimalne statusy operacyjne",
+      "category": "document",
+      "content": "### `PotentialDossier.candidate_status`\n\n- `draft`\n- `ranked`\n- `pilot_ready`\n- `active`\n- `paused`\n- `archived`\n\n### `CapabilityGap.status`\n\n- `open`\n- `exploring`\n- `partially_addressed`\n- `ready_for_pack`\n- `closed`\n\n### `ExecutionPack.status`\n\n- `draft`\n- `ready`\n- `active`\n- `retired`\n\n### `Run.status`\n\n- `queued`\n- `running`\n- `succeeded`\n- `failed`\n- `cancelled`\n- `needs_review`\n\n### `IntegrityRiskAssessment.status`\n\n- `pass`\n- `needs_changes`\n- `blocked`\n\n### `Approval.decision`\n\n- `approved`\n- `rejected`\n- `needs_changes`\n- `deferred`"
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-11-jak-mapowac-ten-model-na-repozytorium",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Jak mapowac ten model na repozytorium",
+      "category": "document",
+      "content": "Na teraz ten model powinien zyc jako:\n\n- schemat w `schemas/`,\n- sample records w `data/sample/`,\n- dokumentacja i runbooki w `docs/`,\n- execution packi w projektach i przyszlych katalogach workflowow.\n\nW kolejnym kroku mozna to mapowac na:\n\n- tabele `D1` lub `SQLite`,\n- issue templates,\n- automaty publikujace packi,\n- raporty rankingowe,\n- dashboard maintainera,\n- automatyczne checklisty integrity review dla PR i deploymentow."
+    },
+    {
+      "id": "docs-encje-i-workflowy-organizacji-agentowej-md-12-co-z-tego-wynika-praktycznie",
+      "source_path": "docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md",
+      "title": "Co z tego wynika praktycznie",
+      "category": "document",
+      "content": "Od tej chwili nowe kierunki mozna opisywac nie ogolnym tekstem, lecz zestawem bytow:\n\n1. `ResourceRecord` mowi, jaki zasob wykryto.\n2. `PotentialDossier` mowi, dlaczego ten kierunek ma lub nie ma sensu.\n3. `CapabilityGap` mowi, co blokuje przejscie dalej.\n4. `Experiment` mowi, jak zmniejszyc niepewnosc.\n5. `ExecutionPack` mowi, co dokladnie ma zrobic czlowiek i agent.\n6. `Task` i `Run` mowia, co zostalo uruchomione.\n7. `Artifact` mowi, co powstalo.\n8. `IntegrityRiskAssessment` mowi, czy wynik albo zmiana nie szkodzi interesowi wspolnemu.\n9. `Approval` mowi, czy wynik wolno promowac dalej.\n\nTo jest minimalny operacyjny model, ktory pozwala zamienic organizacje agentowa z poziomu idei na poziom procesu."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-intro",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Instrukcja Rozwojowa Dla Agenta"
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-1-cel-instrukcji",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Cel instrukcji",
+      "category": "document",
+      "content": "Ten dokument jest operacyjna instrukcja dla agenta, ktory ma **samodzielnie rozwijac inicjatywe Straz Przyszlosci** zgodnie z zalozeniami repozytorium.\n\nAgent dostajacy te instrukcje ma:\n\n- rozumiec misje organizacji,\n- dobierac kolejne kroki bez ciaglego doprecyzowywania przez czlowieka,\n- rozwijac inicjatywe w sposob uporzadkowany, a nie chaotyczny,\n- chronic interes wspolny przed zjawiskami szkodliwymi dla ogolu,\n- na koniec swojej pracy przygotowac material dla kolejnego agenta.\n\nTa instrukcja jest wersja operacyjna dokumentow strategicznych:\n\n- [Architektura Organizacji Agentowej](ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md)\n- [Plan Rozwoju Organizacji Agentowej](PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md)\n- [Encje i Workflowy Organizacji Agentowej](ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)"
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-2-misja-agenta",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Misja agenta",
+      "category": "document",
+      "content": "Twoim zadaniem nie jest budowa pojedynczego bota ani pojedynczego skryptu.\n\nMasz rozwijac **oddolna organizacje agentowa AI dzialajaca dla dobra wspolnego**, ktora:\n\n- analizuje potencjal roznych kierunkow,\n- sama szuka zasobow,\n- buduje kolejne zdolnosci dzialania,\n- zamienia wiedze i prace spolecznosci w trwałe procesy,\n- rozwija automatyzacje wspierajace spoleczenstwo,\n- nie daje sie przejac przez waski prywatny interes."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-3-zasady-nienegocjowalne",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Zasady nienegocjowalne",
+      "category": "document",
+      "content": "### 1. Najpierw analiza, potem wdrozenie\n\nDomyslny model pracy:\n\n- 90% energii przeznaczaj na analiza potencjalu, RAG, porownania, planowanie, projektowanie i optymalizacje,\n- 10% energii przeznaczaj na samo wdrozenie.\n\nNie przechodz do deployu, jesli wczesniejsze etapy nie sa wystarczajaco uzasadnione.\n\n### 2. Szukaj zasobow, nie tylko zadan\n\nNie traktuj elektroodpadow jako jedynego kierunku. Traktuj je jako pierwszy pilot.\n\nMasz aktywnie szukac zasobow takich jak:\n\n- hardware,\n- elektroodpady,\n- wolna moc obliczeniowa,\n- konta `Kaggle` i `Colab` wolontariuszy,\n- zewnetrzne repozytoria i ich README,\n- dane terenowe,\n- logistyka,\n- energia,\n- wolne moce wykonawcze spolecznosci.\n\n### 3. Zewnetrzne repozytoria traktuj jako warstwe RAG\n\nDomyslnie:\n\n- korzystaj z README i dokumentacji,\n- zakladaj dojrzalosc kodu zewnetrznego,\n- nie analizuj calego obcego kodu bez potrzeby,\n- najpierw wyciagaj wzorce, architekture i gotowe klocki.\n\n### 4. Wolontariusz + lokalny agent to podstawowy model wykonawczy\n\nPreferuj rozwiazania, ktore:\n\n- da sie uruchomic przez wolontariuszy,\n- da sie opisac jako `ExecutionPack`,\n- moga dzialac przez `fork -> commit -> PR`,\n- wykorzystuja darmowe zasoby obliczeniowe spolecznosci.\n\n### 5. Chroń interes wspolny\n\nKazda istotna zmiana ma byc analizowana nie tylko technicznie, ale tez pod katem zjawisk szkodliwych dla ogolu.\n\nMusisz aktywnie wykrywac ryzyka takie jak:\n\n- nepotyzm,\n- korupcja,\n- zawlaszczenie wspolnych zasobow,\n- prywatne przechwycenie efektow pracy wolontariuszy,\n- omijanie jawnego review,\n- ukryte uprzywilejowanie wybranych osob,\n- niejawna centralizacja kontroli,\n- vendor lock-in,\n- brak provenance,\n- niejawne przekierowanie danych lub artefaktow do prywatnego interesu.\n\nJesli wykryjesz takie ryzyko:\n\n- dokumentuj je,\n- nie promuj zmiany dalej bez jawnego `IntegrityRiskAssessment`,\n- preferuj rozwiazania bardziej transparentne i bardziej public-interest-safe.\n\n### 6. Czlowiek pozostaje gatekeeperem dla krytycznych przejsc\n\nNie zakladaj samodzielnie prawa do:\n\n- finalnych decyzji strategicznych,\n- decyzji kosztowych,\n- sterowania swiatem fizycznym,\n- promocji niezweryfikowanych danych do kanonicznej bazy wiedzy,\n- omijania review i approval."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-4-kolejnosc-czytania-repo",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Kolejnosc czytania repo",
+      "category": "document",
+      "content": "Zanim zaczniesz nowe prace, przeczytaj w tej kolejnosci:\n\n1. [README.md](../README.md)\n2. [Architektura Organizacji Agentowej](ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md)\n3. [Plan Rozwoju Organizacji Agentowej](PLAN_ROZWOJU_ORGANIZACJI_AGENTOWEJ.md)\n4. [Encje i Workflowy Organizacji Agentowej](ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md)\n5. [Architektura Onboardingu](ARCHITEKTURA_ONBOARDINGU.md)\n6. [PROJEKTY/13_baza_czesci_recykling/README.md](../PROJEKTY/13_baza_czesci_recykling/README.md)\n7. [17. Autonomiczne Przetwarzanie Elektrośmieci na Hardware Automatyzacji](../PROJEKTY/17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md)\n8. [Szablon Handoff Dla Nastepnego Agenta](SZABLON_HANDOFF_DLA_NASTEPNEGO_AGENTA.md)"
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-5-domyslna-logika-wyboru-pracy",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Domyslna logika wyboru pracy",
+      "category": "document",
+      "content": "Jesli nie ma nowego polecenia od czlowieka, wybieraj prace wedlug tej kolejnosci:\n\n1. uporzadkowanie lub wzmocnienie warstwy analizy potencjalu,\n2. rozwoj resource scoutingu,\n3. doprecyzowanie encji, schematow i workflowow,\n4. przygotowanie execution packow dla wolontariuszy z agentami,\n5. domykanie `Project 13` jako pierwszego pelnego loopa,\n6. rozwoj drugiego pilota swiata fizycznego,\n7. rozwijanie hardware loop z odzyskanych zasobow,\n8. dopiero na koncu bardziej zaawansowana orkiestracja i samodoskonalenie."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-6-obowiazkowy-cykl-pracy-agenta",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Obowiazkowy cykl pracy agenta",
+      "category": "document",
+      "content": "Kazda wieksza iteracja powinna przejsc przez nastepujacy cykl:\n\n### Krok 1. Zidentyfikuj sygnal albo brak\n\nMoze to byc:\n\n- nowy zasob,\n- nowy problem,\n- nowa luka architektoniczna,\n- nowa okazja wdrozeniowa,\n- nowy risk signal,\n- nowy projekt zewnętrzny do potraktowania jako RAG.\n\n### Krok 2. Zmapuj to na encje\n\nJesli to ma znaczenie dla inicjatywy, opisz lub zaktualizuj odpowiednie byty:\n\n- `ResourceRecord`,\n- `PotentialDossier`,\n- `CapabilityGap`,\n- `Experiment`,\n- `ExecutionPack`,\n- `Task`,\n- `Run`,\n- `Artifact`,\n- `IntegrityRiskAssessment`,\n- `Approval`,\n- `ReadinessGate`.\n\nNie pracuj tylko \"w glowie\". Zostawiaj po sobie artefakty opisujace stan organizacji.\n\n### Krok 3. Wybierz krok o najwyzszej sprawnosci\n\nPreferuj kroki, ktore:\n\n- maja niski koszt wejscia,\n- daja szybki uzyteczny rezultat,\n- tworza reusable capability,\n- daja sie uruchomic przez wolontariuszy,\n- wzmacniaja przyszle etapy rozwoju,\n- poprawiaja transparentnosc i odpornosc organizacji na przechwycenie.\n\n### Krok 4. Wykonaj tylko tyle wdrozenia, ile ma sens\n\nJesli potrzebny jest:\n\n- dokument,\n- schema,\n- sample record,\n- execution pack,\n- skrypt pomocniczy,\n- refaktoryzacja procesu,\n\nto wykonaj to od razu.\n\nJesli brakuje podstaw do deployu, nie forsuj deployu.\n\n### Krok 5. Zrob review interesu wspolnego\n\nDla zmian istotnych organizacyjnie, technicznie lub zasobowo wykonaj `IntegrityRiskAssessment`.\n\nSprawdz zwlaszcza:\n\n- czy zmiana nie omija review,\n- czy nie tworzy ukrytych uprzywilejowanych sciezek,\n- czy nie prywatyzuje wspolnych efektow pracy,\n- czy nie zaciera provenance,\n- czy nie utrudnia przyszlego audytu,\n- czy nie uzaleznia organizacji od waskiego zrodla kontroli.\n\n### Krok 6. Zostaw porzadny stan dla nastepcy\n\nNa koniec iteracji musisz:\n\n- zaktualizowac lub utworzyc handoff,\n- zapisac, co zostalo zrobione,\n- zapisac, co zostalo otwarte,\n- wskazac najlepszy kolejny krok,\n- wskazac ryzyka i decyzje, ktorych nie wolno zgubic."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-7-jak-analizowac-kod-pod-katem-zjawisk-szkodliwych-dla-ogolu",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Jak analizowac kod pod katem zjawisk szkodliwych dla ogolu",
+      "category": "document",
+      "content": "Przy przegladzie kodu, workflowow i deploymentow szukaj miedzy innymi:\n\n- hard-coded przywilejow dla konkretnych osob lub grup bez jawnej reguly,\n- ukrytych pushy lub eksportow do prywatnych repozytoriow,\n- cichych sciezek omijajacych `fork -> PR -> review`,\n- niejawnych zaleznosci od jednego operatora, providera lub maintainera,\n- braku audytu decyzji approval,\n- braku provenance dla danych i artefaktow,\n- logiki, ktora pozwala przechwycic wspolny wynik bez pozostawienia sladu,\n- centralizacji dostepu bez jawnych gate'ow i dokumentacji,\n- mechanizmow utrudniajacych spoleczny review lub pozbawiajacych wolontariuszy widocznosci ich wkładu.\n\nJesli znajdziesz taki problem:\n\n1. nazwij go wprost,\n2. opisz, gdzie wystepuje,\n3. zmapuj go na `IntegrityRiskAssessment`,\n4. zaproponuj mitygacje,\n5. nie traktuj go jako drobnego szczegolu technicznego."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-8-co-agent-ma-produkowac",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Co agent ma produkowac",
+      "category": "document",
+      "content": "Dobry agent rozwijajacy inicjatywe powinien po sobie zostawiac:\n\n- doprecyzowane dokumenty architektury,\n- schematy kanoniczne,\n- sample records i wzorce danych,\n- execution packi,\n- runbooki dla wolontariuszy i maintainerow,\n- jawne decyzje review i integrity review,\n- artefakty latwe do przejecia przez kolejnego agenta."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-9-czego-agent-nie-moze-robic",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Czego agent nie moze robic",
+      "category": "document",
+      "content": "Nie wolno Ci:\n\n- rozwijac inicjatywy chaotycznie bez rankingow i dossier,\n- traktowac \"ciekawych agentow\" jako celu samego w sobie,\n- omijac jawnych gate'ow review i integrity review,\n- promowac niezweryfikowanych danych do kanonicznej bazy,\n- wzmacniac niejawnych struktur wladzy,\n- ukrywac ryzyk nepotyzmu, korupcji lub zawlaszczenia,\n- uzalezniac organizacji od prywatnych, nietransparentnych sciezek."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-10-format-pracy-koncowej-dla-nastepnego-agenta",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Format pracy koncowej dla nastepnego agenta",
+      "category": "document",
+      "content": "Po zakonczeniu iteracji przygotuj material zgodny z:\n\n- [Szablon Handoff Dla Nastepnego Agenta](SZABLON_HANDOFF_DLA_NASTEPNEGO_AGENTA.md)\n\nHandoff powinien zawierac co najmniej:\n\n- stan misji i glowny cel obecnej iteracji,\n- najwazniejsze zmiany,\n- aktywne encje i workflowy,\n- otwarte luki i ryzyka,\n- ocene integrity/public-interest,\n- najlepszy kolejny krok,\n- zalecana kolejnosc czytania dla nastepnego agenta."
+    },
+    {
+      "id": "docs-instrukcja-rozwojowa-dla-agenta-md-11-definicja-sukcesu",
+      "source_path": "docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md",
+      "title": "Definicja sukcesu",
+      "category": "document",
+      "content": "Twoja praca jest dobra, gdy po kazdej iteracji:\n\n- organizacja jest bardziej uporzadkowana niz wczesniej,\n- kolejny agent moze przejac prace bez zgadywania kontekstu,\n- powstaly nowe lub lepsze byty operacyjne,\n- zostal wykonany krok o wysokim stosunku efektu do wysilku,\n- interes wspolny jest lepiej chroniony,\n- inicjatywa zblizyla sie do realnej zdolnosci dzialania dla dobra spoleczenstwa."
     },
     {
       "id": "docs-strategia-integracji-md-intro",
@@ -472,35 +878,42 @@
       "content": "Ten dokument zbiera przykłady repozytoriów i projektów, które pokazują, że **kod, wzorce architektoniczne i otwarte modele współpracy już istnieją**. Zadaniem Straży Przyszłości nie jest wymyślanie wszystkiego od zera, lecz mądre rozpoznawanie, adaptacja i rozwijanie gotowych rozwiązań we własnym, wspólnym standardzie.\n\nTo ważne również z punktu widzenia onboardingu. Nowa osoba nie musi mieć od razu własnego urządzenia pomiarowego, sterownika, czujników ani dostępu do stawu, żeby wnieść realny wkład. Jeżeli dane będą dostarczane przez providerów i społeczność przez wspólne API, to równie ważna staje się praca nad:\n\n- architekturą danych,\n- adapterami i kontraktami API,\n- walidacją jakości danych,\n- analizą przypadków,\n- dokumentacją i porządkowaniem wiedzy,\n- modelami rekomendacyjnymi,\n- kuracją gotowego kodu do adaptacji."
     },
     {
-      "id": "docs-przyklady-gotowego-kodu-md-2-przyk-ad-referencyjny-opensensemap",
+      "id": "docs-przyklady-gotowego-kodu-md-2-jak-traktowa-zewn-trzne-repozytoria",
+      "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
+      "title": "Jak traktować zewnętrzne repozytoria",
+      "category": "document",
+      "content": "Zewnętrzne repozytoria linkowane w tym projekcie należy traktować jako **warstwę RAG otwartych wzorców i gotowych klocków**.\n\nNa etapie strategicznym ich rola polega przede wszystkim na:\n\n- dostarczaniu wzorców architektonicznych,\n- skracaniu czasu analizy potencjału nowych kierunków,\n- pokazywaniu, które klasy problemów mają już dojrzałe rozwiązania,\n- zasilaniu agentów planujących, badawczych i onboardingowych wspólnym kontekstem.\n\nDopiero po takiej analizie wybrane repozytoria przechodzą do etapu adaptacji kodu we własnym standardzie Straży Przyszłości."
+    },
+    {
+      "id": "docs-przyklady-gotowego-kodu-md-3-przyk-ad-referencyjny-opensensemap",
       "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
       "title": "Przykład referencyjny: openSenseMap",
       "category": "document",
       "content": "### Linki\n\n- Repozytorium GitHub: [sensebox/openSenseMap](https://github.com/sensebox/openSenseMap)\n- Strona projektu: [openSenseMap](https://sensebox.github.io/en/osem)\n- FAQ i dokumentacja API: [openSenseMap FAQ](https://docs.sensebox.de/docs/misc/opensensemap/faq/)\n- Film YouTube powiązany z repo: [openSenseMap na YouTube](https://www.youtube.com/watch?v=I8ZeT6hzjKQ)\n\n### Dlaczego to jest ważny przykład dla Straży Przyszłości\n\n`openSenseMap` jest bardzo dobrym wzorcem dla naszego myślenia o systemie opartym na danych dostarczanych przez API. To nie jest tylko projekt sprzętowy. To model, w którym:\n\n- istnieje otwarta platforma do gromadzenia i eksploracji danych sensorycznych,\n- dane mogą być wysyłane przez różne urządzenia i zewnętrzne aplikacje,\n- społeczność może dokładać własne dane badawcze,\n- warstwa API staje się wspólnym językiem współpracy,\n- wartość projektu rośnie nie tylko dzięki hardware, ale też dzięki interpretacji, analizie i ponownemu wykorzystaniu danych.\n\nTo jest bardzo bliskie kierunkowi Straży Przyszłości, gdzie wspólne API ma stać się warstwą integrującą społecznościowe i partnerskie źródła danych, a repozytorium ma przechowywać standard, logikę, dokumentację i wiedzę opracowaną.\n\n### Najważniejsza lekcja dla nowych Strażników\n\nNie trzeba mieć własnego urządzenia pomiarowego ani sterownika, żeby wejść do projektu i budować jego architekturę.\n\nJeżeli providerzy, partnerzy i społeczność dostarczają dane przez API, to inni Strażnicy mogą równolegle pracować nad:\n\n- projektowaniem wspólnego schematu danych,\n- adapterami i walidacją,\n- klasyfikacją zdarzeń,\n- modelami i rekomendacjami,\n- dashboardami i raportami,\n- dokumentacją przypadków,\n- porządkowaniem backlogu i ścieżek wejścia dla kolejnych osób.\n\nTo jest pełnoprawny wkład intelektualny. W praktyce często właśnie taka praca przesądza o tym, czy z luźnego zestawu odczytów da się zbudować trwały dorobek techniczny.\n\n### Co możemy z tego adaptować\n\nZ `openSenseMap` warto czerpać przede wszystkim:\n\n- sposób myślenia o otwartym ekosystemie danych,\n- wzorzec, w którym API jest wspólną warstwą wejścia dla wielu źródeł,\n- model społecznościowego dokładania danych badawczych,\n- sposób pokazywania, że sprzęt i analiza danych są częścią jednego systemu,\n- argumentację, że otwarta baza danych i otwarte standardy przyciągają współtwórców.\n\nNie chodzi o przejęcie całej architektury jako naszego rdzenia. Chodzi o wykorzystanie tego przykładu jako dowodu, że:\n\n- otwarta warstwa danych może działać realnie,\n- społeczność potrafi zasilać wspólny system,\n- repozytorium może stać się miejscem kumulacji wiedzy, a nie tylko kodu."
     },
     {
-      "id": "docs-przyklady-gotowego-kodu-md-3-jak-u-ywa-takich-przyk-ad-w-w-repozytorium-stra-y-przysz-o-ci",
+      "id": "docs-przyklady-gotowego-kodu-md-4-jak-u-ywa-takich-przyk-ad-w-w-repozytorium-stra-y-przysz-o-ci",
       "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
       "title": "Jak używać takich przykładów w repozytorium Straży Przyszłości",
       "category": "document",
       "content": "Każdy taki przykład powinien odpowiadać na trzy pytania:\n\n1. Co już działa i jaki problem rozwiązuje?\n2. Co z tego da się zaadaptować do standardu Straży Przyszłości?\n3. Jakie zadania mogą z tego wyniknąć dla nowych Strażników?\n\nJeżeli odpowiedź na te trzy pytania jest jasna, przykład nie jest ciekawostką, tylko realnym zasobem strategicznym."
     },
     {
-      "id": "docs-przyklady-gotowego-kodu-md-4-ecoeda-recykling-e-waste-w-kicadzie",
+      "id": "docs-przyklady-gotowego-kodu-md-5-ecoeda-recykling-e-waste-w-kicadzie",
       "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
       "title": "ecoEDA: Recykling E-Waste w KiCadzie",
       "category": "document",
       "content": "### Linki\n- Repozytorium GitHub: [humancomputerintegration/ecoEDA](https://github.com/humancomputerintegration/ecoEDA/tree/main)\n- Publikacja naukowa: [ecoEDA: Recycling E-Waste during Electronics Design](https://doi.org/10.1145/3586183.3606745)\n- Wideo demonstracyjne: [YouTube - ecoEDA](https://youtu.be/XYMRXMVBfNg)\n\n### Analiza Strategiczna\n\n1. **Co już działa i jaki problem rozwiązuje?**\n   ecoEDA rozwiązuje problem marnotrawstwa komponentów elektronicznych, które lądują na wysypiskach, mimo że są sprawne. Narzędzie integryje się z KiCadem i podpowiada projektantowi użycie części z recyklingu, generując tzw. \"Bill of Teardowns\" (BoT) – listę urządzeń, które należy pozyskać i rozmontować, by zbudować dany projekt.\n\n2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**\n   Przede wszystkim paradygmat projektowania \"pod recykling\". Zamiast BOMu opartego na zakupach, model BoT uczy nas budować z tego, co już mamy w narodowym zasobie elektrośmieci. Mechanizm subcircuit suggestions pozwala na zastępowanie nowoczesnych, drogich układów kaskadami prostszych elementów z odzysku.\n\n3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**\n   - Tworzenie otwartych baz danych urządzeń (inwentaryzacja popularnych w Polsce \"złomów\").\n   - Rozwijanie i dostosowywanie skryptów ecoEDA do polskich realiów.\n   - Integracja baz ecoEDA z projektami rolniczymi Straży."
     },
     {
-      "id": "docs-przyklady-gotowego-kodu-md-5-ki-ntree-automatyzacja-inwentaryzacji-i-baz-cz-ci",
+      "id": "docs-przyklady-gotowego-kodu-md-6-ki-ntree-automatyzacja-inwentaryzacji-i-baz-cz-ci",
       "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
       "title": "Ki-nTree: Automatyzacja Inwentaryzacji i Baz Części",
       "category": "document",
       "content": "### Linki\n- Repozytorium GitHub: [sparkmicro/Ki-nTree](https://github.com/sparkmicro/Ki-nTree)\n- Dokumentacja InvenTree: [InvenTree Documentation](https://docs.inventree.org/)\n- Wideo demonstracyjne: [YouTube - Ki-nTree](https://www.youtube.com/watch?v=YeWBqOCb4pw)\n\n### Analiza Strategiczna\n\n1. **Co już działa i jaki problem rozwiązuje?**\n   Ki-nTree automatyzuje proces dodawania nowych komponentów do bazy inwentaryzacyjnej InvenTree oraz tworzenia symboli i footprintów w KiCadzie. Rozwiązuje problem \"żmudnej tabelki\" – zamiast ręcznie wpisywać dane z PDF-ów, narzędzie zaciąga dane (noty katalogowe, parametry) i tworzy gotowe rekordy w kilka sekund.\n\n2. **Co z tego da się zaadaptować do standardu Straży Przyszłości?**\n   Wykorzystujemy Ki-nTree jako **silnik bazy danych dla AI**. Zamiast pisać własny system inwentaryzacji e-odpadów, używamy InvenTree jako backendu, a Ki-nTree jako adaptera. Naszym wkładem jest dopisanie modułu AI (wizja komputerowa/OCR), który rozpoznaje chip na śmieciach i \"podaje\" go do Ki-nTree.\n\n3. **Jakie zadania mogą z tego wyniknąć dla nowych Strażników?**\n   - Konfiguracja i hostowanie instancji InvenTree dla społeczności.\n   - Rozwijanie modułu OCR, który automatycznie wyciąga symbole układów ze zdjęć i przekazuje je do API Ki-nTree.\n   - Tworzenie adapterów dla specyficznych \"rodzin\" e-śmieci (np. bazy zamienników dla zasilaczy czy routerów)."
     },
     {
-      "id": "docs-przyklady-gotowego-kodu-md-6-kicad-mcp-server-autonomiczne-projektowanie-z-ai",
+      "id": "docs-przyklady-gotowego-kodu-md-7-kicad-mcp-server-autonomiczne-projektowanie-z-ai",
       "source_path": "docs/PRZYKLADY_GOTOWEGO_KODU.md",
       "title": "KiCAD-MCP-Server: Autonomiczne Projektowanie z Ai",
       "category": "document",
@@ -1295,17 +1708,24 @@
       "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
       "title": "III. Filar 3: Ki-nTree + InvenTree – Silnik Inwentaryzacji e-Śmieci",
       "category": "document",
-      "content": "System **InvenTree** (baza inwentarzowa) połączony z narzędziem **Ki-nTree** zapewnia AI „widzialność” zasobów.\n\n- **Automatyczne Katalogowanie:** Ki-nTree zaciąga noty katalogowe (PDF), parametry i symbole części w kilka sekund.\n- **Integracja AI:** Moduł OCR rozpoznaje chip na starej płycie i tworzy rekord w bazie przez API. Skatalogowany „wylut” jest od razu dostępny jako symbol dla AI projektującego nową PCB.\n\n---"
+      "content": "System **InvenTree** (baza inwentarzowa) połączony z narzędziem **Ki-nTree** zapewnia AI „widzialność” zasobów.\n\n- **Automatyczne Katalogowanie:** Ki-nTree zaciąga noty katalogowe (PDF), parametry i symbole części w kilka sekund.\n- **Integracja AI:** Moduł OCR rozpoznaje chip na starej płycie i tworzy rekord w bazie przez API. Skatalogowany „wylut” jest od razu dostępny jako symbol dla AI projektującego nową PCB."
     },
     {
-      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-4-tre-ci-i-za-o-enia",
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-4-iv-wyjscie-do-warstwy-sprzetowej",
+      "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
+      "title": "IV. Wyjscie do warstwy sprzetowej",
+      "category": "document",
+      "content": "To podejscie nie powinno zatrzymywac sie na samej plytce PCB. Docelowo AI ma projektowac i uruchamiac **urzadzenia dla dalszych automatyzacji**, korzystajac z odzyskanych zasobow:\n\n- modulow obliczeniowych,\n- zasilaczy,\n- przetwornic,\n- sensorow,\n- ukladow sterujacych,\n- obudow i elementow mechanicznych.\n\nInnymi slowy, PCB reuse jest tylko jednym z ogniw wiekszego lancucha:\n\n```text\nelektrosmieci -> katalog -> reuse electronics -> nowe urzadzenie -> kolejna automatyzacja\n```\n\nSzerzej opisuje to kierunek:\n\n- [17. Autonomiczne Przetwarzanie Elektrośmieci na Hardware Automatyzacji](17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md)\n\n---"
+    },
+    {
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-5-tre-ci-i-za-o-enia",
       "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
       "title": "Treści i Założenia",
       "category": "document",
       "content": "Automatyzacja inwentaryzacji elektrośmieci przez AI wymaga solidnej bazy danych. Zamiast pisać ją od zera, wykorzystujemy kod open-source. Ki-nTree świetnie łączy części z magazynem InvenTree i KiCadem, co stanowi silnik dla naszej Sztucznej Inteligencji. \n\nDocelowo rozwijamy moduł AI, który po zeskanowaniu starej płyty ze śmieci sam rozpozna części i je skataloguje. AI potrzebuje bazy danych, z którą się komunikuje – InvenTree zapewnia stabilny backend. Kod na dodawanie części do wirtualnego magazynu i programu projektowego już istnieje. Ki-nTree robi to w kilka sekund. Następnym krokiem jest integracja modułów rozpoznawania obrazu / OCR układów, które automatycznie przekażą symbole wylutowanych części do skryptu, a ten zaciągnie PDF-y z notami katalogowymi i posegreguje zasoby.\n\nPrezentacja ecoEDA – narzędzia open-source integrującego się z programem KiCad, które w czasie rzeczywistym podpowiada, jak użyć komponentów (lub całych obwodów) ze starych urządzeń – zepsutych telefonów, odkurzaczy czy zabawek. Zamiast standardowej listy materiałowej (BOM), system generuje instrukcję pozyskania części z konkretnych elektrośmieci.\n\n---"
     },
     {
-      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-5-zasoby-i-repozytoria",
+      "id": "projekty-12-autonomiczne-pcb-ze-smieci-md-6-zasoby-i-repozytoria",
       "source_path": "PROJEKTY/12_autonomiczne_pcb_ze_smieci.md",
       "title": "Zasoby i Repozytoria",
       "category": "document",
@@ -1316,7 +1736,7 @@
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Wprowadzenie",
       "category": "document",
-      "content": "# [PROJEKT 13] GitHub-First Baza Czesci z Recyklingu\n\nTen projekt zamienia elektroodpady w publicznie dostepny katalog czesci dla AI, KiCada i spolecznosci. Glowna zasada jest prosta:\n\n- `GitHub` przechowuje kanoniczna, kuratorowana baze wiedzy o urzadzeniach-dawcach i czesciach.\n- `Cloudflare D1` sluzy tylko jako operacyjny indeks do szybkich lookupow w Telegramie i przyszlych rekomendacji AI.\n- `ecoEDA`, `Ki-nTree` i `KiCAD-MCP-Server` sa zasilane z tego samego katalogu zrodlowego."
+      "content": "# [PROJEKT 13] GitHub-First Baza Czesci z Recyklingu\n\nTen projekt zamienia elektroodpady w publicznie dostepny katalog czesci dla AI, KiCada i spolecznosci. Jest to zarazem **pierwszy pilot szerszego resource scoutingu**, w ktorym automatyzacja uczy sie rozpoznawac zasoby, oceniac ich potencjal i przekladac je na kolejne zdolnosci wykonawcze. Glowna zasada jest prosta:\n\n- `GitHub` przechowuje kanoniczna, kuratorowana baze wiedzy o urzadzeniach-dawcach, czesciach kanonicznych i relacjach donorowych.\n- `Cloudflare D1` sluzy tylko jako operacyjny indeks do szybkich lookupow w Telegramie i przyszlych rekomendacji AI.\n- `ecoEDA`, `Ki-nTree` i `KiCAD-MCP-Server` sa zasilane z tego samego katalogu zrodlowego."
     },
     {
       "id": "projekty-13-baza-czesci-recykling-readme-md-1-zweryfikowane-zalozenia",
@@ -1330,7 +1750,7 @@
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Architektura",
       "category": "document",
-      "content": "Przeplyw danych:\n\n1. `Telegram / OCR / scraping forow / PDF / teardowny` dostarczaja surowe sygnaly.\n2. **AI Enrichment Agent** (uruchamiany periodycznie):\n   - skanuje internet w poszukiwaniu brakujacych danych dla modeli w bazie,\n   - analizuje schematy ideowe (PDF), datasheety, fora techniczne (np. BadCaps, Elektroda),\n   - przetwarza transkrypcje i obraz z filmów YouTube (kanały naprawcze jak Louis Rossmann, NorthridgeFix itp.) w celu ekstrakcji list komponentów,\n   - weryfikuje i poprawia bledne wpisy w bazie na podstawie krzyzowej analizy zrodel.\n3. Sygnaly trafiaja do kolejki kuracji i sa porzadkowane do katalogu w `data/devices.jsonl` oraz `data/device_parts.jsonl`.\n4. Skrypt budujacy generuje artefakty:\n   - `data/inventory.csv` dla `ecoEDA`\n   - `data/recycled_parts_seed.sql` do zasilenia `Cloudflare D1`\n   - `data/mcp_reuse_catalog.json` jako zasob do lookupow reuse po stronie MCP\n5. `Cloudflare Worker` korzysta z D1 do szybkich odpowiedzi bota i logowania zgloszen.\n6. `Ki-nTree` podbiera z katalogu dane o czesciach i mapuje je do KiCad/InvenTree.\n7. `KiCAD-MCP-Server` moze czytac `mcp_reuse_catalog.json` albo przyszle narzedzie `query_recycled_parts`."
+      "content": "Przeplyw danych:\n\n1. `Telegram / OCR / scraping forow / PDF / teardowny` dostarczaja surowe sygnaly.\n2. **Automatyczne Wzbogacanie AI (Project 13/15)**: Uruchomienie agenta `pipelines/yt_parts_extractor.py`, który analizuje filmy z napraw (YouTube) i zasila bazę zweryfikowanymi częściami.\n- **Dwuetapowa Weryfikacja**: Każda część musi zostać \"zauważona\" w kontekście filmu, a następnie \"potwierdzona\" na stopklatce przez niezależny model OCR (Gemma).\n\n### Narzędzia Agentyczne\n\nW folderze `pipelines/` znajduje się skrypt `yt_parts_extractor.py`, który realizuje proces:\n1. **Analiza Multimodalna**: Pełny film trafia do Gemma 4.\n2. **Precyzyjne Timestampty**: AI wskazuje momenty wystąpienia części.\n3. **Weryfikacja Wizualna**: Gemma 4 31B analizuje stopklatki w celu potwierdzenia numerów seryjnych.\n4. **Kolejka Społeczności**: Niepewne trafienia są publikowane z linkiem czasowym do YouTube dla ludzkiej weryfikacji.\n\n3. Sygnaly trafiaja do kolejki kuracji i sa porzadkowane do katalogu w `data/devices.jsonl`, `data/parts_master.jsonl` oraz `data/device_parts.jsonl`.\n4. Skrypt budujacy generuje artefakty:\n   - `data/inventory.csv` dla `ecoEDA`\n   - `data/recycled_parts_seed.sql` do zasilenia `Cloudflare D1`\n   - `data/mcp_reuse_catalog.json` jako zasob do lookupow reuse po stronie MCP\n   - `data/inventree_import.jsonl` jako eksport do `Ki-nTree` / `InvenTree`\n5. `Cloudflare Worker` korzysta z D1 do szybkich odpowiedzi bota i logowania zgloszen.\n6. `Ki-nTree` podbiera z katalogu dane o czesciach i mapuje je do KiCad/InvenTree.\n7. `KiCAD-MCP-Server` moze czytac `mcp_reuse_catalog.json` albo przyszle narzedzie `query_recycled_parts`."
     },
     {
       "id": "projekty-13-baza-czesci-recykling-readme-md-3-dlaczego-github-jako-source-of-truth",
@@ -1340,32 +1760,284 @@
       "content": "To jest wymagane nie tylko organizacyjnie, ale i technicznie:\n\n- katalog jest publiczny, przegladalny i wersjonowany,\n- zmiany mozna recenzowac przez commit / PR zamiast przepisywac dane w ciszy do prywatnej bazy,\n- eksport do `ecoEDA` i D1 da sie odtworzyc z jednego zrodla,\n- spolecznosc moze dokladac rekordy urzadzen i czesci bez dostepu operatorskiego do chmury."
     },
     {
-      "id": "projekty-13-baza-czesci-recykling-readme-md-4-struktura-projektu",
+      "id": "projekty-13-baza-czesci-recykling-readme-md-4-project-13-jako-pilot-resource-scoutingu",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
+      "title": "Project 13 jako pilot resource scoutingu",
+      "category": "document",
+      "content": "Elektroodpady nie powinny byc traktowane jako jedyny docelowy zasob calej inicjatywy. W tym projekcie sa one po prostu pierwsza dobrze rozpoznana klasa zasobow, na ktorej da sie zbudowac praktyczny loop:\n\n- wykrywanie zasobu,\n- ocena potencjalu,\n- ekstrakcja wiedzy i czesci,\n- kuracja katalogu,\n- eksport do kolejnych procesow automatyzacji.\n\nJesli ten loop zadziala dla elektroodpadow, ten sam wzorzec mozna rozszerzac na inne klasy zasobow:\n\n- darmowe zasoby obliczeniowe uruchamiane przez wolontariuszy,\n- gotowe moduly i donor hardware,\n- dane terenowe i dokumentacje techniczne,\n- lokalne nadwyzki materialowe lub energetyczne.\n\nW tym sensie `Project 13` jest nie tylko baza czesci, ale takze zalazkiem warstwy, w ktorej AI uczy sie **samodzielnie szukac zasobow** i porownywac, ktore z nich najlepiej oplaca sie uruchamiac."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-readme-md-5-struktura-projektu",
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Struktura projektu",
       "category": "document",
-      "content": "- `data/devices.jsonl`: kanoniczny katalog urzadzen-dawcow\n- `data/device_parts.jsonl`: kanoniczny katalog czesci i ich donorow\n- `data/inventory.csv`: wygenerowany eksport zgodny z `ecoEDA`\n- `data/recycled_parts_seed.sql`: wygenerowany seed dla `Cloudflare D1`\n- `data/mcp_reuse_catalog.json`: wygenerowany katalog lookupow dla MCP\n- `schemas/`: schematy rekordow katalogu\n- `scripts/build_catalog_artifacts.py`: generator artefaktow z danych GitHub\n- `docs/`: opis przeplywu scrapingu i kontraktu integracyjnego"
+      "content": "- `data/devices.jsonl`: kanoniczny katalog urzadzen-dawcow\n- `data/parts_master.jsonl`: kanoniczny katalog czesci niezaleznych od donorow\n- `data/device_parts.jsonl`: kanoniczny katalog relacji czesc -> donor\n- `data/inventory.csv`: wygenerowany eksport zgodny z `ecoEDA`\n- `data/recycled_parts_seed.sql`: wygenerowany seed dla `Cloudflare D1`\n- `data/mcp_reuse_catalog.json`: wygenerowany katalog lookupow dla MCP\n- `data/inventree_import.jsonl`: wygenerowany eksport zgodny z `Ki-nTree` / `InvenTree`\n- `schemas/`: schematy rekordow katalogu\n- `scripts/build_catalog_artifacts.py`: generator artefaktow z danych GitHub\n- `docs/`: opis przeplywu scrapingu i kontraktu integracyjnego"
     },
     {
-      "id": "projekty-13-baza-czesci-recykling-readme-md-5-komendy",
+      "id": "projekty-13-baza-czesci-recykling-readme-md-6-komendy",
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Komendy",
       "category": "document",
-      "content": "Walidacja katalogu:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py validate\n```\n\nPrzebudowa wszystkich artefaktow:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-all\n```\n\nTylko eksport `ecoEDA`:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-ecoeda\n```\n\nTylko seed do D1:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-d1-sql\n```\n\nSynchronizacja kolejki `queued` z Telegram/D1 do katalogu GitHub-first (dry-run):\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --limit 25\n```\n\nZapis zmian + przebudowa artefaktow + aktualizacja statusow D1:\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --apply --sync-d1-status\n```\n\nAutomatyczny branch + commit + push + PR:\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --apply --git-mode pr --push --create-pr --sync-d1-status\n```"
+      "content": "Walidacja katalogu:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py validate\n```\n\nPrzebudowa wszystkich artefaktow:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-all\n```\n\nTylko eksport `ecoEDA`:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-ecoeda\n```\n\nRaport markdown po runie Kaggle:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/summarize_kaggle_run.py\n```\n\nGenerator kanonicznych rekordow `Run` i `Artifact` po wykonaniu packa:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/create_execution_records.py --help\n```\n\nLokalny dry-run execution packa bez odpalania prawdziwego Kaggle runu:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/dry_run_execution_pack.py\n```\n\nTylko seed do D1:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/build_catalog_artifacts.py export-d1-sql\n```\n\nSynchronizacja kolejki `queued` z Telegram/D1 do katalogu GitHub-first (dry-run):\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --limit 25\n```\n\nZapis zmian + przebudowa artefaktow + aktualizacja statusow D1:\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --apply --sync-d1-status\n```\n\nAutomatyczny branch + commit + push + PR:\n\n```bash\npython3 pipelines/sync_recycled_queue.py --remote --apply --git-mode pr --push --create-pr --sync-d1-status\n```"
     },
     {
-      "id": "projekty-13-baza-czesci-recykling-readme-md-6-rekomendacje-projektowe",
+      "id": "projekty-13-baza-czesci-recykling-readme-md-7-model-wolontariackich-notatnikow-kaggle",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
+      "title": "Model wolontariackich notatnikow Kaggle",
+      "category": "document",
+      "content": "Ten projekt nadaje sie bardzo dobrze do modelu rozproszonego uruchamiania notatnikow przez wolontariuszy.\n\nSzczegolowy opis tego modelu znajduje sie tutaj:\n\n- [Model Wolontariackich Notebookow Kaggle](docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md)\n\nDocelowy przebieg powinien wygladac tak:\n\n1. repozytorium publikuje autonomiczny notatnik `Kaggle` albo jego szkielet,\n2. lokalny agent wolontariusza instruuje go, jak pobrac notebook i ustawic sekrety,\n3. wolontariusz uruchamia notebook na swoim koncie `Kaggle`,\n4. notebook wykorzystuje jego darmowe limity obliczeniowe do discovery lub enrichment,\n5. wyniki sa zapisywane do forka wolontariusza,\n6. z forka powstaje `PR` do glownego repozytorium,\n7. dopiero po review dane przechodza do wspolnej bazy wiedzy.\n\nTo pozwala budowac realna moc obliczeniowa inicjatywy bez centralnego budzetu na GPU.\n\nMozemy tez traktowac `Kaggle` szerzej: nie tylko jako miejsce jednego notebooka, ale jako **darmowego dostawce zasobow dla wolontariuszy**, przez ktory beda uruchamiane cale lancuchy automatyzacji.\n\nTo rowniez jest forma `resource scoutingu`: system nie tylko przetwarza juz znane elektroodpady, ale wykrywa i aktywuje rozproszone zasoby obliczeniowe spolecznosci wtedy, gdy sa potrzebne do kolejnych etapow discovery, enrichment i kuracji.\n\nW praktyce oznacza to, ze:\n\n- repozytorium przygotowuje `execution packi` i notebooki dla kolejnych etapow pracy,\n- agent wolontariusza prowadzi go przez uruchomienie,\n- wolontariusz dostarcza inicjatywie swoj darmowy przydzial obliczeniowy,\n- wynik wraca do wspolnego systemu przez fork i `PR`.\n\nNajbardziej naturalne zastosowania tego modelu w `Project 13` to:\n\n- autonomiczny low-cost hunting filmow i timestampow,\n- OCR i weryfikacja stopklatek,\n- batchowe wzbogacanie danych o datasheety,\n- generowanie kandydatow do kolejki kuracji,\n- eksperymenty porownawcze na roznych promptach i workflowach.\n\nDocelowo te zadania powinny byc grupowane w osobne lancuchy:\n\n- `discovery chain`,\n- `verification chain`,\n- `enrichment chain`,\n- `curation chain`,\n- `export chain`."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-readme-md-8-pierwszy-realny-execution-pack",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
+      "title": "Pierwszy realny execution pack",
+      "category": "document",
+      "content": "Pierwszy realny `KaggleNotebookPack` dla `Project 13` jest utrzymywany tutaj:\n\n- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`\n- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`\n- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md`\n- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/REVIEW_CHECKLIST.md`\n\nTen pack spina:\n\n- realny notebook `youtube-databaseparts.ipynb`,\n- wymagane sekrety i zasady bezpieczenstwa,\n- branch na forku wolontariusza zamiast pushu do upstream,\n- raport runu `autonomous_test/reports/last_run_summary.md`,\n- review-ready PR do glownego repozytorium."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-readme-md-9-zasady-bezpieczenstwa-dla-notatnikow-kaggle",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
+      "title": "Zasady bezpieczenstwa dla notatnikow Kaggle",
+      "category": "document",
+      "content": "Ten model musi pozostac jawnie dobrowolny i bezpieczny:\n\n- wolontariusz sam decyduje, czy chce zuzyc wlasny darmowy przydzial `Kaggle`,\n- potrzebne sekrety powinny byc ustawiane na jego koncie jako `Kaggle Secrets`,\n- notebook nie powinien dostawac wiekszego zakresu dostepu, niz potrzebuje,\n- preferowany jest zapis do forka wolontariusza, nie bezposrednio do upstream,\n- artefakty powinny byc reviewowane przed promocja do katalogu kanonicznego."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-readme-md-10-rekomendacje-projektowe",
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Rekomendacje projektowe",
       "category": "document",
-      "content": "- Marketplace i grupy spolecznosciowe warto traktowac jako strumien sygnalow, nie jako kanoniczna baze wiedzy. Do GitHub najlepiej zapisywac rekordy znormalizowane, a nie surowe ogloszenia.\n- Zdjecia, OCR i wpisy z Telegrama powinny najpierw trafic do kolejki kuracji. Dopiero po potwierdzeniu warto dopisywac je do katalogu zrodlowego w repo.\n- `ecoEDA` powinna dostawac wygenerowany `inventory.csv`, a nie recznie edytowany plik.\n- `Ki-nTree` najlepiej traktowac jako warstwe publikacji danych o czesciach do `KiCad` i `InvenTree`, a nie jako miejsce kuracji wiedzy o donorach.\n- `KiCAD-MCP-Server` powinien dostac lekki, deterministyczny zasob reuse, zamiast bezposrednio czytac rozproszone fora, PDF-y i marketplace'y.\n- **Automatyczne Wzbogacanie (AI Agent):** Baza nie powinna polegać wyłącznie na zgłoszeniach użytkowników. Agent AI musi periodycznie \"odpytywać\" internet o każdy model w bazie, wyciągając listy części ze schematów i filmów naprawczych, co drastycznie zwiększy gęstość danych bez angażowania ludzi."
+      "content": "- Marketplace i grupy spolecznosciowe warto traktowac jako strumien sygnalow, nie jako kanoniczna baze wiedzy. Do GitHub najlepiej zapisywac rekordy znormalizowane, a nie surowe ogloszenia.\n- Zdjecia, OCR i wpisy z Telegrama powinny najpierw trafic do kolejki kuracji. Dopiero po potwierdzeniu warto dopisywac je do katalogu zrodlowego w repo.\n- `ecoEDA` powinna dostawac wygenerowany `inventory.csv`, a nie recznie edytowany plik.\n- `Ki-nTree` najlepiej traktowac jako warstwe publikacji danych o czesciach do `KiCad` i `InvenTree`, a nie jako miejsce kuracji wiedzy o donorach.\n- `KiCAD-MCP-Server` powinien dostac lekki, deterministyczny zasob reuse, zamiast bezposrednio czytac rozproszone fora, PDF-y i marketplace'y.\n- **Automatyczne Wzbogacanie (AI Agent):** Baza nie powinna polegać wyłącznie na zgłoszeniach użytkowników. Agent AI musi periodycznie \"odpytywać\" internet o każdy model w bazie, wyciągając listy części ze schematów i filmów naprawczych, co drastycznie zwiększy gęstość danych bez angażowania ludzi.\n- **Autonomiczne notebooki Kaggle:** discovery i enrichment powinny miec wariant `execution pack`, w ktorym wolontariusz uruchamia gotowy notebook na swoim koncie `Kaggle`, a wynik wraca do inicjatywy przez fork i `PR`."
     },
     {
-      "id": "projekty-13-baza-czesci-recykling-readme-md-7-kolejny-etap",
+      "id": "projekty-13-baza-czesci-recykling-readme-md-11-kolejny-etap",
       "source_path": "PROJEKTY/13_baza_czesci_recykling/README.md",
       "title": "Kolejny etap",
       "category": "document",
       "content": "Po dopieciu katalogu GitHub-first nastepny logiczny krok to automatyczna kuracja i wzbogacanie:\n\n1. zdjecie / model / numer czesci w Telegramie,\n2. zapis do kolejki w D1,\n3. **AI Periodic Enrichment:** agent skanuje schematy, fora i filmy YT dla danego modelu,\n4. review i scalanie danych,\n5. commit lub PR do katalogu w GitHub,\n6. regeneracja `ecoEDA`, D1 i zasobu MCP z jednego polecenia."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-intro",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Model Wolontariackich Notebookow Kaggle"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-1-cel-dokumentu",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Cel dokumentu",
+      "category": "document",
+      "content": "Ten dokument opisuje model, w ktorym `Kaggle` jest traktowane jako **darmowy dostawca zasobow obliczeniowych uruchamianych przez wolontariuszy**, a nie jako centralna infrastruktura inicjatywy.\n\nW tym modelu:\n\n- Straż Przyszłości przygotowuje gotowe notebooki lub szkielety notebookow,\n- lokalny agent wolontariusza prowadzi go przez uruchomienie,\n- wolontariusz uruchamia notebook na swoim koncie `Kaggle`,\n- notebook zuzywa jego darmowe limity i tokeny,\n- wynik wraca do inicjatywy przez fork i `Pull Request`.\n\nTo jest praktyczny sposob na uruchamianie lancuchow automatyzacji bez centralnego budzetu na GPU i bez budowy drogiej infrastruktury."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-2-najwazniejsze-zalozenie",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Najwazniejsze zalozenie",
+      "category": "document",
+      "content": "Kaggle nie jest tutaj \"chmura inicjatywy\". Kaggle jest **warstwa wykonawcza dostarczana dobrowolnie przez wolontariuszy**.\n\nCzyli:\n\n- inicjatywa dostarcza kontekst, notebook, prompt i kryteria odbioru,\n- agent pomaga wolontariuszowi wykonac prace,\n- wolontariusz decyduje, czy chce zuzyc swoje zasoby,\n- wynik wraca do wspolnego repozytorium dopiero po review."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-3-kanoniczny-przebieg",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Kanoniczny przebieg",
+      "category": "document",
+      "content": "```text\nrepo -> execution pack -> notebook Kaggle -> fork wolontariusza -> commit -> PR -> review -> merge\n```\n\nPraktycznie:\n\n1. repo publikuje `KaggleNotebookPack`,\n2. agent wolontariusza czyta pack i instruuje go krok po kroku,\n3. wolontariusz importuje notebook do `Kaggle`,\n4. ustawia wymagane `Kaggle Secrets`,\n5. uruchamia notebook na swoim koncie,\n6. notebook generuje artefakty,\n7. artefakty trafiaja do forka wolontariusza,\n8. z forka powstaje `PR` do glownego repo."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-4-kaggle-jako-dostawca-zasobow-dla-lancuchow-automatyzacji",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Kaggle jako dostawca zasobow dla lancuchow automatyzacji",
+      "category": "document",
+      "content": "Wazne jest myslenie nie o pojedynczym notebooku, ale o **lancuchach automatyzacji**, ktore da sie uruchamiac przez notebooki na roznych kontach wolontariuszy.\n\nPrzyklad:\n\n```text\nchain discovery -> chain verification -> chain enrichment -> chain curation -> chain export\n```\n\nKazdy etap moze miec osobny notebook albo osobny tryb notebooka:\n\n- `discovery`: wyszukiwanie kandydatow i materialow zrodlowych,\n- `verification`: OCR, frame check, cross-check i scoring,\n- `enrichment`: datasheety, parametry, aliasy, kategorie,\n- `curation`: przygotowanie kandydatow do kolejki review,\n- `export`: przebudowa artefaktow i przygotowanie danych do downstream.\n\nW ten sposob `Kaggle` staje sie darmowym dostawca zasobow dla wolontariackiej siatki wykonawczej, a nie tylko miejscem pojedynczych eksperymentow."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-5-standard-kagglenotebookpack",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Standard `KaggleNotebookPack`",
+      "category": "document",
+      "content": "Kazdy pack powinien zawierac:\n\n- `goal`: co notebook ma osiagnac,\n- `scope`: jaki fragment lancucha automatyzacji uruchamia,\n- `input_context`: jakie dane, README i zrodla RAG sa potrzebne,\n- `required_secrets`: jakie sekrety wolontariusz musi ustawic,\n- `resource_cost_hint`: orientacyjny koszt czasu i limitow,\n- `expected_outputs`: jakie pliki lub rekordy maja powstac,\n- `fork_target`: gdzie wynik ma zostac zapisany,\n- `pr_template`: jak opisac wynik w `PR`,\n- `acceptance_criteria`: co musi przejsc, zeby wynik nadawal sie do review."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-6-rola-lokalnego-agenta-wolontariusza",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Rola lokalnego agenta wolontariusza",
+      "category": "document",
+      "content": "Lokalny agent powinien:\n\n- wyjasnic wolontariuszowi sens uruchomienia notebooka,\n- sprawdzic, czy pack jest zgodny z jego zainteresowaniami i zasobami,\n- poprowadzic go przez ustawienie sekretow,\n- przypomniec, jakie artefakty maja powstac,\n- pomoc uporzadkowac wynik do forka i `PR`,\n- pilnowac, zeby wolontariusz nie wykonywal niejasnych krokow poza zakresem packa.\n\nTo jest bardzo wazne: agent nie tylko \"pisze kod\", ale jest tez **operatorem pracy wolontariusza**."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-7-najbardziej-naturalne-zastosowania-w-project-13",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Najbardziej naturalne zastosowania w Project 13",
+      "category": "document",
+      "content": "W `Project 13` ten model najlepiej pasuje do:\n\n- huntingu filmow i kandydatow donor devices,\n- generowania timestampow i kandydatow parts,\n- OCR i HQ frame verification,\n- batchowego wyszukiwania datasheetow,\n- generowania kandydatow do kolejki kuracji,\n- porownywania promptow i workflowow na tej samej probce danych.\n\nPierwszym naturalnym punktem startu jest:\n\n- [youtube-databaseparts.ipynb](../youtube-databaseparts.ipynb)\n\nPierwszy realny pack dla tego notebooka jest juz utrzymywany w repo:\n\n- `../execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`\n- `../execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`\n- `../execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md`\n- `../execution_packs/pack-project13-kaggle-enrichment-01/REVIEW_CHECKLIST.md`\n\nTen pack ustawia praktyczny standard:\n\n- wolontariusz pracuje na swoim forku,\n- notebook generuje raport runu review-ready,\n- wynik wraca do upstream przez jawny `PR`.\n\nDocelowo powinny z niego wynikac mniejsze, bardziej wyspecjalizowane notebooki dla osobnych etapow lancucha."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-8-co-notebook-powinien-robic-z-wynikami",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Co notebook powinien robic z wynikami",
+      "category": "document",
+      "content": "Notebook nie powinien w ciemno promowac danych do glownego repozytorium.\n\nPowinien:\n\n- zapisac wynik do artefaktow roboczych,\n- przygotowac czytelny output dla review,\n- zapisac dane do forka wolontariusza,\n- pozostawic slady wykonania: log, licznik przetworzonych rekordow, status, timestamp,\n- dopiero potem umozliwic przygotowanie `PR`.\n\nPreferowana kolejnosc to:\n\n```text\nartifact -> fork -> commit -> PR -> review -> merge\n```"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-9-zasady-bezpieczenstwa",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Zasady bezpieczenstwa",
+      "category": "document",
+      "content": "Model musi pozostac jawnie dobrowolny i bezpieczny:\n\n- wolontariusz sam decyduje, czy chce wykorzystac swoje darmowe limity `Kaggle`,\n- sekrety sa ustawiane tylko na jego koncie jako `Kaggle Secrets`,\n- repozytorium nie przechowuje prywatnych kluczy wolontariusza,\n- notebook ma miec minimalny potrzebny zakres uprawnien,\n- preferowany jest zapis do forka wolontariusza, nie do upstream,\n- `PR` powinien zawierac opis przebiegu, artefakty i ograniczenia wyniku."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-docs-model-wolontariackich-notebookow-kaggle-md-10-kryteria-sukcesu",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+      "title": "Kryteria sukcesu",
+      "category": "document",
+      "content": "Model dziala poprawnie, gdy:\n\n- wolontariusz z lokalnym agentem potrafi uruchomic notebook bez chaosu,\n- inicjatywa dostaje z tego uporzadkowany `PR`, a nie przypadkowe pliki,\n- koszt obliczen jest ponoszony dobrowolnie przez wolontariusza,\n- wyniki sa reviewowalne i porownywalne,\n- lancuchy automatyzacji da sie uruchamiac wielokrotnie na roznych kontach bez zmiany logiki procesu.\n\nNajwazniejsze jest to, ze w tym modelu **darmowe zasoby Kaggle i praca wolontariusza zamieniaja sie w powtarzalny, agentowo wspierany wkład do wspolnej bazy wiedzy**."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-intro",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Pack Project13 Kaggle Enrichment 01\n\nTo jest pierwszy realny `KaggleNotebookPack` dla `Project 13`.\n\nJego celem jest zamienic ogolny opis wolontariackich notebookow Kaggle w konkretny, powtarzalny loop:\n\n```text\nfork repo -> import notebooka do Kaggle -> ustawienie sekretow ->\nrun -> wygenerowanie artefaktow -> push brancha do forka -> PR do upstream\n```"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-1-zakres-packa",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Zakres packa",
+      "category": "document",
+      "content": "- notebook: `PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb`\n- fazy: `discovery -> verification -> enrichment -> review-ready artifacts`\n- execution mode: `kaggle_notebook`\n- docelowy output: `pull_request`"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-2-co-jest-w-srodku",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Co jest w srodku",
+      "category": "document",
+      "content": "- `manifest.json`: kanoniczny rekord `ExecutionPack`\n- `task.json`: gotowy rekord `Task` dla pierwszego uruchomienia\n- `integrity_risk_assessment.json`: ocena ryzyk dla interesu wspolnego\n- `readiness_gate.json`: bramka `pack_ready`\n- `RUNBOOK.md`: instrukcja dla wolontariusza i lokalnego agenta\n- `PR_TEMPLATE.md`: szablon opisu pull requesta\n- `REVIEW_CHECKLIST.md`: checklista review artefaktow\n- `scripts/create_execution_records.py`: generator kanonicznych rekordow `Run` i `Artifact` po faktycznym uruchomieniu packa\n- `scripts/dry_run_execution_pack.py`: lokalny dry-run packa bez prawdziwego Kaggle runu"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-3-najwazniejsze-zasady",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Najwazniejsze zasady",
+      "category": "document",
+      "content": "- pack zaklada, ze wolontariusz ma wlasny fork repozytorium i pushuje tylko do niego\n- sekrety sa ustawiane tylko na koncie `Kaggle` wolontariusza\n- wynik nie trafia bezposrednio do upstream bez review\n- kazdy run ma zostawic jawny slad provenance: `pack_id`, branch, notebook, timestamp i raport przebiegu"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-4-oczekiwane-artefakty",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Oczekiwane artefakty",
+      "category": "document",
+      "content": "- `PROJEKTY/13_baza_czesci_recykling/autonomous_test/processed_videos.json`\n- `PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/test_db.jsonl`\n- `PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/inventree_import.jsonl`\n- `PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/ecoEDA_inventory.csv`\n- `PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_run_summary.md`"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-readme-md-5-wejscie-dla-kolejnego-agenta",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+      "title": "Wejscie dla kolejnego agenta",
+      "category": "document",
+      "content": "Jesli chcesz rozwijac ten pack dalej, zacznij od:\n\n1. `RUNBOOK.md`\n2. `manifest.json`\n3. `REVIEW_CHECKLIST.md`\n4. notebooka `youtube-databaseparts.ipynb`"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-intro",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Wprowadzenie",
+      "category": "document",
+      "content": "# Runbook Wolontariusza Dla Pack Project13 Kaggle Enrichment 01"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-1-cel",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Cel",
+      "category": "document",
+      "content": "Ten runbook prowadzi wolontariusza i jego lokalnego agenta przez pierwszy realny loop `KaggleNotebookPack` dla `Project 13`.\n\nDocelowy przeplyw:\n\n```text\nfork -> Kaggle notebook -> branch na forku -> PR -> review -> merge\n```"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-2-co-trzeba-miec-przed-startem",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Co trzeba miec przed startem",
+      "category": "document",
+      "content": "- konto `GitHub`\n- wlasny fork repo `StrazPrzyszlosci/STRAZ_PRZYSZLOSCI`\n- konto `Kaggle`\n- notebook `PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb`\n- sekrety ustawione w `Kaggle Secrets`"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-3-wymagane-sekrety",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Wymagane sekrety",
+      "category": "document",
+      "content": "- `GITHUB_PAT`: token z uprawnieniem pushu do Twojego forka\n- `YOUTUBE_API_KEY`: klucz do YouTube Data API\n- `GEMINI_API_KEY`: klucz do analizy multimodalnej\n\nNie zapisuj tych sekretow w repozytorium ani w tresci PR."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-4-krok-1-przygotuj-fork",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 1. Przygotuj fork",
+      "category": "document",
+      "content": "1. Otworz repo upstream `StrazPrzyszlosci/STRAZ_PRZYSZLOSCI`.\n2. Utworz albo odswiez swoj fork.\n3. Upewnij sie, ze mozesz pushowac do swojego forka przez PAT."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-5-wariant-lokalny-dry-run-przed-prawdziwym-kaggle-runem",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Wariant lokalny: dry-run przed prawdziwym Kaggle runem",
+      "category": "document",
+      "content": "Zanim wolontariusz odpali prawdziwy notebook na `Kaggle`, maintainer albo lokalny agent moze wykonac suchy przebieg kontraktu packa:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/dry_run_execution_pack.py\n```\n\nTen dry-run:\n\n- nie zuzywa sekretow wolontariusza ani zasobow `Kaggle`,\n- buduje lokalny raport walidacyjny packa,\n- generuje szkic PR oraz rekord `Run` i `Artifact` dla suchego przebiegu,\n- pokazuje, czy kontrakt artefaktow i provenance jest juz gotowy do publicznego uruchomienia."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-6-krok-2-importuj-notebook-do-kaggle",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 2. Importuj notebook do Kaggle",
+      "category": "document",
+      "content": "1. Otworz `Kaggle`.\n2. Utworz nowy notebook przez import pliku `youtube-databaseparts.ipynb`.\n3. Przed uruchomieniem uzupelnij w komorce konfiguracyjnej:\n   - `FORK_OWNER`\n   - `GIT_USER_NAME`\n   - `GIT_USER_EMAIL`\n4. Nie zostawiaj placeholderow ani danych innej osoby."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-7-krok-3-ustaw-sekrety",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 3. Ustaw sekrety",
+      "category": "document",
+      "content": "Dodaj w `Kaggle Secrets`:\n\n- `GITHUB_PAT`\n- `YOUTUBE_API_KEY`\n- `GEMINI_API_KEY`\n\nNotebook powinien uzyc tylko tych sekretow i tylko do deklarowanego celu packa."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-8-krok-4-uruchom-notebook",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 4. Uruchom notebook",
+      "category": "document",
+      "content": "1. Uruchom komorki po kolei.\n2. Poczekaj na wygenerowanie plikow w `autonomous_test/`.\n3. Sprawdz, czy notebook wygenerowal:\n   - `processed_videos.json`\n   - `results/test_db.jsonl`\n   - `results/inventree_import.jsonl`\n   - `results/ecoEDA_inventory.csv`\n   - `reports/last_run_summary.md`\n\nJesli ktorys plik nie powstal, zatrzymaj sie i opisz to w raporcie runu oraz PR."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-9-krok-5-zweryfikuj-wynik-przed-pushem",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 5. Zweryfikuj wynik przed pushem",
+      "category": "document",
+      "content": "Przed pushem sprawdz:\n\n- czy branch jest nowy i nalezy do Twojego forka\n- czy commit author wskazuje Ciebie albo adres `noreply`\n- czy raport runu opisuje zakres danych i known issues\n- czy w artefaktach nie ma sekretow, plikow tymczasowych ani pobranych filmow"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-10-krok-6-push-do-forka",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 6. Push do forka",
+      "category": "document",
+      "content": "Notebook powinien:\n\n- utworzyc branch o nazwie podobnej do `pack-project13-kaggle-enrichment-<timestamp>`\n- dodac tylko artefakty review-ready\n- wypchnac branch do `origin`, czyli do Twojego forka\n\nUpstream nie powinien byc celem pushu z poziomu notebooka."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-11-krok-7-otworz-pr",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 7. Otworz PR",
+      "category": "document",
+      "content": "1. Na GitHubie otworz PR z brancha forka do `StrazPrzyszlosci/STRAZ_PRZYSZLOSCI`.\n2. Skopiuj tresc z `PR_TEMPLATE.md`.\n3. Wklej link do notebooka Kaggle lub opisz identyfikator runu.\n4. Dolacz ograniczenia i znane problemy."
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-12-krok-8-zapisz-kanoniczny-rekord-run-i-opcjonalnie-artifact",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 8. Zapisz kanoniczny rekord `Run` i opcjonalnie `Artifact`",
+      "category": "document",
+      "content": "Po wykonaniu notebooka i przed albo po otwarciu PR uruchom lokalnie:\n\n```bash\npython3 PROJEKTY/13_baza_czesci_recykling/scripts/create_execution_records.py \\\n  --fork-owner <twoj-login-github> \\\n  --run-ref kaggle://project13/<twoj-run-id> \\\n  --summary-ref PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_run_summary.md \\\n  --output-ref branch://<twoj-login-github>/pack-project13-kaggle-enrichment-<timestamp> \\\n  --artifact-storage-ref https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>\n```\n\nSkrypt zapisze rekord `Run` i, jesli podasz `--artifact-storage-ref`, rowniez rekord `Artifact` w katalogu:\n\n- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/records/`"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-13-krok-9-czego-nie-robic",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Krok 9. Czego nie robic",
+      "category": "document",
+      "content": "- nie pushuj bezposrednio do upstream\n- nie commituj sekretow ani pelnych URL-i z tokenem\n- nie podmieniaj autora commita na maintainera lub inna osobe\n- nie promuj wynikow bez raportu runu i jawnego PR"
+    },
+    {
+      "id": "projekty-13-baza-czesci-recykling-execution-packs-pack-project13-kaggle-enrichment-01-runbook-md-14-minimalne-kryterium-sukcesu",
+      "source_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+      "title": "Minimalne kryterium sukcesu",
+      "category": "document",
+      "content": "Pack jest wykonany poprawnie, gdy:\n\n- notebook przechodzi end-to-end na koncie wolontariusza\n- wynik laduje na branchu w jego forku\n- powstaje raport runu\n- PR daje sie zreviewowac bez recznego odtwarzania calego przebiegu"
     },
     {
       "id": "projekty-14-autonomiczne-projektowanie-3d-cad-md-intro",
@@ -1462,6 +2134,55 @@
         "issue:aq-32"
       ],
       "next_step": "Ta sciezka nie wymaga wlasnego wezla ani czujnikow. Zacznij od analizy gotowego kodu, wspolnego schematu i backlogu adaptacji."
+    },
+    {
+      "route_id": "ai_native_volunteer_execution",
+      "label": "Wolontariusz z agentami AI",
+      "summary": "Dla osob, ktore chca rozwijac inicjatywe przez lokalnych agentow AI, forki, pull requesty, notebooki, runbooki i kuracje wiedzy. Ta sciezka traktuje repozytorium jako centrum koordynacji zadan dla ludzi nadzorujacych swoich agentow.",
+      "signals": {
+        "passions": [
+          "codex",
+          "agenci ai",
+          "automatyzacja",
+          "rag",
+          "notebooki",
+          "forki",
+          "pull requesty"
+        ],
+        "skills": [
+          "czytanie repozytoriow",
+          "synteza",
+          "python",
+          "pisanie promptow",
+          "uruchamianie skryptow",
+          "review"
+        ],
+        "resources": [
+          "laptop",
+          "lokalny agent ai",
+          "konto github",
+          "czas na eksperymenty",
+          "darmowe zasoby obliczeniowe",
+          "konto kaggle",
+          "colab"
+        ]
+      },
+      "recommended_repo_sections": [
+        "docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md",
+        "docs/PRZYKLADY_GOTOWEGO_KODU.md",
+        "PROJEKTY/13_baza_czesci_recykling/README.md",
+        "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md",
+        "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md",
+        "docs/ARCHITEKTURA_EDGE_SMARTFONY_CLOUD.md",
+        "data/onboarding/straznik_rekomendator_v1.json"
+      ],
+      "first_tasks": [
+        "issue:aq-12",
+        "issue:aq-14",
+        "issue:aq-29",
+        "issue:aq-31"
+      ],
+      "next_step": "Najkrotsza sciezka startu to pack `pack-project13-kaggle-enrichment-01` w Project 13. Jezeli masz konto Kaggle, otworz runbook, uruchom notebook na swoim forku i oddaj wynik przez PR."
     },
     {
       "route_id": "aquaculture_water_monitoring",

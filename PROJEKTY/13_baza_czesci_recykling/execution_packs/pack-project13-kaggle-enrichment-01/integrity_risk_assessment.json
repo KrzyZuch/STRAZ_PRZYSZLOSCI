@@ -1,0 +1,29 @@
+{
+  "schema_version": "v1",
+  "assessment_id": "integrity-pack-project13-kaggle-enrichment-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-kaggle-enrichment-01"
+  },
+  "assessment_scope": "workflow_design",
+  "risk_signals": [
+    "private_capture",
+    "volunteer_work_appropriation",
+    "opaque_approval_path",
+    "vendor_lock_in"
+  ],
+  "risk_level": "low",
+  "findings": [
+    "Pack wymusza przeplyw przez fork wolontariusza i jawny PR zamiast bezposredniego pushu do upstream.",
+    "Runbook i szablon PR zostawiaja jawny slad provenance oraz ograniczen przebiegu.",
+    "Kaggle pozostaje dobrowolnym execution surface wolontariusza, a nie centralna infrastruktura organizacji."
+  ],
+  "mitigations_required": [
+    "Nie promowac wynikow bez brancha, raportu runu i PR.",
+    "Nie wpisywac na sztywno prywatnych danych maintainera w notebooku ani commit metadata.",
+    "Utrzymywac review checklist z pytaniem o provenance i zakres danych."
+  ],
+  "reviewer_role": "public_interest_reviewer",
+  "status": "pass",
+  "assessed_at": "2026-04-22T20:00:00Z"
+}

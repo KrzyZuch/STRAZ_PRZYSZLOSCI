@@ -4,7 +4,7 @@
 
 - Glowny cel obecnej iteracji: zamienic ogolna wizje Straży Przyszłości na operacyjny system dokumentow, encji, workflowow i instrukcji dla kolejnych agentow.
 - Dlaczego ten cel byl priorytetowy: repo mial juz mocna wizje i kilka konkretnych klockow wykonawczych, ale brakowalo wspolnego modelu organizacji agentowej, modelu encji oraz instrukcji, ktora pozwala nowemu agentowi pracowac bez ciaglego dopisywania promptow przez czlowieka.
-- Jaki efekt udalo sie uzyskac: powstala pelna warstwa architektoniczna, planistyczna i operacyjna dla organizacji agentowej, wraz z kanonicznym schematem encji, sample records, integrity review oraz instrukcja rozwojowa i szablonem handoff.
+- Jaki efekt udalo sie uzyskac: powstala pelna warstwa architektoniczna, planistyczna i operacyjna dla organizacji agentowej, `Project 13` dostal pierwszy realny `KaggleNotebookPack`, a dodatkowo wykonano pierwszy lokalny `dry-run` tego packa z raportem, szkicem PR oraz kanonicznymi rekordami `Run` i `Artifact`.
 
 ## 2. Zmiany wykonane
 
@@ -18,6 +18,15 @@
   - `docs/PRZYKLADY_GOTOWEGO_KODU.md`
   - `PROJEKTY/13_baza_czesci_recykling/README.md`
   - `PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/README.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/REVIEW_CHECKLIST.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/dry_run_report_20260422T183112Z.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/summary_20260422T183112Z.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/pr_preview_20260422T183112Z.md`
+  - `PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_run_summary.md`
   - `PROJEKTY/12_autonomiczne_pcb_ze_smieci.md`
   - `PROJEKTY/17_autonomiczne_przetwarzanie_elektrosmieci_na_hardware.md`
   - `README.md`
@@ -40,6 +49,13 @@
   - onboarding uznaje wolontariusza z agentem AI oraz wolontariusza-resource scouta jako pelnoprawne role
   - `Project 13` zostal ustawiony jako pierwszy pilot resource scoutingu i wolontariackich chainow Kaggle
   - do modelu organizacji dodano jawna warstwe analizy zjawisk niekorzystnych dla ogolu
+  - notebook `youtube-databaseparts.ipynb` zostal przestawiony z hard-coded operatora na model `fork wolontariusza -> branch -> PR`
+  - dodano skrypt `scripts/summarize_kaggle_run.py`, ktory buduje review-ready raport markdown po runie
+  - dodano skrypt `scripts/create_execution_records.py`, ktory tworzy kanoniczne rekordy `Run` i opcjonalnie `Artifact` po wykonaniu packa
+  - dodano skrypt `scripts/dry_run_execution_pack.py`, ktory wykonuje lokalny dry-run packa, generuje raport, szkic PR i rekordy encji
+  - `last_run_summary.md` zostal przebudowany do formatu z provenance i kontrola brakujacych / pustych artefaktow
+  - `pipelines/export_chatbot_knowledge_bundle.py` zaczal eksportowac nowa warstwe architektury organizacyjnej i pack `Project 13`
+  - pierwszy suchy przebieg `20260422T183026Z` byl wadliwy przez zle liczenie sciezek repo i zostal superseded przez poprawiony dry-run `20260422T183112Z`
 
 ## 3. Aktywne encje
 
@@ -71,9 +87,10 @@
 ### `ExecutionPack`
 
 - `pack-project13-kaggle-enrichment-01`
-  - status: `ready`
+  - status: `active`
   - tryb: `kaggle_notebook`
   - cel: discovery i enrichment dla `Project 13` przez notebook Kaggle uruchamiany przez wolontariusza
+  - realne pliki: `execution_packs/pack-project13-kaggle-enrichment-01/{manifest.json,RUNBOOK.md,PR_TEMPLATE.md,REVIEW_CHECKLIST.md}`
 
 ### `Task`
 
@@ -83,36 +100,36 @@
 
 ### `Run`
 
-- `run-project13-kaggle-enrichment-01`
+- `run-project13-kaggle-enrichment-dry-run-local-20260422T183112Z`
   - status: `needs_review`
-  - srodowisko: `kaggle`
+  - srodowisko: `local`
+  - znaczenie: pierwszy lokalny dry-run packa, ktory potwierdzil spiecie workflowu i provenance, ale wykryl ostrzezenia w aktualnym snapshotcie artefaktow
 
 ### `Artifact`
 
-- `artifact-project13-pr-01`
-  - status review: `review_ready`
-  - rodzaj: `pull_request`
-  - znaczenie: wzorcowy artefakt do promocji review-ready po uruchomieniu KaggleNotebookPack
+- `artifact-project13-kaggle-enrichment-dry-run-local-20260422T183112Z`
+  - status review: `draft`
+  - rodzaj: `report`
+  - storage_ref: `execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/dry_run_report_20260422T183112Z.md`
+  - znaczenie: kanoniczny raport z pierwszego lokalnego dry-runu packa
 
 ### `IntegrityRiskAssessment`
 
-- `integrity-project13-pr-01`
+- `integrity-pack-project13-kaggle-enrichment-01`
   - status: `pass`
-  - zakres: `code_change`
-  - sprawdzone sygnaly: `nepotism`, `private_capture`, `corruption`, `opaque_approval_path`, `volunteer_work_appropriation`
-
-### `Approval`
-
-- `approval-project13-pr-01`
-  - decyzja: `approved`
-  - zakres: `knowledge_base_promotion`
-  - nastepny krok zapisany w rekordzie: merge i przebudowa downstream artefaktow katalogu
+  - zakres: `workflow_design`
+  - sprawdzone sygnaly: `private_capture`, `volunteer_work_appropriation`, `opaque_approval_path`, `vendor_lock_in`
 
 ### `ReadinessGate`
 
-- `gate-pack-ready-project13-01`
+- `gate-pack-ready-project13-kaggle-enrichment-01`
   - status: `pass`
   - zakres: `pack_ready`
+
+### `Approval`
+
+- status obecny:
+  - brak jeszcze `Approval`, bo pack przeszedl tylko lokalny dry-run i nie ma jeszcze publicznego PR od wolontariusza
 
 ## 4. Ryzyka i zjawiska niekorzystne
 
@@ -127,44 +144,52 @@
 - Ryzyka vendor lock-in:
   - na razie `Kaggle` jest traktowane pragmatycznie jako zasob wolontariacki, ale nie powinno stac sie jedynym execution surface
 - Ryzyka braku provenance lub audytu:
-  - najwieksza luka implementacyjna to brak jeszcze realnego systemu tabel/bazy/worker logic dla encji `organization_agent_v1`; obecnie model istnieje glownie jako dokumentacja i sample records
+  - pack, dry-run i rekordy encji juz istnieja, ale nadal brakuje automatycznego wywolania `create_execution_records.py` z poziomu notebooka albo CI po prawdziwym przebiegu
+- Ryzyka niedomknietych artefaktow:
+  - aktualny snapshot `autonomous_test/` nadal nie ma `inventree_import.jsonl`, a `ecoEDA_inventory.csv` jest pusty, wiec publiczny run powinien byc potraktowany jako test realnej kompletności outputu
 
 ## 5. Co zostalo otwarte
 
 - Niezamkniete decyzje:
-  - czy pierwszym krokiem implementacyjnym ma byc baza/tabele dla `organization_agent_v1`, czy od razu pierwszy realny `KaggleNotebookPack` i runbook produkcyjny dla `Project 13`
+  - czy przed pierwszym publicznym runem Kaggle dopinac automatyczne tworzenie rekordow `Run` / `Artifact` w notebooku, czy wystarczy jeszcze manualny krok z runbooka
 - Blokery:
-  - brak jeszcze rzeczywistego pliku execution packa dla `youtube-databaseparts.ipynb`
   - brak mapowania nowych encji na realne tabele `D1` lub `SQLite`
-  - brak integracji nowych dokumentow z `pipelines/export_chatbot_knowledge_bundle.py`, wiec bot nie widzi jeszcze calej nowej warstwy architektonicznej
+  - brak jeszcze pierwszego publicznego PR od wolontariusza uruchamiajacego nowy pack
+  - aktualny lokalny snapshot artefaktow nie ma `inventree_import.jsonl`
+  - aktualny lokalny snapshot ma pusty `ecoEDA_inventory.csv`
+  - brak jeszcze automatycznego wywolania generatora `Run` / `Artifact` w samym notebooku lub CI po wykonaniu packa
 - Brakujace dane:
-  - brak rzeczywistych rekordow organizacyjnych poza sample records
-  - brak operacyjnych benchmarkow dla execution packow
+  - brak benchmarkow runtime, kosztu i skutecznosci dla kolejnych uruchomien packa
+  - brak porownan promptow i modeli na tej samej probce filmow
 - Brakujace execution packi:
-  - brak pierwszego realnego packa w formacie gotowym do uruchomienia przez wolontariusza
-  - brak runbooka „uruchom notebook, zapisz do forka, otworz PR” dla `youtube-databaseparts.ipynb`
+  - nadal brak osobnych packow dla `verification chain`, `enrichment chain` i `export chain`
 - Brakujace review lub integrity review:
-  - obecna analiza integrity jest wzorcowa, ale nie jest jeszcze podpieta do realnego workflowu PR/checklist/deployment
+  - pack ma juz wlasny `IntegrityRiskAssessment`, ale brakuje jeszcze realnego review pierwszego PR przechodzacego cala checklista
 
 ## 6. Najlepszy kolejny krok
 
 - Jeden najwyzszy priorytet:
-  - zamienic `pack-project13-kaggle-enrichment-01` z sample recordu w **realny execution pack** dla `PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb`
+  - wykonac pierwszy prawdziwy run `Kaggle` nowego packa `pack-project13-kaggle-enrichment-01` na forku wolontariusza i doprowadzic go do review-ready `PR`
 - Dlaczego wlasnie ten:
-  - to jest najkrotsza droga od dokumentacji do prawdziwego loopa produkcyjnego
-  - ten krok bezposrednio testuje cala nowa architekture na najbardziej dojrzalym pilocie
-  - daje wysoki zwrot z wysilku, bo laczy wolontariuszy, Kaggle, Project 13, resource scouting i review-ready artifact flow
+  - lokalny dry-run juz potwierdzil strukture packa i provenance, wiec glowna niepewnosc przeniosla sie na realne zachowanie notebooka na `Kaggle`
+  - trzeba sprawdzic, czy po swiezym przebiegu naprawde powstana kompletne artefakty `inventree_import.jsonl` i niepusty `ecoEDA_inventory.csv`
+  - ten krok da pierwszy prawdziwy `Run` i pierwszy publiczny `Artifact` typu `pull_request`
 - Co trzeba przeczytac najpierw:
   - `docs/INSTRUKCJA_ROZWOJOWA_DLA_AGENTA.md`
   - `docs/ENCJE_I_WORKFLOWY_ORGANIZACJI_AGENTOWEJ.md`
   - `PROJEKTY/13_baza_czesci_recykling/README.md`
   - `PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/dry_run_report_20260422T183112Z.md`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/summary_20260422T183112Z.md`
   - `docs/ARCHITEKTURA_ORGANIZACJI_AGENTOWEJ.md`
 - Jakie pliki najprawdopodobniej beda dotkniete:
-  - `PROJEKTY/13_baza_czesci_recykling/docs/`
+  - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/`
   - `PROJEKTY/13_baza_czesci_recykling/youtube-databaseparts.ipynb`
   - `PROJEKTY/13_baza_czesci_recykling/scripts/`
-  - ewentualnie nowy katalog `execution_packs/` albo analogiczny w `Project 13`
+  - `PROJEKTY/13_baza_czesci_recykling/autonomous_test/results/`
+  - `PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/`
 
 ## 7. Kolejnosc startu dla nastepnego agenta
 
@@ -181,7 +206,7 @@
    - zaawansowanej samooptymalizacji promptow i kodu
    - deploymentow hardware bez bardziej konkretnego workflowu
 4. Zacznij od:
-   - przygotowania pierwszego realnego `KaggleNotebookPack` dla `Project 13`
+   - przeczytania raportu `dry_run_report_20260422T183112Z.md`, a potem wykonania pierwszego prawdziwego runu packa na `Kaggle` i otwarcia PR na jego podstawie
 
 ## 8. Uwagi koncowe
 

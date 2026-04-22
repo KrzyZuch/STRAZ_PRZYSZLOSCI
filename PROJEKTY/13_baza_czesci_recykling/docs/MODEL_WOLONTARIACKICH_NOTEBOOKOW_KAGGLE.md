@@ -104,6 +104,19 @@ Pierwszym naturalnym punktem startu jest:
 
 - [youtube-databaseparts.ipynb](../youtube-databaseparts.ipynb)
 
+Pierwszy realny pack dla tego notebooka jest juz utrzymywany w repo:
+
+- `../execution_packs/pack-project13-kaggle-enrichment-01/manifest.json`
+- `../execution_packs/pack-project13-kaggle-enrichment-01/RUNBOOK.md`
+- `../execution_packs/pack-project13-kaggle-enrichment-01/PR_TEMPLATE.md`
+- `../execution_packs/pack-project13-kaggle-enrichment-01/REVIEW_CHECKLIST.md`
+
+Ten pack ustawia praktyczny standard:
+
+- wolontariusz pracuje na swoim forku,
+- notebook generuje raport runu review-ready,
+- wynik wraca do upstream przez jawny `PR`.
+
 Docelowo powinny z niego wynikac mniejsze, bardziej wyspecjalizowane notebooki dla osobnych etapow lancucha.
 
 ## Co notebook powinien robic z wynikami
