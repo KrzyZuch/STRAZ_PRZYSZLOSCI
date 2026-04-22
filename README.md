@@ -41,7 +41,35 @@ Jeśli chcemy konstruktywnie i mądrze wykorzystać tę potężną siłę, autom
 
 Warto przy tym wyraźnie podkreślić: **celem samym w sobie nie jest budowanie kolejnego modelu AI**, lecz wypracowanie genialnych pomysłów na ich praktyczne wykorzystanie oraz wdrożenie procesów, które realnie odmienią naszą rzeczywistość gospodarczą. Intelektualna przewaga leży w *koncepcji zastosowania*, a nie w samym narzędziu.
 
+## Osiągnięcia Straży Przyszłości (Realne wdrożenia)
+
+Nasze działania to nie tylko wizja, ale realnie działające narzędzia AI, które budują fundament pod suwerenną produkcję dóbr. Każdy skatalogowany element to krok w stronę autonomicznego przetwarzania elektrośmieci w zaawansowane urządzenia automatyzacji, które docelowo będą generować **Dochód Gwarantowany (UBI)**.
+
+### 1. Autonomiczny Łowca Części (Kaggle Cloud)
+Nasz system pracujący w chmurze Kaggle automatycznie przeszukuje i analizuje tysiące godzin filmów z napraw elektroniki na YouTube.
+*   **Rozpoznawanie komponentów:** Precyzyjna identyfikacja części (kondensatory, rezystory, układy scalone) na podstawie klatek wideo.
+*   **Automatyczne budowanie bazy:** Dane o częściach i ich urządzeniach-dawcach trafiają bezpośrednio do globalnego katalogu.
+
+![Kaggle Hunter](docs/assets/kaggle_hunter.png)
+
+### 2. Bot Telegram - Twój Mobilny Inżynier AI
+Zintegrowany z bazą danych bot `@straz_przyszlosci_bot` oferuje zaawansowane funkcje analityczne dostępne bezpośrednio z poziomu smartfona:
+
+*   **Algorytmiczne Odczytywanie Rezystorów:** Wystarczy zdjęcie, aby AI precyzyjnie odczytało kod paskowy THT, podając wartość i tolerancję wraz z obliczeniami.
+*   **Analiza Datasheetów PDF:** Wyślij botowi dokumentację techniczną układu i zadaj dowolne pytanie. AI przeanalizuje parametry (np. napięcia zasilania) i poda precyzyjną odpowiedź na podstawie przesłanego dokumentu.
+
+<p align="center">
+  <img src="docs/assets/analiza_rezystora.png" width="45%" />
+  <img src="docs/assets/analiza_datasheet.png" width="45%" />
+</p>
+
+### 3. W Przygotowaniu: Masowe Przetwarzanie Datasheetów PDF
+Pracujemy nad kolejnym modułem autonomicznego pobierania i strukturyzowania danych technicznych z tysięcy dokumentów PDF (datasheetów) jednocześnie. 
+*   **Cel:** Automatyczne zasilenie bazy danych wszystkimi kluczowymi parametrami IC (napięcia, prądy, funkcje pinów) w celu umożliwienia AI samodzielnego projektowania nowych urządzeń z części odzyskanych z recyklingu.
+*   **Technologia:** Wykorzystujemy zaawansowane skrypty (np. `supplement_ic_database.py`) integrujące logikę scrapowania dystrybutorów z multimodalną analizą dokumentów przez Gemini.
+
 # Strategia Marketingowa i Budowa Społeczności
+
 
 ## **Intelekt wyprzedza Kapitał!**
 
