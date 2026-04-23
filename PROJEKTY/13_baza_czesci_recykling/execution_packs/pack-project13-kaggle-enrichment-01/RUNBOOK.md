@@ -118,9 +118,26 @@ Upstream nie powinien byc celem pushu z poziomu notebooka.
 
 ## Krok 8. Dopnij `Artifact` record po otwarciu PR
 
-Notebook powinien juz automatycznie zapisac `Run record`.
+Notebook powinien juz automatycznie zapisac `Run record` oraz trwaly `run context` w pliku `last_pack_run_context.json`. Ten plik zawiera wszystkie metadane potrzebne do dopiecia `Artifact` bez recznego rekonstruowania provenance z logow.
 
-Po otwarciu PR dopnij odpowiadajacy mu `Artifact` najprosciej helperem:
+Najprostszy sposob dopiecia `Artifact` - z uzyciem domyslnego run context:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
+  --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
+
+Helper automatycznie uzyje `last_pack_run_context.json` z domyslnej sciezki.
+
+Jesli chcesz wskazac inny plik run context:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
+  --run-context PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_pack_run_context.json \
+  --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
+
+Alternatywnie, z jawnym `run_id`:
 
 ```bash
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
@@ -128,7 +145,7 @@ python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
   --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
 ```
 
-Jesli nie masz pod reka `run_id`, helper moze tez sprobowac znalezc najnowszy realny run `kaggle/hybrid_team`:
+Lub przez autodiscovery po fork owner:
 
 ```bash
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \

@@ -1,0 +1,79 @@
+{
+  "schema_version": "v1",
+  "pack_id": "pack-project13-benchmark-comparison-01",
+  "title": "Project 13 benchmark comparison pack dla porownywania promptow, modeli i workflowow",
+  "linked_subject": {
+    "entity_kind": "experiment",
+    "entity_id": "experiment-kaggle-review-ready-pack-01"
+  },
+  "execution_mode": "kaggle_notebook",
+  "scope": "fixed test sample -> variant A vs variant B -> quality/cost/time metrics -> benchmark report",
+  "objective": "Zbudowac reusable capability porownywania jakosci, kosztu i czasu roznych promptow, modeli i workflowow na tej samej probce danych Project 13, zamiast polegac na pojedynczych intuicjach.",
+  "instructions_summary": "Wolontariusz albo lokalny agent uruchamia pack benchmark na stabilnej probce testowej. Wynikiem jest raport porownawczy z metrykami jakosci, kosztu i czasu dla kazdego wariantu, bez modyfikacji kanonicznego katalogu.",
+  "human_actions": [
+    "Wybrac warianty do porownania: prompty, modele albo workflowy.",
+    "Uruchomic benchmark na koncie Kaggle z ta sama probka testowa.",
+    "Otworzyc PR z benchmark reportem i wnioskami."
+  ],
+  "required_resources": [
+    {
+      "entity_kind": "resource_record",
+      "entity_id": "resource-kaggle-volunteers-01"
+    }
+  ],
+  "rag_sources": [
+    "PROJEKTY/13_baza_czesci_recykling/README.md",
+    "PROJEKTY/13_baza_czesci_recykling/docs/MODEL_WOLONTARIACKICH_NOTEBOOKOW_KAGGLE.md",
+    "PROJEKTY/13_baza_czesci_recykling/execution_packs/CHAIN_MAP.md"
+  ],
+  "upstream_pack_ids": [
+    "pack-project13-kaggle-enrichment-01"
+  ],
+  "downstream_pack_ids": [],
+  "runbook_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-benchmark-comparison-01/RUNBOOK.md",
+  "required_secrets": [
+    {
+      "name": "GEMINI_API_KEY",
+      "purpose": "Analiza multimodalna dla wariantow benchmarkowych."
+    },
+    {
+      "name": "YOUTUBE_API_KEY",
+      "purpose": "Opcjonalnie, jesli benchmark wymaga odswiezenia probki discovery."
+    }
+  ],
+  "resource_cost_hint": "Benchmark moze byc drozszy niz pojedynczy enrichment, bo wymaga wielokrotnego uruchomienia na tej samej probce. Najbezpieczniej zakladac 60-180 minut na jedno uruchomienie w zaleznosci od liczby wariantow.",
+  "fork_target": "fork://<github-login>/STRAZ_PRZYSZLOSCI",
+  "pr_template_path": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-benchmark-comparison-01/PR_TEMPLATE.md",
+  "output_paths": [
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/benchmarks/benchmark_report.md",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/benchmarks/benchmark_metrics.json",
+    "PROJEKTY/13_baza_czesci_recykling/autonomous_test/benchmarks/benchmark_sample.jsonl"
+  ],
+  "expected_artifacts": [
+    "benchmark report z porownaniem wariantow",
+    "metrics: precision, recall, cost_per_record, time_per_record, false_positive_rate",
+    "stabilna probka testowa zdefiniowana w benchmark_sample.jsonl",
+    "pull request z wynikami i wnioskami"
+  ],
+  "acceptance_criteria": [
+    "Pack nie modyfikuje kanonicznego katalogu ani downstream artefaktow.",
+    "Probka testowa jest stala i odtwarzalna miedzy uruchomieniami.",
+    "Metryki jakosci, kosztu i czasu sa nazwane i mierzalne.",
+    "Benchmark report pozwala reviewerowi porownac warianty bez recznego odtwarzania przebiegow.",
+    "Wyniki benchmarku nie sa promowane do katalogu bez oddzielnego etapu kuracji."
+  ],
+  "safety_notes": [
+    "Benchmark nie powinien automatycznie promowac wynikow do kanonicznego katalogu.",
+    "Sekrety pozostaja tylko po stronie wolontariusza albo operatora Kaggle.",
+    "Wynik wraca przez fork i PR, a nie przez bezposredni push do upstream."
+  ],
+  "misuse_risks": [
+    "Mieszanie benchmarku z produkcja kandydatow do katalogu moze ukryc, ze wyniki sa eksperymentalne.",
+    "Brak stalej probki testowej utrudnia porownanie miedzy uruchomieniami.",
+    "Zbyt agresywna optymalizacja na metrykach benchmarku kosztem jakosci danych moze dac falszywy obraz skutecznosci."
+  ],
+  "target_output_kind": "report",
+  "status": "draft",
+  "created_at": "2026-04-23T00:00:00Z",
+  "updated_at": "2026-04-23T00:00:00Z"
+}

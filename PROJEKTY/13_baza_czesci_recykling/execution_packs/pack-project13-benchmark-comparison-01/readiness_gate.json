@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "gate_id": "gate-pack-ready-project13-benchmark-comparison-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-benchmark-comparison-01"
+  },
+  "gate_kind": "pack_ready",
+  "status": "conditional",
+  "notes": "Pack ma juz kontrakt dokumentacyjny, metryki i kryteria review, ale nadal wymaga wydzielenia stabilnej probki testowej z ground-truth labelami oraz realnego execution surface benchmarku.",
+  "checked_at": "2026-04-23T00:00:00Z"
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "gate_id": "gate-pack-ready-project13-curation-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-curation-01"
+  },
+  "gate_kind": "pack_ready",
+  "status": "conditional",
+  "notes": "Pack ma juz kontrakt dokumentacyjny, kryteria review i jawny audit trail decyzji kuracyjnych, ale nadal wymaga wydzielenia realnego execution surface curation oraz dostepu do wynikow packa verification.",
+  "checked_at": "2026-04-23T00:00:00Z"
+}

@@ -36,6 +36,29 @@ run -> wygenerowanie artefaktow -> push brancha do forka -> PR do upstream
 - sekrety sa ustawiane tylko na koncie `Kaggle` wolontariusza
 - wynik nie trafia bezposrednio do upstream bez review
 - kazdy run ma zostawic jawny slad provenance: `pack_id`, branch, notebook, timestamp, raport przebiegu i kanoniczny `Run` record
+- po kazdym runie (zarowno realnym, jak i dry-run) finalizer zapisuje `last_pack_run_context.json`, ktory zawiera wszystkie metadane potrzebne do dopiecia `Artifact` bez recznego rekonstruowania provenance z logow
+
+## Run context
+
+Plik `PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_pack_run_context.json` jest generowany automatycznie przez:
+
+- `scripts/finalize_execution_pack_run.py` (realny run)
+- `scripts/dry_run_execution_pack.py` (lokalny dry-run)
+
+Zawiera:
+
+- `pack_id`, `task_id`, `fork_owner`, `branch_name`
+- `run_id`, `run_ref`, `run_status`
+- `summary_ref`, `run_record_ref`, `artifact_record_ref`
+- `artifact_follow_up_command` (gotowa komenda do dopiecia `Artifact`)
+- `generated_at`, `dry_run` (flaga czy to byl dry-run)
+
+Helper `attach_pr_artifact_record.py` domyslnie korzysta z tego pliku, wiec po otwarciu PR wystarczy:
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py \
+  --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
 
 ## Oczekiwane artefakty
 

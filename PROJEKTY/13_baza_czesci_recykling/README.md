@@ -121,15 +121,22 @@ Orkiestrator finalizacji realnego runu packa `Kaggle`:
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/finalize_execution_pack_run.py --fork-owner <twoj-login-github> --git-mode push
 ```
 
-Skrypt wykonuje `rebuild`, generuje `last_run_summary.md`, zapisuje kanoniczny rekord `Run` i przygotowuje follow-up do dopiecia `Artifact` po otwarciu PR.
+Skrypt wykonuje `rebuild`, generuje `last_run_summary.md`, zapisuje kanoniczny rekord `Run`, zapisuje `last_pack_run_context.json` z metadanymi do dopiecia `Artifact` i przygotowuje follow-up do dopiecia `Artifact` po otwarciu PR.
 
-Helper do dopiecia `Artifact` po utworzeniu PR:
+Helper do dopiecia `Artifact` po utworzeniu PR (domyslnie korzysta z `last_pack_run_context.json`):
+
+```bash
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+```
+
+Nie musisz podawac `--run-id` ani `--fork-owner` - helper automatycznie uzyje metadanych z `last_pack_run_context.json`.
+
+Alternatywnie z jawnym `run-id` lub `fork-owner`:
 
 ```bash
 python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py --run-id <run-id> --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
+python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py --fork-owner <login> --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>
 ```
-
-Jesli nie podasz `--run-id`, helper sprobuje znalezc najnowszy realny `Run` typu `kaggle/hybrid_team`.
 
 Deterministyczna odbudowa `inventree_import.jsonl` i `ecoEDA_inventory.csv` z `autonomous_test/results/test_db.jsonl`:
 
@@ -241,15 +248,23 @@ Ten pack spina:
 
 ## Kolejne packi w tym samym lancuchu
 
-Poza pierwszym packiem `enrichment` projekt ma juz dwa kolejne szkielety:
+Poza pierwszym packiem `enrichment` projekt ma cztery kolejne packi:
 
 - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-verification-01/manifest.json`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-curation-01/manifest.json`
 - `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-catalog-export-01/manifest.json`
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-benchmark-comparison-01/manifest.json`
 
 Ich role sa rozdzielone celowo:
 
 - `verification` ma obnizac ryzyko falszywych trafien i zostawiac disagreement log,
-- `export` ma przebudowywac downstream artefakty dopiero z reviewowanego katalogu GitHub-first.
+- `curation` ma formalizowac decyzje o przyjeciu kandydatow do kanonicznego katalogu z audit trail,
+- `export` ma przebudowywac downstream artefakty dopiero z reviewowanego katalogu GitHub-first,
+- `benchmark-comparison` ma porownywac prompty, modele i workflowy na tej samej probce danych.
+
+Mapa zaleznosci miedzy packami znajduje sie tutaj:
+
+- `PROJEKTY/13_baza_czesci_recykling/execution_packs/CHAIN_MAP.md`
 
 ## Zasady bezpieczenstwa dla notatnikow Kaggle
 

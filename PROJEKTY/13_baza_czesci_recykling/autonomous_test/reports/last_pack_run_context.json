@@ -1,0 +1,16 @@
+{
+  "schema_version": "v1",
+  "pack_id": "pack-project13-kaggle-enrichment-01",
+  "task_id": "task-project13-kaggle-enrichment-01",
+  "fork_owner": "dry-run-local",
+  "branch_name": "dry-run-pack-project13-20260422T210903Z",
+  "run_id": "run-project13-kaggle-enrichment-dry-run-local-20260422T210903Z",
+  "run_ref": "dry-run://project13/local/20260422T210903Z",
+  "run_status": "succeeded",
+  "summary_ref": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/dry_runs/summary_20260422T210903Z.md",
+  "run_record_ref": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/records/run-project13-kaggle-enrichment-dry-run-local-20260422T210903Z.json",
+  "artifact_record_ref": "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-kaggle-enrichment-01/records/artifact-project13-kaggle-enrichment-dry-run-local-20260422T210903Z.json",
+  "artifact_follow_up_command": "python3 PROJEKTY/13_baza_czesci_recykling/scripts/attach_pr_artifact_record.py --run-context PROJEKTY/13_baza_czesci_recykling/autonomous_test/reports/last_pack_run_context.json --pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>",
+  "generated_at": "2026-04-22T21:09:03+00:00",
+  "dry_run": true
+}

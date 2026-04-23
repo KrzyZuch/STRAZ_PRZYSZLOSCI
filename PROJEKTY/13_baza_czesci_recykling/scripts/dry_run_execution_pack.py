@@ -12,17 +12,20 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 PACK_ID = "pack-project13-kaggle-enrichment-01"
+TASK_ID = "task-project13-kaggle-enrichment-01"
 PACK_DIR = PROJECT_DIR / "execution_packs" / PACK_ID
 DRY_RUN_DIR = PACK_DIR / "dry_runs"
 SUMMARY_SCRIPT = PROJECT_DIR / "scripts" / "summarize_kaggle_run.py"
 RECORDS_SCRIPT = PROJECT_DIR / "scripts" / "create_execution_records.py"
 REBUILD_SCRIPT = PROJECT_DIR / "scripts" / "rebuild_autonomous_outputs.py"
+ATTACH_ARTIFACT_SCRIPT = PROJECT_DIR / "scripts" / "attach_pr_artifact_record.py"
 BASE_DIR = PROJECT_DIR / "autonomous_test"
 NOTEBOOK_PATH = PROJECT_DIR / "youtube-databaseparts.ipynb"
 MANIFEST_PATH = PACK_DIR / "manifest.json"
 RUNBOOK_PATH = PACK_DIR / "RUNBOOK.md"
 PR_TEMPLATE_PATH = PACK_DIR / "PR_TEMPLATE.md"
 REVIEW_CHECKLIST_PATH = PACK_DIR / "REVIEW_CHECKLIST.md"
+RUN_CONTEXT_OUTPUT = BASE_DIR / "reports" / "last_pack_run_context.json"
 
 
 def utc_now() -> datetime:
@@ -45,6 +48,10 @@ def count_csv_rows(path: Path) -> int:
 
 def add_check(checks: list[dict], name: str, status: str, details: str) -> None:
     checks.append({"name": name, "status": status, "details": details})
+
+
+def relative_to_repo(path: Path) -> str:
+    return str(path.resolve().relative_to(REPO_ROOT))
 
 
 def build_pr_preview(template_text: str, run_stamp: str, summary_path: Path) -> str:
@@ -122,7 +129,9 @@ def render_report(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Wykonuje lokalny dry-run execution packa Project 13.")
+    parser = argparse.ArgumentParser(
+        description="Wykonuje lokalny dry-run execution packa Project 13."
+    )
     parser.add_argument("--base-dir", type=Path, default=BASE_DIR)
     parser.add_argument("--fork-owner", default="dry-run-local")
     return parser.parse_args()
@@ -170,10 +179,14 @@ def main() -> int:
 
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     template_text = PR_TEMPLATE_PATH.read_text(encoding="utf-8")
-    pr_preview_path.write_text(build_pr_preview(template_text, run_stamp, summary_path), encoding="utf-8")
+    pr_preview_path.write_text(
+        build_pr_preview(template_text, run_stamp, summary_path), encoding="utf-8"
+    )
 
     checks: list[dict] = []
-    add_check(checks, "manifest_json", "pass", "Manifest istnieje i parsuje sie poprawnie.")
+    add_check(
+        checks, "manifest_json", "pass", "Manifest istnieje i parsuje sie poprawnie."
+    )
     for label, path in [
         ("runbook", RUNBOOK_PATH),
         ("pr_template", PR_TEMPLATE_PATH),
@@ -189,11 +202,14 @@ def main() -> int:
 
     notebook_text = NOTEBOOK_PATH.read_text(encoding="utf-8")
     notebook_markers = {
-        "fork_owner_placeholder": "FORK_OWNER = \\\"TWOJ_LOGIN_GITHUB\\\"" in notebook_text,
+        "fork_owner_placeholder": 'FORK_OWNER = \\"TWOJ_LOGIN_GITHUB\\"'
+        in notebook_text,
         "noreply_identity": "@users.noreply.github.com" in notebook_text,
         "finalizer_script": "finalize_execution_pack_run.py" in notebook_text,
-        "finalizer_push_mode": "--git-mode" in notebook_text and "\\\"push\\\"" in notebook_text,
-        "finalizer_run_metadata": "run_record_ref" in notebook_text and "run_id" in notebook_text,
+        "finalizer_push_mode": "--git-mode" in notebook_text
+        and '\\"push\\"' in notebook_text,
+        "finalizer_run_metadata": "run_record_ref" in notebook_text
+        and "run_id" in notebook_text,
         "inventree_bootstrap": "INVENTREE_FILE.touch(exist_ok=True)" in notebook_text,
     }
     for marker_name, marker_ok in notebook_markers.items():
@@ -217,7 +233,11 @@ def main() -> int:
             count = count_csv_rows(output_path)
             details += f" | rows={count}"
 
-        if not exists and output_path.name == "inventree_import.jsonl" and notebook_markers["inventree_bootstrap"]:
+        if (
+            not exists
+            and output_path.name == "inventree_import.jsonl"
+            and notebook_markers["inventree_bootstrap"]
+        ):
             status = "warn"
             details += " | brak w obecnym snapshotcie, ale notebook bootstrapuje pusty plik przy nowym runie"
         elif (
@@ -250,7 +270,12 @@ def main() -> int:
 
     template_sections_ok = all(
         token in pr_preview_path.read_text(encoding="utf-8")
-        for token in ["## Run Provenance", "## Known Issues", "## Integrity Notes", "## Dry Run Notes"]
+        for token in [
+            "## Run Provenance",
+            "## Known Issues",
+            "## Integrity Notes",
+            "## Dry Run Notes",
+        ]
     )
     add_check(
         checks,
@@ -308,6 +333,71 @@ def main() -> int:
     ]
     subprocess.run(records_command, check=True, cwd=REPO_ROOT)
 
+    run_records_dir = PACK_DIR / "records"
+    run_record_path = (
+        run_records_dir
+        / f"run-project13-kaggle-enrichment-dry-run-local-{run_stamp}.json"
+    )
+    artifact_record_path = (
+        run_records_dir
+        / f"artifact-project13-kaggle-enrichment-dry-run-local-{run_stamp}.json"
+    )
+    run_id = None
+    if run_record_path.exists():
+        run_payload = json.loads(run_record_path.read_text(encoding="utf-8"))
+        run_id = run_payload.get("run_id")
+
+    artifact_follow_up_command = None
+    if run_id:
+        artifact_follow_up_command = (
+            f"python3 {relative_to_repo(ATTACH_ARTIFACT_SCRIPT)} "
+            f"--run-context {relative_to_repo(RUN_CONTEXT_OUTPUT)} "
+            "--pr-url https://github.com/StrazPrzyszlosci/STRAZ_PRZYSZLOSCI/pull/<numer>"
+        )
+
+    add_check(
+        checks,
+        "run_context::writable",
+        "pass" if run_id else "warn",
+        f"{relative_to_repo(RUN_CONTEXT_OUTPUT)}"
+        + (f" | run_id={run_id}" if run_id else " | run_id not yet available"),
+    )
+
+    run_context_payload = {
+        "schema_version": "v1",
+        "pack_id": PACK_ID,
+        "task_id": TASK_ID,
+        "fork_owner": args.fork_owner,
+        "branch_name": branch_name,
+        "run_id": run_id,
+        "run_ref": run_ref,
+        "run_status": run_status,
+        "summary_ref": relative_to_repo(summary_path),
+        "run_record_ref": relative_to_repo(run_record_path)
+        if run_record_path.exists()
+        else None,
+        "artifact_record_ref": relative_to_repo(artifact_record_path)
+        if artifact_record_path.exists()
+        else None,
+        "artifact_follow_up_command": artifact_follow_up_command,
+        "generated_at": utc_now().replace(microsecond=0).isoformat(),
+        "dry_run": True,
+    }
+    RUN_CONTEXT_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    RUN_CONTEXT_OUTPUT.write_text(
+        json.dumps(run_context_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    report_text = render_report(
+        checks,
+        run_stamp=run_stamp,
+        summary_path=summary_path,
+        pr_preview_path=pr_preview_path,
+        manifest=manifest,
+    )
+    report_path.write_text(report_text, encoding="utf-8")
+
     print(
         json.dumps(
             {
@@ -316,6 +406,9 @@ def main() -> int:
                 "summary_report": str(summary_path),
                 "pr_preview": str(pr_preview_path),
                 "run_status": run_status,
+                "run_context_ref": relative_to_repo(RUN_CONTEXT_OUTPUT),
+                "run_id": run_id,
+                "artifact_follow_up_command": artifact_follow_up_command,
             },
             ensure_ascii=False,
         )

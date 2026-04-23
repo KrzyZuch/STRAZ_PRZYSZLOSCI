@@ -14,7 +14,9 @@ PACK_ID = "pack-project13-kaggle-enrichment-01"
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[3]
 RECORDS_DIR = PROJECT_DIR / "execution_packs" / PACK_ID / "records"
-RUN_CONTEXT_PATH = PROJECT_DIR / "autonomous_test" / "reports" / "last_pack_run_context.json"
+RUN_CONTEXT_PATH = (
+    PROJECT_DIR / "autonomous_test" / "reports" / "last_pack_run_context.json"
+)
 CREATE_RECORDS_SCRIPT = PROJECT_DIR / "scripts" / "create_execution_records.py"
 
 
@@ -40,7 +42,9 @@ def extract_timestamp_slug(run_id: str) -> str | None:
     return None
 
 
-def discover_run_record(records_dir: Path, *, run_id: str | None, fork_owner: str | None) -> Path:
+def discover_run_record(
+    records_dir: Path, *, run_id: str | None, fork_owner: str | None
+) -> Path:
     candidate_paths = sorted(records_dir.glob("run-project13-kaggle-enrichment-*.json"))
     scored_candidates: list[tuple[str, Path]] = []
 
@@ -93,15 +97,32 @@ def run_json_command(command: list[str], *, cwd: Path) -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Dopina Artifact record do istniejacego Run po otwarciu PR dla execution packa Project 13."
+        description="Dopina Artifact record do istniejacego Run po otwarciu PR dla execution packa Project 13. "
+        "Domyslnie korzysta z last_pack_run_context.json, jesli nie podano --run-id ani --fork-owner."
     )
     parser.add_argument("--pr-url", required=True)
-    parser.add_argument("--run-context", type=Path, help="Sciezka do trwałego pliku last_pack_run_context.json wygenerowanego przez finalizer.")
-    parser.add_argument("--run-id", help="Jawny run_id. Jesli brak, skrypt sprobuje znalezc najnowszy kaggle run.")
-    parser.add_argument("--run-record", type=Path, help="Sciezka do konkretnego rekordu Run.")
-    parser.add_argument("--fork-owner", help="Opcjonalny filtr dla autodiscovery, np. login wolontariusza.")
+    parser.add_argument(
+        "--run-context",
+        type=Path,
+        help="Sciezka do trwalego pliku last_pack_run_context.json wygenerowanego przez finalizer. Jesli nie podano, skrypt sprobuje uzyc domyslnej sciezki.",
+    )
+    parser.add_argument(
+        "--run-id",
+        help="Jawny run_id. Jesli brak, skrypt sprobuje znalezc najnowszy kaggle run albo uzyc run context.",
+    )
+    parser.add_argument(
+        "--run-record", type=Path, help="Sciezka do konkretnego rekordu Run."
+    )
+    parser.add_argument(
+        "--fork-owner",
+        help="Opcjonalny filtr dla autodiscovery, np. login wolontariusza.",
+    )
     parser.add_argument("--records-dir", type=Path, default=RECORDS_DIR)
-    parser.add_argument("--output-dir", type=Path, help="Opcjonalny katalog docelowy dla nowego Artifact record.")
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Opcjonalny katalog docelowy dla nowego Artifact record.",
+    )
     parser.add_argument("--artifact-kind", default="pull_request")
     parser.add_argument(
         "--artifact-title",
@@ -131,7 +152,11 @@ def main() -> int:
         )
 
     inferred_run_id = args.run_id or (run_context_payload or {}).get("run_id")
-    inferred_fork_owner = args.fork_owner or (run_context_payload or {}).get("fork_owner")
+    inferred_fork_owner = args.fork_owner or (run_context_payload or {}).get(
+        "fork_owner"
+    )
+    inferred_task_id = (run_context_payload or {}).get("task_id")
+    inferred_pack_id = (run_context_payload or {}).get("pack_id", PACK_ID)
 
     if args.run_record:
         run_record_path = args.run_record.resolve()
@@ -142,6 +167,8 @@ def main() -> int:
         run_context_ref = str(RUN_CONTEXT_PATH.relative_to(REPO_ROOT))
         inferred_run_id = run_context_payload.get("run_id")
         inferred_fork_owner = run_context_payload.get("fork_owner")
+        inferred_task_id = run_context_payload.get("task_id")
+        inferred_pack_id = run_context_payload.get("pack_id", PACK_ID)
         run_record_path = (REPO_ROOT / run_context_payload["run_record_ref"]).resolve()
     else:
         run_record_path = discover_run_record(
@@ -159,7 +186,9 @@ def main() -> int:
     discovered_owner, branch_name = parse_branch_ref(run_payload.get("output_refs", []))
     fork_owner = inferred_fork_owner or discovered_owner
     if not fork_owner:
-        raise SystemExit("Nie udalo sie ustalic fork_owner. Podaj --fork-owner albo zapewnij branch://... w Run output_refs.")
+        raise SystemExit(
+            "Nie udalo sie ustalic fork_owner. Podaj --fork-owner albo zapewnij branch://... w Run output_refs."
+        )
 
     command = [
         "python3",
@@ -196,7 +225,9 @@ def main() -> int:
                 "run_context_ref": run_context_ref,
                 "fork_owner": fork_owner,
                 "branch_name": branch_name,
-                "artifact_record_ref": str(artifact_record_path.resolve().relative_to(REPO_ROOT))
+                "artifact_record_ref": str(
+                    artifact_record_path.resolve().relative_to(REPO_ROOT)
+                )
                 if artifact_record_path.is_relative_to(REPO_ROOT)
                 else str(artifact_record_path.resolve()),
                 "pr_url": args.pr_url,

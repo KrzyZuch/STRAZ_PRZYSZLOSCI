@@ -123,13 +123,19 @@ Aktualna mapa packow znajduje sie tutaj:
 
 - `../execution_packs/CHAIN_MAP.md`
 
-Poza pierwszym packiem `enrichment` istnieje juz tez szkiel:
+Poza pierwszym packiem `enrichment` istnieja juz tez kolejne packi lancucha:
 
 - `../execution_packs/pack-project13-kaggle-verification-01/manifest.json`
-
-Etap `export chain` zostal z kolei wydzielony do osobnego packa lokalnego:
-
+- `../execution_packs/pack-project13-curation-01/manifest.json`
 - `../execution_packs/pack-project13-catalog-export-01/manifest.json`
+- `../execution_packs/pack-project13-benchmark-comparison-01/manifest.json`
+
+Ich role sa rozdzielone celowo:
+
+- `verification` sprawdza kandydatow przez OCR, frame check i disagreement scoring,
+- `curation` formalizuje decyzje o przyjeciu do kanonicznego katalogu z audit trail,
+- `catalog-export` przebudowuje downstream artefakty z reviewowanego katalogu,
+- `benchmark-comparison` porownuje prompty, modele i workflowy na tej samej probce.
 
 ## Co notebook powinien robic z wynikami
 

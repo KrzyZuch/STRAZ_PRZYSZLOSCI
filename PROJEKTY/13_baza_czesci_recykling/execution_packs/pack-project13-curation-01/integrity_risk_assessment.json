@@ -1,0 +1,30 @@
+{
+  "schema_version": "v1",
+  "assessment_id": "integrity-pack-project13-curation-01",
+  "subject": {
+    "entity_kind": "execution_pack",
+    "entity_id": "pack-project13-curation-01"
+  },
+  "assessment_scope": "workflow_design",
+  "risk_signals": [
+    "private_capture",
+    "opaque_approval_path",
+    "provenance_tampering",
+    "volunteer_work_appropriation"
+  ],
+  "risk_level": "medium",
+  "findings": [
+    "Curation jest krytycznym punktem decyzyjnym: falszywa akceptacja moze promowac slabe dane do kanonicznego katalogu.",
+    "Brak jawnych decyzji kuracyjnych utrudnia audit i sprzyja cichej akceptacji bez review.",
+    "Curation formalizuje granice miedzy verification a exportem, co chroni przed automatyczna promocja niesprawdzonych danych."
+  ],
+  "mitigations_required": [
+    "Utrzymywac curation_decisions.jsonl jako obowiazkowy artefakt z rationale.",
+    "Nie automatyzowac akceptacji bez jawnego review spornych przypadkow.",
+    "Curation PR przechodzi przez review przed merge do kanonicznego katalogu.",
+    "Nie mieszac curation z exportem downstream."
+  ],
+  "reviewer_role": "public_interest_reviewer",
+  "status": "pass",
+  "assessed_at": "2026-04-23T00:00:00Z"
+}
