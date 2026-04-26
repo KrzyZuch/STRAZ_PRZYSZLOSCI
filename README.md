@@ -8,7 +8,14 @@ Zapraszam wszystkich Polskich inteligentów do udziału w NARODOWYM WYSIŁKU INT
 
 To repozytorium jest częścią inicjatywy budowy NARODOWYCH SIŁ INTELEKTUALNYCH, które ma na celu zebrać wszystkich Inteligentów Polskich w jednym miejscu, by wspólnie stworzyć NARODOWE CENTRUM WYKORZYSTANIA Ai. 
 
-Naszym celem jest zbudowanie AUTOMATYCZNEGO SYSTEMU PRODUKCJI DÓBR I ŻYWNOŚCI przy pomocy Ai, który będzie realnie pracować i produkować na rzecz Dochodu Gwarantowanego – na rzecz WSPÓLNEGO DOBRA NARODOWEGO .
+Naszym celem jest zbudowanie AUTOMATYCZNEGO SYSTEMU PRODUKCJI DÓBR I ŻYWNOŚCI przy pomocy Ai, który będzie realnie pracować i produkować na rzecz Dochodu Gwarantowanego – na rzecz WSPÓLNEGO DOBRA NARODOWEGO.
+
+> [!IMPORTANT]
+> **Wizja Realizacji: Intelekt wyprzedza Kapitał i Materię**
+> Choć błyskawiczna automatyzacja w pełni autonomicznej produkcji może wydawać się wyzwaniem ponad siły, kluczem do sukcesu jest **rozbijanie złożonego procesu automatyzacji na wiele mniejszych ogniw, których kod już istnieje w innych repozytoriach i czeka na dostosowanie do Naszego zapotrzebowania**. Rozbijamy każdą złożoną czynność na najmniejsze procesy w łańcuchu i precyzyjnie optymalizujemy poszczególne ogniwa. 
+>
+> To projekt o potężnym przełożeniu na fizyczną rzeczywistość, który **Piloci Ai ze Straży Przyszłości** są gotowi i zdolni wdrożyć w życie. **W tym procesie zaangażowanie wolontariuszy i wspólna idea są ważniejsze niż same maszyny CNC, ramiona robotów i sterowniki.** Podobnie jak jedno ziarno daje początek całemu polu, tak zjednoczony wysiłek intelektualny pozwala ożywić proste narzędzia i przekształcić je w fundament suwerennej produkcji. To tutaj realizuje się Nasza główna zasada: **Intelekt wyprzedza Kapitał oraz Materię**.
+
 
 Inicjatywa ma charakter całkowicie oddolny: nie jest zależna od żadnych struktur rządowych, ani od żadnych konkurencyjnych firm zewnętrznych. Kluczowe jest tutaj pełne zaangażowanie intelektualne i współpraca ponad podziałami.
 
