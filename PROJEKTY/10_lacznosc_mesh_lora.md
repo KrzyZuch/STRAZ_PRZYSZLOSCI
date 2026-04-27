@@ -28,6 +28,7 @@ Wykorzystujemy pełen stos komunikacyjny wbudowany w smartfony:
 - **[Briar](https://github.com/briar/briar) & P2P Protocols:** Wykorzystanie Bluetooth i Wi-Fi do tworzenia lokalnych, darmowych sieci bez dostępu do Internetu. Pozwala to na darmową wymianę danych sensorowych i wiadomości w obrębie gospodarstwa.
 - **Wi-Fi Aware / Wi-Fi Direct:** Tworzenie dynamicznych sieci "telefon-do-telefonu" przez natywne funkcje Androida, co pozwala na przekazywanie informacji (np. z Projektu 09) przez kolejne urządzenia aż do punktu z zasięgiem LTE lub LoRa.
 - **[MeshCore Firmware](https://github.com/meshcore-dev/MeshCore):** Energooszczędne zarządzanie modułami radiowymi w celu wydłużenia pracy węzła.
+- **[Deadmesh](https://github.com/gnarzilla/deadmesh):** Praktyczny most Internet-over-LoRa, który pozwala urządzeniom w sieci Meshtastic na dostęp do standardowych usług internetowych (HTTP, DNS, Email). Umożliwia bezpośredni kontrolny nadzór przez duży model AI nad pracą automatyzacji opartej na małym modelu lokalnym, działającym na brzegu sieci (Edge).
 
 ## Implementacja Gospodarcza (Scenariusze PoC)
 
