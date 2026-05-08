@@ -10,44 +10,42 @@ Dzięki temu rozwiązaniu:
 2. **Budujemy sieć:** Każdy użytkownik może (opcjonalnie) udostępniać zanonimizowane dane (np. jakość powietrza, temperatura zewnętrzna) do wspólnego API NSIP, budując mapę potencjału kraju.
 3. **Automatyzujemy codzienność:** Użytkownik zyskuje darmowe, profesjonalne narzędzie do zarządzania własnym domem, energią i bezpieczeństwem.
 
-## Jak to działa? (Szybki start)
+## Ścieżki wdrożenia (Wybierz swoją)
 
-### Krok 1: Instalacja środowiska
-Wykorzystujemy **Termux** (emulator terminala na Androida), aby uruchomić pełną instancję Home Assistant.
-- Instalacja Pythona i zależności.
-- Uruchomienie `hass` (Home Assistant Core).
+### 🟢 Ścieżka 1: Najprostsza (Dla każdego)
+**Metoda:** Oficjalna aplikacja **Home Assistant Companion**.
+Idealna do szybkiego onboarding'u i wykorzystania telefonu jako panelu sterowania oraz zestawu sensorów.
 
-### Krok 2: Integracja NSIP
-Do standardowego Home Assistanta dodajemy dedykowany "NSIP Bridge" (w formie custom_component lub skryptu Python), który:
-- Rejestruje urządzenie jako **Węzeł Straży Przyszłości**.
-- Łączy się z naszym API na Cloudflare.
-- Pozwala na odbieranie "rekomendacji narodowych" (np. optymalne godziny ładowania urządzeń w oparciu o stan sieci energetycznej).
+1. Zainstaluj [Home Assistant Companion](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android) ze sklepu Play.
+2. **Co zyskujesz od razu:**
+   - Pełny dashboard HA na ekranie telefonu (tryb kiosku).
+   - Udostępnianie sensorów (bateria, WiFi, lokalizacja, światło, akcelerometr) do sieci NSIP.
+   - Możliwość wykorzystania kamery jako monitoringu (np. dla akwakultury).
+   - Obsługa wake word (asystent Assist).
 
-### Krok 3: Wykorzystanie sensorów telefonu
-Dzięki aplikacji **Home Assistant Companion**, wbudowane sensory telefonu (akcelerometr, barometr, światło, stan baterii) stają się encjami w systemie, które można wykorzystać do lokalnych automatyzacji.
+### 🟡 Ścieżka 2: Zaawansowana (Dedykowany Serwer)
+**Metoda:** Instalacja **Home Assistant Core** bezpośrednio na Androidzie (bez roota).
+Zmienia telefon w samodzielny serwer, który może działać 24/7.
+
+- **[HomeAssistant-Termux](https://github.com/huytungst/HomeAssistant-Termux):** Gotowe skrypty instalacyjne HA Core + Matter Server + Wyoming (głos).
+- **[termux-home-assistant-installer](https://github.com/talss89/termux-home-assistant-installer):** Automatyczny instalator HA Core dla aarch64.
+- **[postmarketOS](https://bryansplace.github.io):** Prawdziwy Linux na telefonie. Umożliwia uruchomienie Docker'a i pełnej instancji HA.
+
+### 🔵 Ścieżka 3: Bluetooth Proxy i Satelita (Infrastruktura IoT)
+Zmienia telefon w "przedłużacz" sygnału dla inteligentnych urządzeń BLE w terenie.
+
+- **[homeassistant-mobile-ble-proxy](https://github.com/Zen3515/homeassistant-mobile-ble-proxy):** Zamienia telefon w Bluetooth Proxy dla HA/ESPHome. Działa w tle, przekazując dane z czujników BLE.
+- **[Ava](https://github.com/brownard/Ava):** Zaawansowany asystent głosowy i satelita ESPHome w jednym.
 
 ## Dlaczego to jest ważne dla Inicjatywy?
-- **Masowość:** To najprostsza ścieżka wejścia do Straży Przyszłości dla przeciętnego użytkownika.
-- **Rozproszona moc obliczeniowa:** Tysiące smartfonów tworzą potężną sieć brzegową (Edge Computing), która może lokalnie przetwarzać dane bez obciążania centralnych serwerów.
-- **Edukacja:** Użytkownicy uczą się obsługi otwartych technologii, co buduje suwerenność technologiczną społeczeństwa.
-
-## Instrukcja Techniczna (Draft)
-
-1. Zainstaluj **Termux** (najlepiej z F-Droid).
-2. Wykonaj komendy:
-   ```bash
-   pkg update && pkg upgrade
-   pkg install python pillow libjpeg-turbo libxml2 libxslt
-   pip install homeassistant
-   hass
-   ```
-3. Po uruchomieniu wejdź na `http://localhost:8123`.
-4. Skopiuj plik integracji `nsip_integration.py` do folderu konfiguracji.
+- **Masowość:** Najprostsza ścieżka wejścia dla przeciętnego użytkownika przez Google Play.
+- **Rozproszona moc obliczeniowa:** Tysiące smartfonów tworzą sieć brzegową (Edge Computing).
+- **Bluetooth Mesh:** Telefony w roli Bluetooth Proxy tworzą suwerenną sieć łączności z czujnikami (np. w rolnictwie czy medycynie).
 
 ## Kierunki rozwoju
-- **Wstępnie skonfigurowany obraz:** Gotowy instalator "jeden klik", który konfiguruje wszystko za użytkownika.
-- **Panel Strażnika:** Dedykowany dashboard w Home Assistant, pokazujący postępy inicjatywy i lokalne zadania do wykonania.
-- **Głosowy Asystent NSIP:** Wykorzystanie mikrofonu telefonu do lokalnego sterowania domem bez wysyłania głosu do chmury (Local AI).
+- **Panel Strażnika:** Dedykowany dashboard HA pokazujący postępy NSIP.
+- **Głosowy Asystent NSIP:** Lokalna kontrola bez chmury (Local AI).
+- **Integracja z Meshtastic:** Wykorzystanie telefonu jako bramki między siecią Mesh a Home Assistantem.
 
 ---
 *Budujemy Polską Niepodległość Technologiczną — smartfon po smartfonie.*
