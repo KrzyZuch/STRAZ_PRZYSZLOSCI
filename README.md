@@ -1,20 +1,24 @@
-# NARODOWE SIŁY INTELEKTUALNE POLSKI
+# NARODOWE SIŁY INTELEKTUALNE POLSKI (NSIP) — Straż Przyszłości
 
 ## **Intelekt wyprzedza Kapitał!**
 
 ![Ilustracja NSIP](NSIP.png)
 
-Zapraszam wszystkich Polskich inteligentów do udziału w NARODOWYM WYSIŁKU INTELEKTUALNYM.
+**Straż Przyszłości (NSIP)** to oddolna, open-source'owa inicjatywa skupiająca polskich specjalistów wokół wykorzystania AI i taniego hardware'u do budowy autonomicznych systemów produkcji żywności, energii i dóbr. Naszym celem jest stworzenie równoległej **„gospodarki bis”** wspierającej tradycyjną gospodarkę, generującej wartość na rzecz wspólnego dobra (w tym docelowo UBI — Bezwarunkowego Dochodu Podstawowego). Kluczowe hasło: **„Intelekt wyprzedza kapitał”**.
 
-To repozytorium jest częścią inicjatywy budowy NARODOWYCH SIŁ INTELEKTUALNYCH, które ma na celu zebrać wszystkich Inteligentów Polskich w jednym miejscu, by wspólnie stworzyć NARODOWE CENTRUM WYKORZYSTANIA Ai. 
+### Główne obszary działań:
+- **Automatyzacja rolnictwa, akwakultury i pasterstwa** (edge AI, IoT, recykling elektroniki).
+- **Medycyna i diagnostyka** (AI w służbie zdrowia).
+- **Energia i suwerenność cyfrowa** (recykling e-waste, sieci mesh, stare smartfony jako sterowniki).
+- **Logistyka i Zero-Waste** (optymalizacja transportu i odzysku zasobów).
 
-Naszym celem jest zbudowanie AUTOMATYCZNEGO SYSTEMU PRODUKCJI DÓBR I ŻYWNOŚCI przy pomocy Ai, który będzie realnie pracować i produkować na rzecz Dochodu Gwarantowanego – na rzecz WSPÓLNEGO DOBRA NARODOWEGO.
+Wszystko, co tworzymy, jest **open-source**, niskokosztowe i oparte na pilotażach oraz upcyclingu. Wierzymy, że zjednoczony wysiłek intelektualny pozwala ożywić proste narzędzia i przekształcić je w fundament suwerennej produkcji.
 
 > [!IMPORTANT]
 > **Wizja Realizacji: Intelekt wyprzedza Kapitał i Materię**
-> Choć błyskawiczna automatyzacja w pełni autonomicznej produkcji może wydawać się wyzwaniem ponad siły, kluczem do sukcesu jest **rozbijanie złożonego procesu automatyzacji na wiele mniejszych ogniw, których kod już istnieje w innych repozytoriach i czeka na dostosowanie do Naszego zapotrzebowania**. Rozbijamy każdą złożoną czynność na najmniejsze procesy w łańcuchu i precyzyjnie optymalizujemy poszczególne ogniwa. 
+> Kluczem do sukcesu jest rozbijanie złożonych procesów automatyzacji na małe ogniwa, których kod już istnieje w globalnych repozytoriach i czeka na adaptację. W tym procesie zaangażowanie wolontariuszy i wspólna idea są ważniejsze niż drogie maszyny. Podobnie jak jedno ziarno daje początek całemu polu, tak Nasz wysiłek intelektualny pozwala ożywić materię.
 >
-> To projekt o potężnym przełożeniu na fizyczną rzeczywistość, który **Piloci Ai ze Straży Przyszłości** są gotowi i zdolni wdrożyć w życie. **W tym procesie zaangażowanie wolontariuszy i wspólna idea są ważniejsze niż same maszyny CNC, ramiona robotów i sterowniki.** Podobnie jak jedno ziarno daje początek całemu polu, tak zjednoczony wysiłek intelektualny pozwala ożywić proste narzędzia i przekształcić je w fundament suwerennej produkcji. To tutaj realizuje się Nasza główna zasada: **Intelekt wyprzedza Kapitał oraz Materię**.
+> To projekt o potężnym przełożeniu na fizyczną rzeczywistość, który **Piloci Ai ze Straży Przyszłości** są gotowi i zdolni wdrożyć w życie. Tutaj realizuje się Nasza główna zasada: **Intelekt wyprzedza Kapitał oraz Materię**.
 
 
 Inicjatywa ma charakter całkowicie oddolny: nie jest zależna od żadnych struktur rządowych, ani od żadnych konkurencyjnych firm zewnętrznych. Kluczowe jest tutaj pełne zaangażowanie intelektualne i współpraca ponad podziałami.
@@ -40,6 +44,7 @@ System ten ma służyć jako potężne wsparcie dla tradycyjnej gospodarki pańs
 
 W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiązań, które mogą zostać wdrożone w modelu Open-Source przez Narodowe Siły Intelektualne:
 
+*   **[00. Fundamenty Technologiczne NSIP](PROJEKTY/00_fundamenty_technologiczne.md)** – Kluczowe narzędzia i biblioteki open-source (Home Assistant, ESPHome, TF Lite, Mesh).
 *   **[01. Inteligentna Akwakultura](PROJEKTY/01_inteligentna_akwakultura.md)** – Autonomiczne węzły produkcji ryb oparte na IoT i AI.
 *   **[02. Wirtualne Ogrodzenia](PROJEKTY/02_wirtualne_ogrodzenia.md)** – Cyfrowy wypas zwierząt bez fizycznej infrastruktury.
 *   **[03. Edge AI w Pasterstwie](PROJEKTY/03_ai_monitoring_porodow.md)** – Lokalna analityka obrazu wspierająca hodowców w trudnych warunkach.

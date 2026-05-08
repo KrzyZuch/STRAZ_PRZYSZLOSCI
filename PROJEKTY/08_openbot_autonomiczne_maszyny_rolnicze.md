@@ -9,7 +9,7 @@ Wykorzystanie projektu **OpenBot** oraz zaawansowanych sterowników typu **Open-
 OpenBot, opracowany przez zespół badawczy Intel, udowadnia, że moc obliczeniowa nowoczesnego smartfona jest w zupełności wystarczająca do obsługi zaawansowanych obciążeń robotycznych:
 - **Nawigacja w czasie rzeczywistym:** Wykorzystanie AI do śledzenia ścieżek i omijania przeszkód.
 - **Computer Vision:** Rozpoznawanie obiektów (np. odróżnianie chwastów od roślin uprawnych).
-- **Niski koszt:** Wykorzystanie elektroniki, która już istnieje, zamiast kupowania drogich, dedykowanych komputerów przemysłowych.
+- **Niski koszt:** Wykorzystanie elektroniki, która już istnieje, oraz taniego podwozia (~50$) pozwala na budowę w pełni autonomicznej maszyny ułamkiem kosztów rynkowych.
 
 ## Automatyzacja Upraw: Hydroponika i Aeroponika
 

@@ -18,6 +18,9 @@ To doskonały przykład cyfryzacji rolnictwa, który zdejmuje z barków człowie
 
 ## Inspiracje:
 - [Wideo: System Gallagher eShepherd](https://www.youtube.com/watch?v=wkWZaj_WQo0)
+- **Repozytoria do adaptacji:**
+  - [OpenFence](https://github.com/plyalex/OpenFence) — System GPS virtual fencing.
+  - [Open-Source-Range GPS Collar](https://github.com/Open-Source-Range/OSR_GPS_Collar) — Tanie obroże GPS dla zwierząt.
 
 ---
 *Intelekt wyprzedza kapitał!*

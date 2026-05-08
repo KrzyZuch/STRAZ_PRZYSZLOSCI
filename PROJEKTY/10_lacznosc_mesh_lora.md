@@ -10,8 +10,9 @@ W "Straży Przyszłości" sieć Mesh służy jako **Nerw Gospodarczy**, przesył
 ## Filary Technologiczne i Gotowy Kod
 
 ### 1. Reticulum Network Stack (RNS) – Suwerenny Stos Sieciowy
-Reticulum to najbardziej elastyczny i odporny stos sieciowy dla zdecentralizowanej komunikacji, zaprojektowany dla warunków wysokich opóźnień i niskiej przepustowości.
-- **[Sideband](https://github.com/markqvist/Sideband):** Gotowy komunikator graficzny do bezpiecznej wymiany raportów technicznych i logistycznych.
+Reticulum to najbardziej elastyczny i odporny stos sieciowy dla zdecentralizowanej komunikacji.
+- **Repozytorium:** [Reticulum](https://github.com/markqvist/Reticulum) — elastyczny networking stack na LoRa, WiFi itp.
+- **[Sideband](https://github.com/markqvist/Sideband):** Gotowy komunikator graficzny do bezpiecznej wymiany raportów.
 - **RNode:** Wykorzystujemy firmware RNode dla modułów LoRa, co pozwala na budowę sieci o zasięgu od kilometrów do tysięcy kilometrów (przez bramki).
 - **LXMF:** Protokół wiadomości (end-to-end encrypted) dla komunikacji maszyna-maszyna i człowiek-człowiek.
 - **Zastosowanie:** Bezpieczny "pipe" dla danych SCADA i nadzorowania magazynów energii (Projekt 05) w miejscach bez zasięgu komórkowego.
@@ -29,8 +30,9 @@ Specjalnie okrojona wersja protokołu **Secure Scuttlebutt (SSB)** pod niską pr
 - **Zastosowanie:** Rozproszona replikacja danych sensorowych i głosowych w izolowanych lokalizacjach.
 
 ### 4. Meshtastic – Gotowe Moduły Sterowania i Telemetrii
-Najpopularniejsza platforma LoRa Mesh, oferująca gotowe funkcjonalności bez potrzeby pisania kodu od zera:
-- **[Remote Hardware Module](https://meshtastic.org/docs/configuration/module/remote-hardware/):** Zdalne sterowanie pinami GPIO (np. pompy nawadniające w Projekcie 01/08).
+Najpopularniejsza platforma LoRa Mesh, oferująca gotowe funkcjonalności:
+- **Repozytorium:** [Meshtastic Firmware](https://github.com/meshtastic/firmware) — główne repozytorium LoRa mesh.
+- **[Remote Hardware Module](https://meshtastic.org/docs/configuration/module/remote-hardware/):** Zdalne sterowanie pinami GPIO.
 - **[Telemetry Module](https://meshtastic.org/docs/settings/moduleconfig/telemetry/):** Automatyczne przesyłanie danych z czujników środowiskowych (Projekt 09).
 - **Integracja Python:** Wykorzystanie [Meshtastic Python API](https://github.com/meshtastic/python) do zaawansowanej automatyzacji.
 

@@ -761,6 +761,10 @@ Poniżej znajduje się pierwszy operacyjny backlog dla tego projektu. Każdy z t
 ## Inspiracje i źródła:
 - [Wideo: Smart Fish Farming](https://www.youtube.com/watch?v=N84PUuxThP4)
 - [Projekt Open Source: IFishFarm (GitHub)](https://github.com/HussamElden/IFishFarm)
+- **Repozytoria gotowe do adaptacji:**
+  - [smartaquaponics](https://github.com/suzarilshah/smartaquaponics) — Inteligentna akwaponika.
+  - [agriphonics](https://github.com/suzarilshah/agriphonics) — Automatyzacja upraw wodnych.
+  - [aquapi](https://github.com/TheRealFalseReality/aquapi) — Rozwiązanie oparte na ESPHome i Home Assistant dla akwarystyki i akwakultury.
 
 ---
 *Intelekt wyprzedza kapitał!*

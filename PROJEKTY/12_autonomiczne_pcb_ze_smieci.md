@@ -3,7 +3,7 @@
 Ten dokument opisuje strategię i narzędzia budujące system suwerennej produkcji elektroniki w oparciu o recykling elektrośmieci oraz Sztuczną Inteligencję.
 
 ## I. Filar 1: ecoEDA – Inteligentny Recykling Komponentów
-Narzędzie **ecoEDA** to wtyczka do programu KiCad, która analizuje lokalny inwentarz odzyskanych części i sugeruje ich użycie zamiast kupowania nowych komponentów.
+Narzędzie **ecoEDA** to wtyczka do programu KiCad, która sugeruje użycie konkretnych komponentów odzyskanych z e-waste (np. ze starych zasilaczy czy routerów) zamiast kupowania nowych części.
 
 - **Bill of Teardowns (BoT):** System generuje instrukcję, jakie konkretnie urządzenia (np. stary router, dekoder) należy rozmontować, aby uzyskać części do nowego projektu.
 - **Różne typy dopasowań:** Sugeruje zamienniki o zbliżonych parametrach lub obudowach.
