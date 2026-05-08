@@ -145,6 +145,20 @@ export function parsePositiveInteger(rawValue, fallback) {
   return fallback;
 }
 
+function buildTelegramCallbackData(prefix, value = "") {
+  const base = `${prefix}:`;
+  const maxBytes = 64;
+  const encoder = new TextEncoder();
+  let result = "";
+  for (const char of String(value || "").trim()) {
+    if (encoder.encode(base + result + char).length > maxBytes) {
+      break;
+    }
+    result += char;
+  }
+  return `${base}${result}`;
+}
+
 function parseNumber(rawValue, fallback) {
   const parsed = Number.parseFloat(rawValue);
   if (Number.isFinite(parsed)) {
@@ -1032,7 +1046,7 @@ async function callGoogleProvider(env, promptPayload, options = {}) {
     "gemini-3.1-flash-lite-preview"
   ).trim();
   const model = normalizeGoogleModelName(requestedModel);
-  const timeoutMs = parsePositiveInteger(env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
+  const timeoutMs = parsePositiveInteger(options.timeoutMs || env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
   const fetchImpl = options.fetchImpl || fetch;
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
@@ -1100,7 +1114,7 @@ async function callNvidiaProvider(env, promptPayload, options = {}) {
   }
 
   const model = (env.TELEGRAM_AI_NVIDIA_MODEL || "google/gemma-4-31b-it").trim();
-  const timeoutMs = parsePositiveInteger(env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
+  const timeoutMs = parsePositiveInteger(options.timeoutMs || env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
   const fetchImpl = options.fetchImpl || fetch;
 
   const response = await runFetchWithTimeout(
@@ -1151,7 +1165,10 @@ async function callNvidiaProvider(env, promptPayload, options = {}) {
 export async function callProviderWithFallback(env, promptPayload, options = {}) {
   const primary = (env.TELEGRAM_AI_PRIMARY_PROVIDER || "google").trim().toLowerCase();
   const fallback = (env.TELEGRAM_AI_FALLBACK_PROVIDER || "nvidia").trim().toLowerCase();
-  const orderedProviders = Array.from(new Set([primary, fallback])).filter(Boolean);
+  const configuredProviders = Array.isArray(options.providers) && options.providers.length
+    ? options.providers
+    : [primary, fallback];
+  const orderedProviders = Array.from(new Set(configuredProviders.map((provider) => String(provider || "").trim().toLowerCase()))).filter(Boolean);
   let lastError = null;
 
   for (const provider of orderedProviders) {
@@ -3107,7 +3124,7 @@ function buildPartLookupReply(queryText, matches) {
   const replyMarkup = {
     inline_keyboard: [
       [
-        { text: "📄 Datasheet & AI", callback_data: `datasheet_start_search:${queryText}` }
+        { text: "📄 Datasheet & AI", callback_data: buildTelegramCallbackData("datasheet_start_search", queryText) }
       ]
     ]
   };
@@ -3153,6 +3170,26 @@ function buildDeterministicDatasheetFallbackAnswer(options = {}) {
 
   lines.push("");
   lines.push("Jeśli chcesz, spróbuj ponownie za chwilę albo zadaj bardziej konkretne pytanie o pinout, napięcia, obudowę lub donorów.");
+  return lines.join("\n");
+}
+
+function buildDatasheetBackgroundTimeoutAnswer(options = {}) {
+  const partRecord = options.partRecord || null;
+  const partQuery = options.partQuery || "Nieznana część";
+  const deviceModel = options.deviceModel || "Nieznany model elektrośmiecia";
+  const payload = options.payload || {};
+  const lines = [
+    "Analiza PDF trwa dłużej niż bezpieczny limit tła Workera, więc nie zostawiam Cię na samym komunikacie „analizuję”.",
+    "",
+    `Część: ${partRecord?.part_name || partQuery}`,
+    `Oznaczenie części: ${partRecord?.part_number || partQuery}`,
+    `Model elektrośmiecia: ${deviceModel}`,
+    payload.scan_summary ? `Wstępny opis z PDF: ${payload.scan_summary}` : "",
+    partRecord?.description ? `Opis z bazy: ${partRecord.description}` : "",
+    partRecord?.datasheet_url || payload.pdf_url ? `Datasheet URL: ${partRecord?.datasheet_url || payload.pdf_url}` : "",
+    "",
+    "Spróbuj ponowić pytanie krócej, np. o pinout, napięcie zasilania, obudowę albo konkretny parametr. Jeśli PDF jest duży, odpowiedź może wymagać drugiej próby.",
+  ].filter(Boolean);
   return lines.join("\n");
 }
 
@@ -4326,7 +4363,7 @@ export async function recognizePartAndRecord(env, message, mediaBase64, session,
         { text: "✏️ Edytuj dane części", callback_data: `recycled_part_edit:${submissionId}` }
       ],
       [
-        { text: "📄 Datasheet & AI", callback_data: `datasheet_start_search:${partNumber || partName}` }
+        { text: "📄 Datasheet & AI", callback_data: buildTelegramCallbackData("datasheet_start_search", partNumber || partName) }
       ],
       [
         { text: "🏠 Menu główne", callback_data: "command_start" }
@@ -4779,6 +4816,15 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
 
   const progressText = `🔎 Analizuję pytanie o *${partQuery}*...`;
   await sendTelegramReply(env, message, progressText);
+  const pdfProviderTimeoutMs = parsePositiveInteger(
+    env.TELEGRAM_DATASHEET_PDF_TIMEOUT_MS,
+    Math.min(parsePositiveInteger(env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS), 12000)
+  );
+  const textProviderTimeoutMs = parsePositiveInteger(
+    env.TELEGRAM_DATASHEET_TEXT_TIMEOUT_MS,
+    Math.min(parsePositiveInteger(env.TELEGRAM_AI_TIMEOUT_MS, DEFAULT_TIMEOUT_MS), 8000)
+  );
+  const backgroundTimeoutMs = parsePositiveInteger(env.TELEGRAM_DATASHEET_BACKGROUND_TIMEOUT_MS, 24000);
 
   const ragSystem = [
     "Jesteś inżynierem elektronikiem i odpowiadasz precyzyjnie po polsku.",
@@ -4855,7 +4901,8 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
                 maxTokens: 1500,
                 temperature: 0.1,
               }
-            )
+            ),
+            { providers: ["google"], timeoutMs: pdfProviderTimeoutMs }
           );
           aiContext = pdfResp.text;
         } catch (error) {
@@ -4880,7 +4927,8 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
                 maxTokens: 1500,
                 temperature: 0.1,
               }
-            )
+            ),
+            { providers: ["google"], timeoutMs: pdfProviderTimeoutMs }
           );
           aiContext = pdfResp.text;
         } catch (error) {
@@ -4904,7 +4952,8 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
             buildRagPrompt(donorLines ? `Znani donorzy:\n${donorLines}` : ""),
             env,
             { maxTokens: 1200, temperature: 0.2 }
-          )
+          ),
+          { timeoutMs: textProviderTimeoutMs }
         );
         aiContext = fallbackResp.text;
       } catch (error) {
@@ -4941,7 +4990,7 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
       reply_markup: {
         inline_keyboard: [
           ...(payload.pdf_url ? [[{ text: "📄 Otwórz PDF z linka", url: payload.pdf_url }]] : []),
-          [{ text: "💬 Zadaj kolejne pytanie", callback_data: `datasheet_continue:${partQuery}` }]
+          [{ text: "💬 Zadaj kolejne pytanie", callback_data: "datasheet_continue_last" }]
         ]
       }
     });
@@ -4956,11 +5005,45 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
   };
 
   if (ctx && typeof ctx.waitUntil === "function") {
-    const backgroundTask = runAnalysis()
-      .then(async (reply) => {
-        if (reply?.reply_text) {
-          await sendTelegramReply(env, message, reply.reply_text, reply.reply_markup);
+    let finalReplySent = false;
+    let timeoutId = null;
+    const sendFinalReplyOnce = async (reply, label) => {
+      if (finalReplySent || !reply?.reply_text) {
+        return;
+      }
+      finalReplySent = true;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      const sent = await sendTelegramReply(env, message, reply.reply_text, reply.reply_markup);
+      if (!sent) {
+        console.error(`[handleFinalDatasheetRagFinal/background] Telegram send failed for ${label}`);
+      }
+    };
+    const timeoutTask = new Promise((resolve) => {
+      timeoutId = setTimeout(async () => {
+        const timeoutReply = withMainMenuReply({
+          reply_text: `✅ *Analiza zakończona trybem awaryjnym.*\n\n${buildDatasheetBackgroundTimeoutAnswer({
+            partRecord,
+            partQuery,
+            deviceModel,
+            payload,
+          })}`,
+          reply_markup: {
+            inline_keyboard: [[{ text: "💬 Zadaj kolejne pytanie", callback_data: "datasheet_continue_last" }]],
+          },
+        });
+        try {
+          await sendFinalReplyOnce(timeoutReply, "timeout");
+        } finally {
+          resolve();
         }
+      }, backgroundTimeoutMs);
+    });
+    const analysisTask = runAnalysis()
+      .then(async (reply) => {
+        await sendFinalReplyOnce(reply, "analysis");
       })
       .catch(async (error) => {
         console.error("[handleFinalDatasheetRagFinal/background]", error instanceof Error ? error.message : String(error));
@@ -4969,8 +5052,9 @@ export async function handleFinalDatasheetRagFinal(env, message, session, userQu
           `Nie udało się przeanalizować datasheetu dla części ${partQuery}.`,
           error
         );
-        await sendTelegramReply(env, message, reply.reply_text, reply.reply_markup);
+        await sendFinalReplyOnce(reply, "error");
       });
+    const backgroundTask = Promise.race([analysisTask, timeoutTask]);
     ctx.waitUntil(backgroundTask);
     return {
       reply_text: progressText,

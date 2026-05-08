@@ -226,6 +226,29 @@ function buildDatasheetQuestionPayload(partQuery, session = null, overrides = {}
   };
 }
 
+function buildDatasheetQuestionPayloadFromSubmission(lastSub, fallbackPartQuery = "") {
+  const lastPayload = parseJsonSafeLocal(lastSub?.raw_payload_json, {}) || {};
+  const partQuery =
+    fallbackPartQuery ||
+    lastSub?.matched_part_number ||
+    lastSub?.matched_part_name ||
+    lastPayload.part_number ||
+    "";
+  return {
+    version: 2,
+    part_number: partQuery,
+    master_part_id: lastSub?.master_part_id || null,
+    donor_device_model: lastPayload.device || lastSub?.query_text || "",
+    donor_device_id: null,
+    pdf_url: lastPayload.pdf_url || "",
+    pdf_file_id: lastSub?.attachment_file_id || lastPayload.pdf_file_id || "",
+    db_hit: Boolean(lastSub?.master_part_id),
+    source: "callback_continue",
+    file_name: lastPayload.file_name || "",
+    scan_summary: lastPayload.scan_summary || "",
+  };
+}
+
 function parseManualPartEntry(text) {
   const parts = String(text || "").split("|").map((item) => item.trim()).filter(Boolean);
   if (parts.length > 1) {
@@ -1935,21 +1958,33 @@ const CALLBACK_HANDLERS = {
       ORDER BY created_at DESC LIMIT 1
     `).bind(chat_id, user_id, partQuery, partQuery).first();
 
-    const lastPayload = parseJsonSafeLocal(lastSub?.raw_payload_json, {}) || {};
-    const metadata = {
-      version: 2,
-      part_number: partQuery,
-      master_part_id: lastSub?.master_part_id || null,
-      donor_device_model: lastSub?.query_text || "",
-      donor_device_id: null,
-      pdf_url: lastPayload.pdf_url || "",
-      pdf_file_id: lastSub?.attachment_file_id || "",
-      db_hit: Boolean(lastSub?.master_part_id),
-      source: "callback_continue",
-      file_name: "",
-      scan_summary: lastPayload.scan_summary || "",
-    };
+    const metadata = buildDatasheetQuestionPayloadFromSubmission(lastSub, partQuery);
 
+    await upsertUserSession(env, chat_id, user_id, "datasheet_wait_question", null, JSON.stringify(metadata));
+    await answerCallbackQuery(env, id, "Kontynuacja analizy.");
+    await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, `💡 Kontynuuję analizę dla *${partQuery}*. O co chcesz zapytać?`, getMainMenuKeyboard());
+  },
+  "datasheet_continue_last": async (env, id, chat_id, user_id, message, data) => {
+    const lastSub = await env.DB.prepare(`
+      SELECT * FROM recycled_device_submissions
+      WHERE chat_id = ? AND user_id = ?
+      AND lookup_kind IN ('datasheet_rag_complete', 'datasheet_pdf_ingest')
+      ORDER BY created_at DESC LIMIT 1
+    `).bind(chat_id, user_id).first();
+
+    if (!lastSub) {
+      await answerCallbackQuery(env, id, "Brak ostatniej analizy.");
+      await sendTelegramReply(
+        env,
+        { chat_id, message_id: message?.message_id },
+        "Nie mam już zapisanej ostatniej analizy datasheet. Wyślij PDF albo wpisz oznaczenie części ponownie.",
+        getMainMenuKeyboard()
+      );
+      return;
+    }
+
+    const metadata = buildDatasheetQuestionPayloadFromSubmission(lastSub);
+    const partQuery = metadata.part_number || "ostatniej części";
     await upsertUserSession(env, chat_id, user_id, "datasheet_wait_question", null, JSON.stringify(metadata));
     await answerCallbackQuery(env, id, "Kontynuacja analizy.");
     await sendTelegramReply(env, { chat_id, message_id: message?.message_id }, `💡 Kontynuuję analizę dla *${partQuery}*. O co chcesz zapytać?`, getMainMenuKeyboard());

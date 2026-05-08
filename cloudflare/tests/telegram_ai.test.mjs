@@ -16,6 +16,7 @@ import {
   sanitizeTelegramReply,
 } from "../src/telegram_ai.js";
 import { handleTelegramWebhook } from "../src/telegram_issues.js";
+import { sendTelegramReply } from "../src/telegram_utils.js";
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -1869,6 +1870,118 @@ test("handleFinalDatasheetRagFinal sends final PDF answer from waitUntil", async
     assert.equal(sentMessages.length, 2);
     assert.match(sentMessages[1].text, /Analiza zakończona/);
     assert.match(sentMessages[1].text, /Pinout jest opisany w PDF/);
+  });
+});
+
+test("handleFinalDatasheetRagFinal uses short callback data for long PDF part names", async () => {
+  const db = createScanFlowDbMock();
+  const sentMessages = [];
+  const waitUntilTasks = [];
+  const longPartName = `very-long-uploaded-datasheet-${"x".repeat(120)}`;
+  const env = {
+    DB: db,
+    TELEGRAM_BOT_TOKEN: "telegram-token",
+    TELEGRAM_AI_PRIMARY_PROVIDER: "google",
+    TELEGRAM_AI_FALLBACK_PROVIDER: "google",
+    TELEGRAM_AI_GOOGLE_MODEL: "gemini-3.1-flash-lite-preview",
+    TELEGRAM_AI_TIMEOUT_MS: "20000",
+    GEMINI_API_KEY: "google-key",
+  };
+
+  await withMockedFetch(async (url, init = {}) => {
+    const urlString = String(url);
+    if (urlString.includes("api.telegram.org/bottelegram-token/sendMessage")) {
+      const payload = JSON.parse(init.body);
+      const buttons = payload.reply_markup?.inline_keyboard?.flat() || [];
+      const tooLongCallback = buttons.some((button) => String(button.callback_data || "").length > 64);
+      if (tooLongCallback) {
+        return jsonResponse({ ok: false, description: "Bad Request: BUTTON_DATA_INVALID" }, 400);
+      }
+      sentMessages.push(payload);
+      return jsonResponse({ ok: true });
+    }
+    if (urlString.includes("api.telegram.org/bottelegram-token/getFile")) {
+      return jsonResponse({ ok: true, result: { file_path: "long-name-datasheet.pdf" } });
+    }
+    if (urlString.includes("api.telegram.org/file/bottelegram-token/long-name-datasheet.pdf")) {
+      return new Response(Uint8Array.from([37, 80, 68, 70, 45, 49, 46, 55]), { status: 200 });
+    }
+    if (urlString.includes("generativelanguage.googleapis.com")) {
+      return jsonResponse({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: "To jest odpowiedź na podstawie przesłanego PDF." }],
+            },
+          },
+        ],
+      });
+    }
+    throw new Error(`Unexpected URL: ${urlString}`);
+  }, async () => {
+    const session = {
+      chat_id: "4",
+      user_id: "3",
+      active_device_name: JSON.stringify({
+        version: 2,
+        part_number: longPartName,
+        master_part_id: null,
+        donor_device_model: "Nieznany model",
+        donor_device_id: null,
+        pdf_url: "",
+        pdf_file_id: "telegram-pdf-1",
+        db_hit: true,
+        source: "uploaded_pdf",
+        file_name: `${longPartName}.pdf`,
+        scan_summary: "",
+      }),
+    };
+    const ctx = {
+      waitUntil(promise) {
+        waitUntilTasks.push(Promise.resolve(promise));
+      },
+    };
+
+    const reply = await handleFinalDatasheetRagFinal(
+      env,
+      { chat_id: "4", user_id: "3", message_id: "99" },
+      session,
+      "Co jest w tym PDF?",
+      ctx
+    );
+
+    assert.equal(reply.skip_reply, true);
+    await Promise.all(waitUntilTasks);
+
+    assert.equal(sentMessages.length, 2);
+    const finalButtons = sentMessages[1].reply_markup.inline_keyboard.flat();
+    assert.ok(finalButtons.some((button) => button.callback_data === "datasheet_continue_last"));
+    assert.ok(finalButtons.every((button) => String(button.callback_data || "").length <= 64));
+  });
+});
+
+test("sendTelegramReply falls back to text without keyboard when Telegram rejects buttons", async () => {
+  const attempts = [];
+  await withMockedFetch(async (url, init = {}) => {
+    const payload = JSON.parse(init.body);
+    attempts.push(payload);
+    if (payload.reply_markup) {
+      return jsonResponse({ ok: false, description: "Bad Request: BUTTON_DATA_INVALID" }, 400);
+    }
+    return jsonResponse({ ok: true });
+  }, async () => {
+    const sent = await sendTelegramReply(
+      { TELEGRAM_BOT_TOKEN: "telegram-token" },
+      { chat_id: "4", message_id: "99" },
+      "Finalna odpowiedź",
+      { inline_keyboard: [[{ text: "Kontynuuj", callback_data: `too_long:${"x".repeat(120)}` }]] }
+    );
+
+    assert.equal(sent, true);
+    assert.equal(attempts.length, 3);
+    assert.equal(attempts[0].parse_mode, "Markdown");
+    assert.equal(attempts[1].parse_mode, undefined);
+    assert.equal(attempts[2].reply_markup, undefined);
   });
 });
 

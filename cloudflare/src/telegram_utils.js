@@ -55,28 +55,30 @@ export async function sendTelegramReply(env, message, text, replyMarkup = null) 
     parse_mode: "Markdown",
   };
 
-  let response = await fetchWithTimeout(
-    `https://api.telegram.org/bot${botToken}/sendMessage`,
-    {
+  const sendPayload = async () =>
+    await fetchWithTimeout(
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      {
       method: "POST",
       headers: { "content-type": "application/json; charset=utf-8" },
       body: JSON.stringify(payload),
-    },
-    10000
-  );
+      },
+      10000
+    );
+
+  let response = await sendPayload();
 
   if (!response.ok) {
     // Próba wysłania bez Markdown (na wypadek błędów parsowania AI)
     delete payload.parse_mode;
-    response = await fetchWithTimeout(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
-      {
-        method: "POST",
-        headers: { "content-type": "application/json; charset=utf-8" },
-        body: JSON.stringify(payload),
-      },
-      10000
-    );
+    response = await sendPayload();
+  }
+
+  if (!response.ok && payload.reply_markup) {
+    // Telegram odrzuca całą wiadomość, gdy któryś przycisk ma np. zbyt długie callback_data.
+    // Tekst odpowiedzi jest ważniejszy niż klawiatura, więc ostatnia próba idzie bez przycisków.
+    delete payload.reply_markup;
+    response = await sendPayload();
   }
 
   return response.ok;
