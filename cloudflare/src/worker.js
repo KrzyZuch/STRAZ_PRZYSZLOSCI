@@ -11,6 +11,7 @@ import {
   isTelegramWebhookRequest,
 } from "./telegram_issues.js";
 import { handleDiscordWebhook } from "./discord_api_handler.js";
+import { applyMigrations } from "./schema_migrations.js";
 
 class AuthError extends Error { }
 class ConflictError extends Error { }
@@ -383,6 +384,14 @@ export default {
     }
 
     const url = new URL(request.url);
+
+    // Apply D1 schema migrations on startup (Z86)
+    try {
+      await applyMigrations(env.DB);
+    } catch (err) {
+      console.error("[startup] D1 schema migration failed:", err);
+      // Continue serving requests despite migration failure — app is degraded but functional
+    }
 
     // Global API rate limit check (Z85)
     const globalRateLimit = await checkGlobalRateLimit(request, env);

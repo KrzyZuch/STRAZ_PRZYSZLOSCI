@@ -104,7 +104,8 @@ export async function applyMigrations(db) {
 
   // Ensure the schema_migrations table exists first (always idempotent)
   try {
-    await db.prepare(MIGRATIONS[0].sql).run();
+    const stmt = await db.prepare(MIGRATIONS[0].sql);
+    await stmt.run();
   } catch (err) {
     console.error(`[applyMigrations] Failed to create schema_migrations:`, err);
     return { success: false, reason: "init_failed", error: err.message };
@@ -132,10 +133,11 @@ export async function applyMigrations(db) {
 
   for (const migration of pending) {
     try {
-      await db.prepare(migration.sql).run();
-      await db
-        .prepare(`INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)`)
-        .bind(migration.version, migration.name, nowIso)
+      const stmt1 = await db.prepare(migration.sql);
+      await stmt1.run();
+      const stmt2 = await db
+        .prepare(`INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)`);
+      await stmt2.bind(migration.version, migration.name, nowIso)
         .run();
       appliedCount++;
     } catch (err) {
