@@ -1949,6 +1949,15 @@ async function removeInlineKeyboard(env, chat_id, message_id) {
   }, 10000);
 }
 
+export function checkTelegramPayloadSize(request, env) {
+  const maxBodyBytes = parseInt(env.TELEGRAM_MAX_WEBHOOK_BODY_BYTES || env.MAX_WEBHOOK_BODY_BYTES || "5242880", 10);
+  const contentLength = request.headers.get("Content-Length");
+  if (contentLength && parseInt(contentLength, 10) > maxBodyBytes) {
+    return jsonResponse({ error: `Request body too large. Max: ${maxBodyBytes} bytes.` }, 413);
+  }
+  return null;
+}
+
 export async function handleTelegramWebhook(request, env, ctx = null) {
   if (!isTelegramIntegrationEnabled(env)) {
     return jsonResponse(
@@ -1964,12 +1973,8 @@ export async function handleTelegramWebhook(request, env, ctx = null) {
     return jsonResponse({ error: "Nieprawidłowy sekret webhooka Telegram." }, 403);
   }
 
-  // Content-Length check to prevent oversized payload attacks
-  const maxBodyBytes = parseInt(env.TELEGRAM_MAX_WEBHOOK_BODY_BYTES || env.MAX_WEBHOOK_BODY_BYTES || "5242880", 10); // 5MB default
-  const contentLength = request.headers.get("Content-Length");
-  if (contentLength && parseInt(contentLength, 10) > maxBodyBytes) {
-    return jsonResponse({ error: `Request body too large. Max: ${maxBodyBytes} bytes.` }, 413);
-  }
+  const sizeCheck = checkTelegramPayloadSize(request, env);
+  if (sizeCheck) return sizeCheck;
 
   let payload;
   try {

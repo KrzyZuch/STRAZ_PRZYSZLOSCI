@@ -1,5 +1,6 @@
 import { generateRecommendation } from "./recommendation.js";
 import { fetchWithTimeout } from "./base_utils.js";
+import { getCorsAllowOrigin, jsonResponse } from "./security_headers.js";
 import {
   handleWhatsAppVerification,
   handleWhatsAppWebhook,
@@ -14,23 +15,6 @@ class AuthError extends Error { }
 class ConflictError extends Error { }
 class NotFoundError extends Error { }
 class ForbiddenError extends Error { }
-
-function jsonResponse(payload, status = 200) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "access-control-allow-methods": "GET,POST,OPTIONS",
-      "access-control-allow-headers":
-        "content-type,x-provider-token,x-hub-signature-256,x-telegram-bot-api-secret-token,x-discord-bot-secret",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "x-content-type-options": "nosniff",
-      "x-frame-options": "DENY",
-      "referrer-policy": "strict-origin-when-cross-origin",
-    },
-  });
-}
 
 function nowIso() {
   return new Date().toISOString();
