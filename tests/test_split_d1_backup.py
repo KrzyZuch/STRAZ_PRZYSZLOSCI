@@ -116,12 +116,25 @@ class TestSplitD1Backup(unittest.TestCase):
 
     def test_drop_table_public(self):
         self._write_input([
+            'DROP TABLE IF EXISTS recycled_parts;',
+        ])
+        self._run_split()
+        public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("DROP TABLE", public)
+        self.assertIn("recycled_parts", public)
+        self.assertNotIn("recycled_parts", private)
+
+    def test_drop_table_private_submission(self):
+        self._write_input([
             'DROP TABLE IF EXISTS recycled_device_submissions;',
         ])
         self._run_split()
         public = self._read_output(self.tmp_public.name)
-        self.assertIn("DROP TABLE", public)
-        self.assertIn("recycled_device_submissions", public)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("DROP TABLE", private)
+        self.assertIn("recycled_device_submissions", private)
+        self.assertNotIn("recycled_device_submissions", public)
 
     def test_delete_from_private(self):
         self._write_input([
@@ -132,13 +145,15 @@ class TestSplitD1Backup(unittest.TestCase):
         self.assertIn("DELETE FROM", private)
         self.assertIn("user_sessions", private)
 
-    def test_create_index_in_both(self):
+    def test_create_index_routes_to_table(self):
         self._write_input([
             'CREATE INDEX idx_parts_model ON recycled_parts(model);',
         ])
         self._run_split()
         public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
         self.assertIn("idx_parts_model", public)
+        self.assertNotIn("idx_parts_model", private)
 
     def test_pragma_and_transactions_preserved(self):
         self._write_input([
@@ -153,7 +168,7 @@ class TestSplitD1Backup(unittest.TestCase):
         self.assertIn("BEGIN TRANSACTION", public)
         self.assertIn("COMMIT", public)
 
-    def test_unknown_table_in_both(self):
+    def test_unknown_table_private_by_default(self):
         self._write_input([
             'CREATE TABLE random_unknown (id INTEGER);',
             'INSERT INTO random_unknown VALUES (1);',
@@ -161,7 +176,7 @@ class TestSplitD1Backup(unittest.TestCase):
         self._run_split()
         public = self._read_output(self.tmp_public.name)
         private = self._read_output(self.tmp_private.name)
-        self.assertIn("random_unknown", public)
+        self.assertNotIn("random_unknown", public)
         self.assertIn("random_unknown", private)
 
     def test_mixed_case_does_not_matter(self):
@@ -170,6 +185,9 @@ class TestSplitD1Backup(unittest.TestCase):
         ])
         self._run_split()
         public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn('"Recycled_Parts"', public)
+        self.assertNotIn('"Recycled_Parts"', private)
 
     def test_empty_input(self):
         self._write_input([])
@@ -238,7 +256,7 @@ class TestSplitD1Backup(unittest.TestCase):
                    ["CREATE", "INSERT", "ALTER", "DROP", "DELETE"]):
                 self.assertIn(";", line, f"Linia DDL/DML bez srednika: {line}")
 
-    def test_cf_kv_table_public_only(self):
+    def test_cf_kv_table_private_only(self):
         self._write_input([
             'CREATE TABLE _cf_KV (key TEXT, value TEXT);',
             'INSERT INTO _cf_KV VALUES ("k1", "v1");',
@@ -246,8 +264,54 @@ class TestSplitD1Backup(unittest.TestCase):
         self._run_split()
         public = self._read_output(self.tmp_public.name)
         private = self._read_output(self.tmp_private.name)
-        self.assertIn("_cf_KV", public)
-        self.assertNotIn("_cf_KV", private)
+        self.assertIn("_cf_KV", private)
+        self.assertNotIn("_cf_KV", public)
+
+    def test_provider_tables_private_only(self):
+        self._write_input([
+            'CREATE TABLE providers (provider_id TEXT, token_hash TEXT);',
+            'INSERT INTO providers VALUES ("prod-node-01", "secret-hash");',
+        ])
+        self._run_split()
+        public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("providers", private)
+        self.assertIn("secret-hash", private)
+        self.assertNotIn("providers", public)
+        self.assertNotIn("secret-hash", public)
+
+    def test_datasheets_public_only(self):
+        self._write_input([
+            'CREATE TABLE datasheets (id INTEGER, part_number TEXT);',
+            'INSERT INTO datasheets VALUES (1, "ESP32-WROOM");',
+        ])
+        self._run_split()
+        public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("datasheets", public)
+        self.assertNotIn("datasheets", private)
+
+    def test_telegram_sessions_private_only(self):
+        self._write_input([
+            'CREATE TABLE telegram_user_sessions (chat_id TEXT, active_device_name TEXT);',
+            'INSERT INTO telegram_user_sessions VALUES ("123", "Router");',
+        ])
+        self._run_split()
+        public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("telegram_user_sessions", private)
+        self.assertNotIn("telegram_user_sessions", public)
+
+    def test_virtual_fts_table_private_only(self):
+        self._write_input([
+            'CREATE VIRTUAL TABLE recycled_devices_fts USING fts5(device_name);',
+            'INSERT INTO recycled_devices_fts VALUES ("router");',
+        ])
+        self._run_split()
+        public = self._read_output(self.tmp_public.name)
+        private = self._read_output(self.tmp_private.name)
+        self.assertIn("recycled_devices_fts", private)
+        self.assertNotIn("recycled_devices_fts", public)
 
 
 if __name__ == "__main__":

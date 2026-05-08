@@ -1,6 +1,13 @@
 name: D1 Database Backup
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/db_backup.yml'
+      - 'pipelines/split_d1_backup.py'
+      - 'tests/test_split_d1_backup.py'
   schedule:
     - cron: '0 0 * * *' # Codziennie o północy
   repository_dispatch:
@@ -29,12 +36,83 @@ jobs:
         run: npm install -g wrangler
 
       - name: Export D1 Database
+        working-directory: cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          mkdir -p temp_backups
-          npx wrangler d1 export fish-pond-v1 --remote --output=temp_backups/full_dump.sql
+          set -euo pipefail
+
+          mkdir -p ../temp_backups table_exports
+          : > ../temp_backups/full_dump.sql
+
+          run_wrangler() {
+            local attempt=1
+            until wrangler "$@"; do
+              if [ "$attempt" -ge 5 ]; then
+                return 1
+              fi
+              echo "Wrangler command failed, retrying in $((attempt * 5))s..."
+              sleep $((attempt * 5))
+              attempt=$((attempt + 1))
+            done
+          }
+
+          run_wrangler_to_file() {
+            local output_file="$1"
+            shift
+            local attempt=1
+            until wrangler "$@" > "$output_file"; do
+              if [ "$attempt" -ge 5 ]; then
+                return 1
+              fi
+              echo "Wrangler command failed, retrying in $((attempt * 5))s..."
+              sleep $((attempt * 5))
+              attempt=$((attempt + 1))
+            done
+          }
+
+          run_wrangler_to_file ../temp_backups/schema_tables.json \
+            d1 execute DB --remote --env prod --json \
+            --command "SELECT name, sql FROM sqlite_schema WHERE type = 'table' ORDER BY name"
+
+          TABLES="$(
+            node -e '
+              const fs = require("fs");
+              const payload = JSON.parse(fs.readFileSync("../temp_backups/schema_tables.json", "utf8"));
+              if (!Array.isArray(payload) || payload[0]?.success !== true) {
+                console.error("Unexpected wrangler D1 schema response.");
+                process.exit(1);
+              }
+              const rows = payload[0]?.results || [];
+              const filtered = rows
+                .filter(row => row?.name && row?.sql)
+                .filter(row => !row.name.startsWith("sqlite_"))
+                .filter(row => !/^CREATE\s+VIRTUAL\s+TABLE/i.test(row.sql))
+                .filter(row => !/_fts($|_)/.test(row.name))
+                .map(row => row.name);
+              for (const name of filtered) console.log(name);
+            '
+          )"
+
+          if [ -z "$TABLES" ]; then
+            echo "No exportable D1 tables found."
+            exit 1
+          fi
+
+          echo "Exporting D1 tables:"
+          printf '%s\n' "$TABLES"
+
+          printf '%s\n' "$TABLES" | while IFS= read -r table; do
+            [ -n "$table" ] || continue
+            echo "::group::Export table $table"
+            run_wrangler d1 export DB --remote --env prod --table "$table" --output="table_exports/${table}.sql"
+            cat "table_exports/${table}.sql" >> ../temp_backups/full_dump.sql
+            printf '\n' >> ../temp_backups/full_dump.sql
+            echo "::endgroup::"
+          done
+
+          test -s ../temp_backups/full_dump.sql
 
       - name: Split Backup into Public and Private
         run: |
