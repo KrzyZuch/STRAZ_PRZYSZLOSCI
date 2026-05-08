@@ -64,6 +64,7 @@ W celu krystalizacji naszych idei, gromadzimy przykłady technologii i rozwiąza
 *   **[18. Automatyzacja Transportu i Logistyki](PROJEKTY/18_automatyzacja_transportu_i_logistyki.md)** – Inteligentna nawigacja sugerująca odbiór przedmiotów na trasie oraz system łączenia kierowców z zapotrzebowaniem społeczności (BlablaCar dla rzeczy).
 *   **[19. Społeczna Baza Przedmiotów "Zero Waste"](PROJEKTY/19_spoleczna_baza_przedmiotow.md)** – AI-driven marketplace dla przedmiotów darmowych: automatyczna identyfikacja ze zdjęcia, błyskawiczne wystawianie ofert i system powiadomień o zapotrzebowaniu, aby rzeczy nie lądowały na PSZOK.
 *   **[20. Logistyka Sąsiedzka i Optymalizacja Tras](PROJEKTY/20_logistyka_sasiadzka_nawigacja.md)** – Dodatek do nawigacji samochodowej rekomendujący odbiór paczek i przedmiotów na trasie przejazdu, maksymalizujący wykorzystanie paliwa i budujący lokalną sieć wzajemnej pomocy.
+*   **[21. Home Assistant na Smartfonie (Węzeł NSIP)](PROJEKTY/21_home_assistant_na_telefonie.md)** – Transformacja starego telefonu w centrum automatyzacji zintegrowane z siecią Straży Przyszłości.
 
 
 **Najważniejsze w tworzeniu NARODOWYCH SIŁ INTELEKTUALNYCH nie są pieniądze na start, lecz bezcenny, realny wysiłek intelektualny.**

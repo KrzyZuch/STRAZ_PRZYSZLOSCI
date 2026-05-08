@@ -25,6 +25,7 @@ Dążymy do stworzenia narodowego frameworku, który pozwoli na masowe wykorzyst
 - Zarządzanie pompami wody i oświetleniem w węzłach produkcji żywności.
 - Monitoring wizyjny (wykorzystanie wbudowanej kamery) z lokalną analizą obrazu przez AI.
 - Centralne sterowniki dla systemów off-grid i magazynów energii.
+- **[Węzeł NSIP: Home Assistant na Smartfonie](21_home_assistant_na_telefonie.md)** – Gotowe rozwiązanie do masowego wdrażania automatyzacji domowej zintegrowanej z naszą siecią.
 
 ## Inspiracje:
 - [Wideo: Smartfon potężniejszy niż Arduino](https://www.youtube.com/watch?v=iobvVl8jZ5o)
