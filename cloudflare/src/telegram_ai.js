@@ -4249,6 +4249,7 @@ export async function answerPartLookupQuestion(env, session, userQuestion) {
         [
           "Jesteś asystentem elektronika i odpowiadasz na podstawie lokalnej bazy części oraz dołączonej dokumentacji PDF.",
           "Jeśli masz dostęp do treści PDF, traktuj ją jako główne źródło prawdy o parametrach części.",
+          "ZWRÓĆ UWAGĘ: Zawsze weryfikuj, czy dostarczona treść PDF faktycznie opisuje zadaną część. Jeśli PDF opisuje zupełnie inny układ, wyraźnie poinformuj o tym użytkownika i zignoruj treść PDF, zgłaszając błąd w bazie.",
           "Jeśli danych brakuje, powiedz to wprost zamiast zgadywać.",
         ].join(" "),
         [
@@ -4651,8 +4652,10 @@ async function extractDatasheetMetadataFromPdf(env, options = {}) {
       ].join(" "),
       [
         `Przeanalizuj PDF dla części: ${partQuery}.`,
+        "Najpierw rygorystycznie oceń, czy ten dokument PDF faktycznie dotyczy szukanej części (lub jej wariantu z tej samej rodziny).",
+        "Jeśli dokument dotyczy zupełnie innej części, ustaw is_correct_part na false i zignoruj wyciąganie parametrów.",
         "Zwróć JSON o strukturze:",
-        '{"part_name":"", "part_number":"", "description":"", "category":"", "species":"", "genus":"", "mounting":"", "value":"", "keywords":[""], "parameters":{"Voltage":"5V"}, "kicad_symbol":"", "kicad_footprint":"", "kicad_reference":"", "confidence":0.9 }',
+        '{"is_correct_part": true, "part_name":"", "part_number":"", "description":"", "category":"", "species":"", "genus":"", "mounting":"", "value":"", "keywords":[""], "parameters":{"Voltage":"5V"}, "kicad_symbol":"", "kicad_footprint":"", "kicad_reference":"", "confidence":0.9 }',
       ].join("\n"),
       env,
       {
@@ -4665,6 +4668,11 @@ async function extractDatasheetMetadataFromPdf(env, options = {}) {
   );
 
   const parsed = extractJsonObject(response.text);
+  
+  if (parsed.is_correct_part === false) {
+    throw new Error(`PDF nie dotyczy szukanej części: ${partQuery}. Zignorowano.`);
+  }
+
   const partRecord = await upsertPartMaster(env, {
     id: options.masterPartId || null,
     part_number: coalesceText(parsed.part_number, partQuery),
