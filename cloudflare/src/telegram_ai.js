@@ -4014,7 +4014,7 @@ export async function handleRecycledKnowledgeLookup(env, message) {
     const replyText = buildPartMasterDetailReply(bestPart);
     
     // Sesja AI do pytań o tę część
-    await upsertUserSession(env, message.chat_id, message.user_id, "part_lookup_question", bestPart.id, JSON.stringify({
+    await upsertUserSession(env, message.chat_id, message.user_id, "part_lookup_question", null, JSON.stringify({
       version: 1,
       part_id: bestPart.id,
       part_number: bestPart.part_number
