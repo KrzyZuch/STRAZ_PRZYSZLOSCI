@@ -1950,11 +1950,26 @@ export async function generateChatReply(env, message, history = [], options = {}
   }
 
   let dbContext = "";
+  let datasheetButton = null;
   try {
-    const dbMatches = await findPartMasterMatches(env, sanitized.safeText);
-    if (dbMatches && dbMatches.length > 0) {
-      const bestMatch = dbMatches[0];
+    // Próbujemy wyłuskać potencjalny numer części (np. TDA7294, NE555) z dłuższego zdania
+    const partNumberRegex = /\b([A-Z0-9]{3,20})\b/gi;
+    const foundTokens = sanitized.safeText.match(partNumberRegex) || [];
+    const searchQueries = [sanitized.safeText, ...foundTokens];
+    
+    let bestMatch = null;
+    for (const q of searchQueries) {
+      if (q.length < 3) continue;
+      const matches = await findPartMasterMatches(env, q);
+      if (matches && matches.length > 0) {
+        bestMatch = matches[0];
+        break;
+      }
+    }
+
+    if (bestMatch) {
       const donorMatches = await searchPartDonors(env, bestMatch.part_number || bestMatch.part_name);
+
       
       const donorList = donorMatches.length > 0 
         ? donorMatches.map(d => `- ${d.device_brand} ${d.device_model} (Ilość: ${d.part_count})`).join("\n")
@@ -1982,6 +1997,12 @@ export async function generateChatReply(env, message, history = [], options = {}
         `- Jeśli Datasheet jest 'Dostępny', zaproponuj użytkownikowi jego pobranie/przejrzenie.`,
         `- Jeśli Datasheet to 'Brak', zaproponuj użytkownikowi wysłanie dokumentu PDF do bota w celu analizy i uzupełnienia bazy.`
       ].join("\n");
+
+      if (bestMatch.datasheet_url) {
+        datasheetButton = { text: "📄 Pobierz Datasheet", url: bestMatch.datasheet_url };
+      } else if (bestMatch.datasheet_file_id) {
+         // Możemy dodać przycisk do pobrania z Telegrama, ale na razie url wystarczy
+      }
     }
   } catch (error) {
     console.error("[generateChatReply] DB lookup error:", error);
@@ -2006,9 +2027,17 @@ export async function generateChatReply(env, message, history = [], options = {}
     ),
     options
   );
+  const finalMarkup = getMainMenuKeyboard();
+  if (datasheetButton) {
+    // Dodajemy przycisk datasheet na górze lub jako nowy rząd
+    if (finalMarkup && finalMarkup.inline_keyboard) {
+      finalMarkup.inline_keyboard.unshift([datasheetButton]);
+    }
+  }
+
   return {
     reply_text: sanitizeTelegramReply(response.text, env),
-    reply_markup: getMainMenuKeyboard(),
+    reply_markup: finalMarkup,
     provider_name: response.provider_name,
     model_name: response.model_name,
   };
