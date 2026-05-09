@@ -45,6 +45,7 @@ runResistorVerification,
   readScanPartPayload,
   createBatchScanPayload,
   readBatchScanPayload,
+  isValidPdfUrl,
 } from "./telegram_ai.js";
 import { buildVerificationResultReply } from "./vision.js";
 import { sanitizeUserInput } from "./input_sanitizer.js";

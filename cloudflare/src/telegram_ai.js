@@ -167,6 +167,16 @@ function parseNumber(rawValue, fallback) {
   return fallback;
 }
 
+export function isValidPdfUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  try {
+    const cleanUrl = url.split('?')[0].toLowerCase();
+    return cleanUrl.endsWith('.pdf');
+  } catch (e) {
+    return false;
+  }
+}
+
 function normalizeWhitespace(text) {
   return String(text || "").replace(/\s+/g, " ").trim();
 }
@@ -2822,6 +2832,10 @@ async function upsertPartMaster(env, payload = {}) {
   const partName = coalesceText(payload.part_name, existing?.part_name, rawPartNumber, "Nieznana część");
   const partNumber = coalesceText(payload.part_number, existing?.part_number, rawPartNumber, partName);
   const partSlug = existing?.part_slug || requestedSlug;
+  
+  const rawDatasheetUrl = coalesceText(payload.datasheet_url, payload.pdf_url, existing?.datasheet_url);
+  const datasheetUrl = isValidPdfUrl(rawDatasheetUrl) ? rawDatasheetUrl : "";
+  const datasheetFileId = coalesceText(payload.datasheet_file_id, existing?.datasheet_file_id);
 
   if (existing) {
     await db.prepare(
@@ -2860,8 +2874,8 @@ async function upsertPartMaster(env, payload = {}) {
       coalesceText(payload.value, existing.value),
       coalesceText(payload.description, existing.description),
       mergedKeywords.join(", "),
-      coalesceText(payload.datasheet_url, existing.datasheet_url),
-      coalesceText(payload.datasheet_file_id, existing.datasheet_file_id),
+      datasheetUrl,
+      datasheetFileId,
       coalesceText(payload.ipn, existing.ipn),
       coalesceText(payload.category, existing.category),
       JSON.stringify(mergedParameters),
@@ -2911,8 +2925,8 @@ async function upsertPartMaster(env, payload = {}) {
     coalesceText(payload.value),
     coalesceText(payload.description),
     mergedKeywords.join(", "),
-    coalesceText(payload.datasheet_url),
-    coalesceText(payload.datasheet_file_id),
+    datasheetUrl,
+    datasheetFileId,
     coalesceText(payload.ipn),
     coalesceText(payload.category),
     JSON.stringify(mergedParameters),
