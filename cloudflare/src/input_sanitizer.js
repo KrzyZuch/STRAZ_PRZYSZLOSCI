@@ -760,9 +760,8 @@ export function extractAndAnalyzePdf(base64Pdf) {
     return { extractedText: '', hiddenContentFlags: [], isSuspicious: false, warnings: [] };
   }
 
-  // LIMIT: Cloudflare Workers have tight CPU limits. Skip heavy scanning for very large files.
-  // 1.5MB base64 is roughly 1.1MB binary.
-  const isLargeFile = base64Pdf.length > 1500000;
+  // LIMIT: Cloudflare Workers have tight CPU limits (10-50ms). Skip heavy regex for larger files.
+  const isLargeFile = base64Pdf.length > 100000;
   
   let binary;
   try {
@@ -826,30 +825,34 @@ export function extractAndAnalyzePdf(base64Pdf) {
   // ── Extract readable text chunks ──
   // Simple extraction: look for text between parentheses in Tj/TJ operations
   try {
-    let match;
-    // Tj operator: (text) Tj
-    const tjRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)\s*Tj/g;
-    while ((match = tjRegex.exec(binary)) !== null) {
-      if (match[1] && match[1].trim().length > 0) {
-        textChunks.push(unescapePdfString(match[1]));
+    // Extract text ONLY if file is small, to avoid CPU timeout
+    if (!isLargeFile) {
+      let match;
+      // Tj operator: (text) Tj
+      const tjRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)\s*Tj/g;
+      while ((match = tjRegex.exec(binary)) !== null) {
+        if (match[1] && match[1].trim().length > 0) {
+          textChunks.push(unescapePdfString(match[1]));
+        }
       }
-    }
 
-    // TJ operator: [(text) num (text)] TJ
-    const tjArrayRegex = /\[((?:\([^)]*\)|[^\]])*)\]\s*TJ/g;
-    while ((match = tjArrayRegex.exec(binary)) !== null) {
-      if (match[1]) {
-        // Extract text from array elements
-        const innerMatches = match[1].match(/\(([^)]*)\)/g);
-        if (innerMatches) {
-          for (const inner of innerMatches) {
-            const content = inner.slice(1, -1);
-            if (content.trim().length > 0) {
-              textChunks.push(unescapePdfString(content));
+      // TJ operator: [(text) num (text)] TJ
+      const tjArrayRegex = /\[((?:\([^)]*\)|[^\]])*)\]\s*TJ/g;
+      while ((match = tjArrayRegex.exec(binary)) !== null) {
+        if (match[1]) {
+          const innerMatches = match[1].match(/\(([^)]*)\)/g);
+          if (innerMatches) {
+            for (const inner of innerMatches) {
+              const content = inner.slice(1, -1);
+              if (content.trim().length > 0) {
+                textChunks.push(unescapePdfString(content));
+              }
             }
           }
         }
       }
+    } else {
+      textChunks.push("[Skipped heavy text extraction for large PDF to prevent CPU timeout]");
     }
   } catch {
     // If text extraction fails, continue with what we have
