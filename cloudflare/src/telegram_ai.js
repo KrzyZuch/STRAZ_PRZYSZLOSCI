@@ -683,6 +683,12 @@ export function routeTelegramIntent(message) {
   }
 
   if (isDeviceLookupQuery(messageText)) {
+    const tokens = messageText.split(/\s+/).filter(Boolean);
+    // Jeśli to pojedyncze oznaczenie (np. LM3886), wolimy wzbogacony czat AI (który ma teraz dostęp do D1), 
+    // bo daje on pełniejszą odpowiedź niż sztywny lookup urządzeń.
+    if (tokens.length === 1 && looksLikeStructuredCatalogToken(tokens[0])) {
+      return { intent: "chat" };
+    }
     return { intent: "device_lookup" };
   }
 
