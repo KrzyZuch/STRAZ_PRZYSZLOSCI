@@ -1960,14 +1960,27 @@ export async function generateChatReply(env, message, history = [], options = {}
         ? donorMatches.map(d => `- ${d.device_brand} ${d.device_model} (Ilość: ${d.part_count})`).join("\n")
         : "- Brak przypisanych dawców w bazie";
 
+      const paramsStr = bestMatch.parameters && Object.keys(bestMatch.parameters).length > 0 
+        ? JSON.stringify(bestMatch.parameters, null, 2) 
+        : "Brak";
+
       dbContext = [
         "### WYNIK WYSZUKIWANIA W BAZIE DANYCH KOMPONENTÓW NSI (SQL D1):",
-        `To są twarde dane z bazy. Użyj ich priorytetowo w swojej odpowiedzi!`,
+        `To są twarde dane z bazy. Użyj ich priorytetowo w swojej odpowiedzi! Podaj użytkownikowi WSZYSTKIE poniższe informacje:`,
         `Znaleziono układ: ${bestMatch.part_name} (Oznaczenie: ${bestMatch.part_number})`,
         `Kategoria: ${bestMatch.category || "Nieznana"}`,
+        `Rodzaj (Species/Genus): ${bestMatch.species || "Nieznany"} / ${bestMatch.genus || "Nieznany"}`,
+        `Montaż (Mounting): ${bestMatch.mounting || "Nieznany"}`,
+        `Wartość/Opis: ${bestMatch.value || "Brak"} / ${bestMatch.description || "Brak"}`,
+        `Parametry: ${paramsStr}`,
         `Dawcy (elektrośmieci zawierające ten układ):`,
         donorList,
-        `Datasheet (PDF): ${bestMatch.datasheet_url ? "Dostępny" : "Brak"}`
+        `Datasheet (PDF): ${bestMatch.datasheet_url ? "Dostępny (" + bestMatch.datasheet_url + ")" : "Brak"}`,
+        "",
+        `INSTRUKCJA DLA CIEBIE:`,
+        `- Zawsze wymień wszystkie powyższe szczegóły (kategorię, parametry, opis, dawców).`,
+        `- Jeśli Datasheet jest 'Dostępny', zaproponuj użytkownikowi jego pobranie/przejrzenie.`,
+        `- Jeśli Datasheet to 'Brak', zaproponuj użytkownikowi wysłanie dokumentu PDF do bota w celu analizy i uzupełnienia bazy.`
       ].join("\n");
     }
   } catch (error) {
