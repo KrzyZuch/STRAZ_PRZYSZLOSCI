@@ -1949,12 +1949,38 @@ export async function generateChatReply(env, message, history = [], options = {}
     };
   }
 
+  let dbContext = "";
+  try {
+    const dbMatches = await findPartMasterMatches(env, sanitized.safeText);
+    if (dbMatches && dbMatches.length > 0) {
+      const bestMatch = dbMatches[0];
+      const donorMatches = await searchPartDonors(env, bestMatch.part_number || bestMatch.part_name);
+      
+      const donorList = donorMatches.length > 0 
+        ? donorMatches.map(d => `- ${d.device_brand} ${d.device_model} (Ilość: ${d.part_count})`).join("\n")
+        : "- Brak przypisanych dawców w bazie";
+
+      dbContext = [
+        "### WYNIK WYSZUKIWANIA W BAZIE DANYCH KOMPONENTÓW NSI (SQL D1):",
+        `To są twarde dane z bazy. Użyj ich priorytetowo w swojej odpowiedzi!`,
+        `Znaleziono układ: ${bestMatch.part_name} (Oznaczenie: ${bestMatch.part_number})`,
+        `Kategoria: ${bestMatch.category || "Nieznana"}`,
+        `Dawcy (elektrośmieci zawierające ten układ):`,
+        donorList,
+        `Datasheet (PDF): ${bestMatch.datasheet_url ? "Dostępny" : "Brak"}`
+      ].join("\n");
+    }
+  } catch (error) {
+    console.error("[generateChatReply] DB lookup error:", error);
+  }
+
   const response = await callProviderWithFallback(
     env,
     buildPromptPayload(
       buildChatSystemInstruction(),
       [
         buildCommonKnowledgeIntro(sanitized.safeText, history),
+        dbContext ? "\n" + dbContext : "",
         "",
         "### PYTANIE UŻYTKOWNIKA",
         sanitized.wrappedText,
