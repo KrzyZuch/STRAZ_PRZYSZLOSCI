@@ -19,6 +19,11 @@ Wszystko, co tworzymy, jest **open-source**, niskokosztowe i oparte na pilotaża
 > Kluczem do sukcesu jest rozbijanie złożonych procesów automatyzacji na małe ogniwa, których kod już istnieje w globalnych repozytoriach i czeka na adaptację. W tym procesie zaangażowanie wolontariuszy i wspólna idea są ważniejsze niż drogie maszyny. Podobnie jak jedno ziarno daje początek całemu polu, tak Nasz wysiłek intelektualny pozwala ożywić materię.
 >
 > To projekt o potężnym przełożeniu na fizyczną rzeczywistość, który **Piloci Ai ze Straży Przyszłości** są gotowi i zdolni wdrożyć w życie. Tutaj realizuje się Nasza główna zasada: **Intelekt wyprzedza Kapitał oraz Materię**.
+>
+> ### **Ewolucja: Od Procesów do Samopowielającej się Platformy**
+> Zgodnie z Naszą strategią, pierwszym krokiem jest **precyzyjne zaprojektowanie procesów intelektualnych i algorytmicznych**. Dopiero na tak przygotowanym fundamencie przystępujemy do budowy **pierwszej fizycznej platformy wykonawczej**, wykorzystującej zasoby z odzysku (elektrośmieci).
+>
+> Dążymy do stworzenia systemu opartego na koncepcji **samopowielającej się automatyzacji** (ang. *Self-Replicating Machines*), gdzie maszyny posiadają zdolność do reprodukcji własnych komponentów i rozbudowy systemu (zobacz inspirację: [Robot assembles its own copies](https://www.youtube.com/watch?v=vG97Huz1QqI)). Naszym "ogniwem zero" ma być platforma o zbliżonych możliwościach — np. zaawansowane ramię robota zintegrowane z maszyną CNC lub drukarką 3D — które będzie w stanie fizycznie budować kolejne moduły automatyzacji, tworząc wykładniczy przyrost mocy produkcyjnej przy minimalnym wkładzie kapitałowym.
 
 
 Inicjatywa ma charakter całkowicie oddolny: nie jest zależna od żadnych struktur rządowych, ani od żadnych konkurencyjnych firm zewnętrznych. Kluczowe jest tutaj pełne zaangażowanie intelektualne i współpraca ponad podziałami.
