@@ -1,0 +1,5 @@
+(footprint "QFN-56-1EP_7x7mm_P0.4mm"
+  (version 20240108)
+  (generator "pcbnew")
+  (descr "QFN fixture")
+)

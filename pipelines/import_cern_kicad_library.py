@@ -95,8 +95,9 @@ def extract_top_level_symbol_forms(text: str) -> list[str]:
     capture_depth: int | None = None
     in_string = False
     escape = False
+    n = len(text)
 
-    while i < len(text):
+    while i < n:
         char = text[i]
         if in_string:
             if escape:
@@ -114,11 +115,13 @@ def extract_top_level_symbol_forms(text: str) -> list[str]:
             continue
 
         if char == "(":
-            token_match = re.match(r"\(\s*([A-Za-z_][A-Za-z0-9_\-]*)", text[i:])
             depth += 1
-            if token_match and token_match.group(1) == "symbol" and depth == 2 and capture_start is None:
-                capture_start = i
-                capture_depth = depth
+            if depth == 2 and capture_start is None:
+                # Fast check to see if this is (symbol
+                # Check for space, newline or quotes following the word "symbol"
+                if text[i:i+8] == "(symbol " or text[i:i+8] == "(symbol\n" or text[i:i+8] == "(symbol\r":
+                    capture_start = i
+                    capture_depth = depth
             i += 1
             continue
 

@@ -1,0 +1,12 @@
+(kicad_symbol_lib (version 20240100) (generator "test")
+  (symbol "TPS65994"
+    (property "Reference" "U" (at 0 0 0))
+    (property "Value" "TPS65994" (at 0 0 0))
+    (property "Footprint" "Package_QFN:QFN-56-1EP_7x7mm_P0.4mm" (at 0 0 0))
+    (property "Datasheet" "https://example.test/tps65994.pdf" (at 0 0 0))
+    (property "MPN" "TPS65994AD" (at 0 0 0))
+    (property "Manufacturer" "Texas Instruments" (at 0 0 0))
+    (property "ki_keywords" "USB PD controller" (at 0 0 0))
+    (symbol "TPS65994_0_1" (rectangle (start 0 0) (end 1 1)))
+  )
+)
