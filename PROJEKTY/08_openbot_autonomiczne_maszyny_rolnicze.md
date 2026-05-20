@@ -44,6 +44,8 @@ Wdrażamy i adaptujemy najbardziej zaawansowane otwarte projekty mechaniczne, kt
 - **Acorn Precision Farming Rover (Twisted Fields):** Solarny, autonomiczny łazik terenowy. Precyzyjna platforma zorientowana na budowę i utrzymanie upraw bez paliw kopalnych.
     - *Repo:* [Twisted-Fields/acorn-precision-farming-rover](https://github.com/Twisted-Fields/acorn-precision-farming-rover)
     - *Mechanika:* [Twisted-Fields/acorn-mechanical-designs](https://github.com/Twisted-Fields/acorn-mechanical-designs)
+- **[22. Robotyka Open Source (MathWorks / ROS)](22_robotyka_open_source_matlab_ros.md):** Katalog dem ROS/ROS2, symulacji i prototypów ramion/UGV — do kuracji pod flotę tanich robotów.
+- **[23. Katalog części STEP (step.parts)](23_katalog_czesci_step_open_source.md):** Gotowa geometria mocowań, profili i napędów do konstrukcji podwozia i ramion.
 
 ---
 *Intelekt wyprzedza Kapitał!*

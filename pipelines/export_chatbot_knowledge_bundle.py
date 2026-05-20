@@ -58,6 +58,8 @@ ALLOWLIST = [
     "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-benchmark-comparison-01/README.md",
     "PROJEKTY/13_baza_czesci_recykling/execution_packs/pack-project13-benchmark-comparison-01/RUNBOOK.md",
     "PROJEKTY/14_autonomiczne_projektowanie_3d_cad.md",
+    "PROJEKTY/22_robotyka_open_source_matlab_ros.md",
+    "PROJEKTY/23_katalog_czesci_step_open_source.md",
     ".github/ISSUE_TEMPLATE/nowy_straznik.md",
     ".github/ISSUE_TEMPLATE/pomysl_rozwiazanie.md",
     ".github/ISSUE_TEMPLATE/zastrzezenie_uwaga.md",

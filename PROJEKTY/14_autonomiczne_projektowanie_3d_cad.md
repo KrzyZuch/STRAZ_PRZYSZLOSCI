@@ -25,5 +25,9 @@ System opiera się na synergii trzech potężnych technologii:
 
 Większość profesjonalnych narzędzi CAD przechodzi na model subskrypcyjny i chmurowy, co w dobie pełnej automatyzacji czyni produkcję zależną od kapitału i decyzji zagranicznych korporacji. **Projekt 14 przywraca suwerenność technologiczną**, budując "intelektualną fabrykę" opartą na darmowych, otwartych narzędziach zintegrowanych z najnowocześniejszymi modelami AI.
 
+## Zasoby geometrii (warstwa mechaniczna)
+
+Parametryczne skrypty FreeCAD uzupełniają gotowe modele z katalogu **[step.parts](https://step.parts)** — około 12 000 części STEP open source (śruby, profile, napędy, elementy robotyki). Zamiast modelować każdy standardowy element od zera, agent importuje pliki STEP do zespołu i eksportuje wynik do CNC lub druku 3D. Szczegóły adopcji: [23. Katalog części STEP](23_katalog_czesci_step_open_source.md).
+
 ---
 **Zobacz inspirację wideo:** [Claude 3.7 projektuje w FreeCAD przez MCP](https://www.youtube.com/watch?v=HQDMvA-gN1c)

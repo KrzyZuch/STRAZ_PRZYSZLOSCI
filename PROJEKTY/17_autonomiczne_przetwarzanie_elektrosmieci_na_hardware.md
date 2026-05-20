@@ -80,6 +80,13 @@ W przyszłości ten sam schemat powinien objąć również:
 
 Wtedy elektrośmieci pozostają bardzo ważnym zasobem, ale nie jedynym.
 
+### Otwarte katalogi mechaniczne i robotyczne (resource scouting)
+
+Przy budowie obudów, wsporników i robotyki pomocniczej z odzysku warto łączyć warstwę elektroniczną z gotowymi zasobami open source:
+
+- **[23. Katalog części STEP (step.parts)](23_katalog_czesci_step_open_source.md)** — około 12 000 modeli STEP (złącza, profile, napędy) pod FreeCAD i CNC.
+- **[22. Robotyka Open Source (MathWorks / ROS)](22_robotyka_open_source_matlab_ros.md)** — dema, ROS2 i symulacje nawigacji przy minimalnym kapitale.
+
 ## Warstwa sprzętowa nie jest dodatkiem
 
 W tym projekcie należy przyjąć, że hardware jest równorzędnym wynikiem automatyzacji, a nie tylko jej zewnętrznym środowiskiem.

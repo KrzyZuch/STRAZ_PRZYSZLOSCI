@@ -25,6 +25,11 @@ Aby budować autonomiczne systemy produkcji przy minimalnym kapitale, opieramy s
 ### 5. Projektowanie i Recykling
 - **[KiCad](https://www.kicad.org/):** Projektowanie elektroniki zintegrowane z narzędziami takimi jak **ecoEDA**.
 - **[FreeCAD](https://www.freecad.org/):** Parametryczne projektowanie 3D.
+- **[step.parts](https://step.parts):** Katalog około 12 000 części STEP open source — geometria mechaniczna do zespołów CAD (zobacz [Projekt 23](23_katalog_czesci_step_open_source.md)).
+
+### 6. Robotyka i symulacja (open source)
+- **[awesome-matlab-robotics](https://github.com/mathworks-robotics/awesome-matlab-robotics):** Indeks dem, ROS/ROS2 i symulacji — wzorce pod prototypy przy minimalnym kapitale (zobacz [Projekt 22](22_robotyka_open_source_matlab_ros.md)).
+- **ROS / ROS2:** Standard integracji sterowników, czujników i planowania ruchu (część wpisów w katalogu MathWorks; alternatywy bez MATLAB wymagają kuracji).
 
 ---
 *Inicjatywa Straż Przyszłości — Budujemy Polską Niepodległość Technologiczną.*
